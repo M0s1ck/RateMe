@@ -26,15 +26,18 @@ namespace RateMe
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WelcomeBackButton.IsChecked != null && WelcomeBackButton.IsChecked == true)
-            {
-                MessageBox.Show($"Welcome back, {_email} : {_password}!");
-            }
-            else if (WelcomeButton.IsChecked != null && WelcomeButton.IsChecked == true)
-            {
-                MessageBox.Show("Welcome!");
-            }
+            MessageBox.Show($"Welcome back, {_email} : {_password}!");
         }
+
+
+        private void AuthorizationButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"Welcome back!");
+            DataCollection dataCollectionWin = new();
+            this.Close();
+            dataCollectionWin.Show();
+        }
+
 
         private void emailEntered(object sender, TextChangedEventArgs e)
         {

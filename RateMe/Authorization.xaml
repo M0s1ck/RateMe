@@ -64,13 +64,10 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" RenderTransformOrigin="0.506,0.446"><Run/><LineBreak/><Run/></TextBlock>
         <TextBlock HorizontalAlignment="Center" Margin="0,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Welcome to RateMe App" FontSize="18" FontFamily="Impact"/>
-        <RadioButton x:Name="WelcomeBackButton" Content="Welcome back!" HorizontalAlignment="Left" Margin="118,313,0,0" VerticalAlignment="Top" Height="14" Background="#FF705ADA" BorderBrush="#FF707070" IsChecked="False" FontSize="16" FontFamily="Arial Black"/>
-        <RadioButton x:Name="WelcomeButton" Content="Welcome!" HorizontalAlignment="Left" Margin="547,313,0,0" VerticalAlignment="Top" Height="14" Background="#FF705ADA" BorderBrush="#FF707070" IsChecked="False" FontSize="16" FontFamily="Arial Black"/>
-        <Button Style="{DynamicResource SendButton}" x:Name="SendButton" Content="Send it!" HorizontalAlignment="Center" Margin="0,359,0,0" VerticalAlignment="Top" Height="42" Width="96" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="SendButton_Click"/>
+        <Button Style="{DynamicResource SendButton}" x:Name="SendButton" Content="Send it!" HorizontalAlignment="Center" Margin="0,230,0,0" VerticalAlignment="Top" Height="42" Width="96" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="SendButton_Click"/>
         <Rectangle Stroke="Black" Margin="238,77,238,139" RenderTransformOrigin="0.498,0.533"/>
-        
+
         <TextBox Name="EmailTextBox" TextChanged="emailEntered"  HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
              Width="252" Height="37" Foreground="#000000" FontSize="16" TextAlignment="Center" Background="Transparent" RenderTransformOrigin="0.52,-0.444" FontFamily="Bahnschrift"/>
         <TextBlock Name="EmailHint" HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" Text="email" VerticalAlignment="Top"
@@ -81,6 +78,10 @@
             Width="252" Height="37" Foreground="#000000" FontSize="16" TextAlignment="Center" Background="Transparent" RenderTransformOrigin="0.52,-0.444" FontFamily="Bahnschrift"/>
         <TextBlock Name="PasswordHint" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" Text="password" VerticalAlignment="Top"
             Width="252" Height="37" Foreground="#FF5B5B5B" FontSize="16" TextAlignment="Center" Background="#FFAAC5FF" RenderTransformOrigin="0.52,-0.444" Panel.ZIndex="-1"/>
+        
+        
+        <Button Style="{DynamicResource SendButton}" x:Name="SkipAuButton" Content="Skip authoriztion" HorizontalAlignment="Center" Margin="0,326,0,0" VerticalAlignment="Top"
+                Height="42" Width="200" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="AuthorizationButtonClick"/>
 
     </Grid>
 </Window>
