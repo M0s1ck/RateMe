@@ -16,6 +16,9 @@ namespace RateMe
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string _email;
+        private string _password;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,12 +28,41 @@ namespace RateMe
         {
             if (WelcomeBackButton.IsChecked != null && WelcomeBackButton.IsChecked == true)
             {
-                MessageBox.Show("Welcome back!");
+                MessageBox.Show($"Welcome back, {_email} : {_password}!");
             }
             else if (WelcomeButton.IsChecked != null && WelcomeButton.IsChecked == true)
             {
                 MessageBox.Show("Welcome!");
             }
         }
+
+        private void emailEntered(object sender, TextChangedEventArgs e)
+        {
+            if (EmailTextBox.Text == string.Empty)
+            {
+                EmailHint.Text = "Email";
+            }
+            else
+            {
+                EmailHint.Text = string.Empty;
+            }
+
+            _email = EmailTextBox.Text;
+        }
+
+        private void passwordEntered(object sender, TextChangedEventArgs e)
+        {
+            if (PasswordTextBox.Text == string.Empty)
+            {
+                PasswordHint.Text = "Password";
+            }
+            else
+            {
+                PasswordHint.Text = string.Empty;
+            }
+
+            _password = PasswordTextBox.Text;
+        }
+
     }
 }
