@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RateMe.DataUtils.InterfaceCollections;
 
 namespace RateMe
 {
@@ -21,12 +22,22 @@ namespace RateMe
     {
         public DataCollection()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+                Curriculums curriculums = new Curriculums();
+                CurriculumsComboBox.ItemsSource = curriculums;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+           
         }
 
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show($"{NameTextBox.Data} {SurameTextBox.Data}");
+            MessageBox.Show($"{NameTextBox.Data} {SurameTextBox.Data} {CurriculumsComboBox.Text}");
             Keyboard.ClearFocus();
         }
 

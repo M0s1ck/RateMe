@@ -10,5 +10,4 @@ namespace RateMe
     public partial class App : Application
     {
     }
-
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,6 +22,7 @@ namespace RateMe
 
         public MainWindow()
         {
+            SetProjectDirectory();
             InitializeComponent();
         }
 
@@ -33,9 +35,19 @@ namespace RateMe
         private void AuthorizationButtonClick(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Welcome back!");
-            DataCollection dataCollectionWin = new();
+            DataCollection dataCollectionWindow = new();
+
+            try
+            {
+                dataCollectionWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
             this.Close();
-            dataCollectionWin.Show();
+            
         }
 
 
@@ -65,6 +77,14 @@ namespace RateMe
             }
 
             _password = PasswordTextBox.Text;
+        }
+
+        private static void SetProjectDirectory()
+        {
+            string defaultPath = Directory.GetCurrentDirectory();
+            string[] defaultPathArr = defaultPath.Split(System.IO.Path.DirectorySeparatorChar);
+            string projectPath = string.Join(System.IO.Path.DirectorySeparatorChar, defaultPathArr[..^3]);
+            Directory.SetCurrentDirectory(projectPath);
         }
 
     }
