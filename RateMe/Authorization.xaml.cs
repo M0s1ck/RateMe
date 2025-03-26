@@ -34,7 +34,6 @@ namespace RateMe
 
         private void AuthorizationButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Welcome back!");
             DataCollection dataCollectionWindow = new();
 
             try

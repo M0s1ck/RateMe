@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RateMe"
         mc:Ignorable="d"
-        Title="Authorization" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Authorization" Height="450" Width="800" WindowStartupLocation="CenterScreen" Background="#10151B">
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -64,9 +64,10 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TextBlock HorizontalAlignment="Center" Margin="0,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Welcome to RateMe App" FontSize="18" FontFamily="Impact"/>
-        <Button Style="{DynamicResource SendButton}" x:Name="SendButton" Content="Send it!" HorizontalAlignment="Center" Margin="0,230,0,0" VerticalAlignment="Top" Height="42" Width="96" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="SendButton_Click"/>
-        <Rectangle Stroke="Black" Margin="238,77,238,139" RenderTransformOrigin="0.498,0.533"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Welcome to RateMe App" FontSize="18" FontFamily="Jockey" Foreground="White"/>
+        <Button Style="{DynamicResource SendButton}" x:Name="SendButton" Content="Send it!" HorizontalAlignment="Center" Margin="0,230,0,0" VerticalAlignment="Top" Foreground="White"
+                Height="42" Width="96" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="SendButton_Click"/>
+            <Rectangle Stroke="Black" Margin="238,77,238,139" RenderTransformOrigin="0.498,0.533"/>
 
         <TextBox Name="EmailTextBox" TextChanged="emailEntered"  HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
              Width="252" Height="37" Foreground="#000000" FontSize="16" TextAlignment="Center" Background="Transparent" RenderTransformOrigin="0.52,-0.444" FontFamily="Bahnschrift"/>
@@ -80,8 +81,8 @@
             Width="252" Height="37" Foreground="#FF5B5B5B" FontSize="16" TextAlignment="Center" Background="#FFAAC5FF" RenderTransformOrigin="0.52,-0.444" Panel.ZIndex="-1"/>
         
         
-        <Button Style="{DynamicResource SendButton}" x:Name="SkipAuButton" Content="Skip authoriztion" HorizontalAlignment="Center" Margin="0,326,0,0" VerticalAlignment="Top"
-                Height="42" Width="200" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="AuthorizationButtonClick"/>
+        <Button Style="{DynamicResource SendButton}" x:Name="SkipAuButton" Content="Skip authoriztion" HorizontalAlignment="Center" Margin="0,326,0,0" VerticalAlignment="Top" Foreground="White"
+                Height="42" Width="200" Background="#FF081642" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="White" Click="AuthorizationButtonClick"/>
 
     </Grid>
 </Window>

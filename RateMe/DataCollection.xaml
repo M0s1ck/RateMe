@@ -9,7 +9,13 @@
         mc:Ignorable="d"
         MouseDown="OnWindowClick"
         Title="DataCollection" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        Background="#10151b">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome />
+    </WindowChrome.WindowChrome>
+
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -41,9 +47,10 @@
             <GradientStop Color="#FFF0F0F0" Offset="0.0"/>
             <GradientStop Color="#FFE5E5E5" Offset="1.0"/>
         </LinearGradientBrush>
+        <SolidColorBrush x:Key="DropdownBackground" Color="#FF04194C"/>
         <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
         <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
-        <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="#FFABADB3"/>
         <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Border" Color="Transparent"/>
@@ -53,7 +60,7 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="ComboBox.MouseOver.Border" Color="#FF7EB4EA"/>
         <SolidColorBrush x:Key="ComboBox.MouseOver.Glyph" Color="#FF000000"/>
-        <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Background" Color="#032169"/>
         <SolidColorBrush x:Key="ComboBox.MouseOver.Editable.Border" Color="#FF7EB4EA"/>
         <LinearGradientBrush x:Key="ComboBox.MouseOver.Editable.Button.Background" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFEBF4FC" Offset="0.0"/>
@@ -64,9 +71,9 @@
             <GradientStop Color="#FFDAECFC" Offset="0.0"/>
             <GradientStop Color="#FFC4E0FC" Offset="1.0"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="#FF569DE5"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="#FF134C86"/>
         <SolidColorBrush x:Key="ComboBox.Pressed.Glyph" Color="#FF000000"/>
-        <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Border" Color="#FF569DE5"/>
         <LinearGradientBrush x:Key="ComboBox.Pressed.Editable.Button.Background" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFDAEBFC" Offset="0.0"/>
@@ -88,7 +95,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="templateRoot" CornerRadius="3" Background="{StaticResource ComboBox.Static.Background}" BorderBrush="{StaticResource ComboBox.Static.Border}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                        <Border x:Name="templateRoot" CornerRadius="3" Background="#FF04194C" BorderBrush="{StaticResource ComboBox.Static.Border}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
                             <Border x:Name="splitBorder" CornerRadius="3" BorderBrush="Transparent" BorderThickness="1" HorizontalAlignment="Right" Margin="0" SnapsToDevicePixels="true" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
                                 <Path x:Name="arrow" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
                             </Border>
@@ -101,7 +108,7 @@
                                     <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
                                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Static.Editable.Background}"/>
+                                <Setter Property="Background" TargetName="templateRoot" Value="Transparent"/>
                                 <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Static.Editable.Border}"/>
                                 <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Background}"/>
                                 <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Border}"/>
@@ -114,7 +121,7 @@
                                     <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
                                     <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
+                                <Setter Property="Background" TargetName="templateRoot" Value="Transparent"/>
                                 <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Border}"/>
                             </MultiDataTrigger>
                             <MultiDataTrigger>
@@ -156,7 +163,7 @@
                                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
                                     <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
+                                <Setter Property="Background" TargetName="templateRoot" Value="Transparent"/>
                                 <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
                             </MultiDataTrigger>
                             <MultiDataTrigger>
@@ -164,7 +171,7 @@
                                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
                                     <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Editable.Background}"/>
+                                <Setter Property="Background" TargetName="templateRoot" Value="#032168"/>
                                 <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Editable.Border}"/>
                                 <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Background}"/>
                                 <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Border}"/>
@@ -182,7 +189,7 @@
                 </Grid.ColumnDefinitions>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                     <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                        <Border x:Name="dropDownBorder" CornerRadius="3" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
+                        <Border x:Name="dropDownBorder" CornerRadius="3" Background="{StaticResource DropdownBackground}"  BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
                             <ScrollViewer x:Name="DropDownScrollViewer">
                                 <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
@@ -234,7 +241,7 @@
                 </Grid.ColumnDefinitions>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                     <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                        <Border x:Name="dropDownBorder" CornerRadius="3" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
+                        <Border x:Name="dropDownBorder" CornerRadius="3" Background="{StaticResource DropdownBackground}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
                             <ScrollViewer x:Name="DropDownScrollViewer">
                                 <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
@@ -272,9 +279,9 @@
         </ControlTemplate>
         <Style x:Key="ComboBoxStyle1" TargetType="{x:Type ComboBox}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-            <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="Foreground" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
@@ -291,20 +298,120 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="FocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="White"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="White"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF1B3F98"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="White"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF0F1D98"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="3" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-        
+
     <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Height="35" VerticalAlignment="Top">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                        <GradientStop Color="#051b50"/>
+                        <GradientStop Color="#00298b" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" Width="150" Height="40" WindowChrome.IsHitTestVisibleInChrome="True"
+                                VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1">
+                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="1.5" Width="12"  Margin="25,0,0,0"/>
+                        <Border Width="12" Height="12" BorderThickness="1.4" BorderBrush="White" Margin="30,0,0,0"/>
+                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="2" Width="14"  Margin="30,0,0,0">
+                            <Rectangle.LayoutTransform>
+                                <RotateTransform Angle="-45"/>
+                            </Rectangle.LayoutTransform>
+                        </Rectangle>
+                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="2" Width="14"  Margin="-11.5,0,0,0">
+                            <Rectangle.LayoutTransform>
+                                <RotateTransform Angle="45"/>
+                            </Rectangle.LayoutTransform>
+                        </Rectangle>
+                        <TextBlock Width="15" Height="15" Text="✖" Foreground="White" HorizontalAlignment="Left" Margin="35,0,0,0" FontWeight="Light"/>
 
-        <TextBlock HorizontalAlignment="Center" Margin="0,-500,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Введите фамилию и имя" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,-460,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(По ним будут браться оценочки из табличек)" FontSize="16" FontFamily="Bahnschrift SemiCondensed"/>
+                    </StackPanel>
+                </DockPanel>
 
-        <UserControls:DataCollectionTextForm x:Name="SurameTextBox" Hint="Фамилия" Width="150" Height="20" HorizontalAlignment="Center" Margin="-400,-380,0,0" VerticalAlignment="Center"/>
-        <UserControls:DataCollectionTextForm x:Name="NameTextBox" Hint="Имя" Width="150" Height="20" HorizontalAlignment="Center" Margin="400,-380,0,0" VerticalAlignment="Center"/>
+            </Border>
+        </DockPanel>
 
-        <TextBlock HorizontalAlignment="Center" Margin="0,-300,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите данные о программе" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed"/>
+        <Grid Margin="0,60,0,0">
+            <TextBlock HorizontalAlignment="Center" Margin="0,-500,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Введите фамилию и имя" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
+            <TextBlock HorizontalAlignment="Center" Margin="0,-460,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(По ним будут браться оценочки из табличек)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
 
-        <ComboBox Style="{DynamicResource ComboBoxStyle1}" x:Name="CurriculumsComboBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-170,0,0" Width="200" Height="23" FontFamily="Bahnschrift" FontSize="11.5"/>
+            <UserControls:DataCollectionTextForm x:Name="SurameTextBox" Hint="Фамилия" Width="150" Height="20" HorizontalAlignment="Center" Margin="-400,-380,0,0" VerticalAlignment="Center"/>
+            <UserControls:DataCollectionTextForm x:Name="NameTextBox" Hint="Имя" Width="150" Height="20" HorizontalAlignment="Center" Margin="400,-380,0,0" VerticalAlignment="Center"/>
+
+            <TextBlock HorizontalAlignment="Center" Margin="0,-250,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите данные о программе" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
+            <TextBlock HorizontalAlignment="Center" Margin="0,-205,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(Некоторые формулы будут автоматически подгружены)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+
+            <TextBlock HorizontalAlignment="Center" Margin="-650,-120,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Курс:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <ComboBox x:Name="CourseComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="-650,-60,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
+
+            <TextBlock HorizontalAlignment="Center" Margin="0,-120,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Образовательная программа:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <ComboBox x:Name="CurriculumsComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="0,-60,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
+
+            <TextBlock HorizontalAlignment="Center" Margin="650,-120,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Номер группы:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <ComboBox x:Name="GroupComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="650,-60,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
+
+            <TextBlock HorizontalAlignment="Center" Margin="0,40,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Семестр:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <ComboBox x:Name="TermComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="0,100,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
 
 
+            <Button Style="{DynamicResource ButtonStyle1}" x:Name="ContinueButton" Click="OnContinueClick" HorizontalAlignment="Center" Margin="0,320,0,0" Content="Продолжить" VerticalAlignment="Center" FontSize="16" FontFamily="Bahnschrift SemiCondensed"
+                Height="40" Width="120" Foreground="White" Background="#032169"/>
+        </Grid>
     </Grid>
 </Window>

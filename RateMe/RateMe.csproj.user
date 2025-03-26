@@ -10,6 +10,9 @@
     <Compile Update="DataCollection.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Subjects.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\UserControls\DataCollectionTextForm.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -19,6 +22,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="DataCollection.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Subjects.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\DataCollectionTextForm.xaml">

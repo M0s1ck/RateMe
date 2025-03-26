@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="150">
     <Grid>
-        <TextBox x:Name="DataCollectionTextBox" TextChanged="OnDataCollectionInput" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="150" Height="20" FontSize="15" TextAlignment="Center" Background="Transparent" FontFamily="Bahnschrift SemiCondensed" BorderThickness="1.2" BorderBrush="Black">
+        <TextBox x:Name="DataCollectionTextBox" TextChanged="OnDataCollectionInput" HorizontalAlignment="Center" VerticalAlignment="Center" CaretBrush="#FFCACACA" Foreground="White"
+        Width="150" Height="20" FontSize="15" TextAlignment="Center" Background="Transparent" FontFamily="Bahnschrift SemiCondensed" BorderThickness="1.2" BorderBrush="#FFCACACA">
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="3"/>
