@@ -387,7 +387,7 @@
             </Border>
         </DockPanel>
 
-        <Grid Margin="0,60,0,0">
+        <Grid x:Name="MainGrid" Margin="0,60,0,0">
             <TextBlock HorizontalAlignment="Center" Margin="0,-500,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Введите фамилию и имя" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
             <TextBlock HorizontalAlignment="Center" Margin="0,-460,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(По ним будут браться оценочки из табличек)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
 
@@ -410,8 +410,12 @@
             <ComboBox x:Name="TermComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="0,100,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
 
 
-            <Button Style="{DynamicResource ButtonStyle1}" x:Name="ContinueButton" Click="OnContinueClick" HorizontalAlignment="Center" Margin="0,320,0,0" Content="Продолжить" VerticalAlignment="Center" FontSize="16" FontFamily="Bahnschrift SemiCondensed"
+            <Button Style="{DynamicResource ButtonStyle1}" x:Name="ContinueButton" Click="OnContinueClick" HorizontalAlignment="Center" Margin="0,300,0,0" Content="Продолжить" VerticalAlignment="Center" FontSize="16" FontFamily="Bahnschrift SemiCondensed"
                 Height="40" Width="120" Foreground="White" Background="#032169"/>
+
+            <TextBlock x:Name="WaitTextBlock" HorizontalAlignment="Center" Margin="0,400,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Подождите..." Visibility="Hidden" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,430,0,0">
+            </Canvas>
         </Grid>
     </Grid>
 </Window>
