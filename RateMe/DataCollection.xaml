@@ -311,11 +311,11 @@
         <SolidColorBrush x:Key="Button.Static.Border" Color="White"/>
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF1B3F98"/>
         <SolidColorBrush x:Key="Button.MouseOver.Border" Color="White"/>
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF0F1D98"/>
-        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF0A1367"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FFDAD8D8"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FF050A3A"/>
         <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="White"/>
         <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
             <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
@@ -414,7 +414,7 @@
                 Height="40" Width="120" Foreground="White" Background="#032169"/>
 
             <TextBlock x:Name="WaitTextBlock" HorizontalAlignment="Center" Margin="0,400,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Подождите..." Visibility="Hidden" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
-            <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,430,0,0">
+            <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,410,0,0">
             </Canvas>
         </Grid>
     </Grid>
