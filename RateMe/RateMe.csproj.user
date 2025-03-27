@@ -7,10 +7,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="DataCollection.xaml.cs">
+    <Compile Update="View\Windows\DataCollection.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Subjects.xaml.cs">
+    <Compile Update="View\Windows\Subjects.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UserControls\DataCollectionTextForm.xaml.cs">
@@ -18,13 +18,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Authorization.xaml">
+    <Page Update="View\Windows\Authorization.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="DataCollection.xaml">
+    <Page Update="View\Windows\DataCollection.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Subjects.xaml">
+    <Page Update="View\Windows\Subjects.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\DataCollectionTextForm.xaml">

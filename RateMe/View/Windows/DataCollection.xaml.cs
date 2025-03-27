@@ -13,8 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using RateMe.DataUtils;
 using RateMe.DataUtils.InterfaceCollections;
+using RateMe.DataUtils.Models;
+using RateMe.Parser;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RateMe
@@ -70,14 +71,14 @@ namespace RateMe
         }
 
 
-        private void OnContinueClick(object sender, RoutedEventArgs e)
+        private async void OnContinueClick(object sender, RoutedEventArgs e)
         {
             // Loading ("wait") starts
             WaitTextBlock.Visibility = Visibility.Visible;
             LaunchLoadingBalls();
             ContinueButton.IsEnabled = false;
 
-
+            // Collected data building up
             int groupNumber = int.Parse(GroupComboBox.SelectedItem.ToString() ?? "");
             Student student = new Student(SurameTextBox.Data, NameTextBox.Data, groupNumber);
 
@@ -86,6 +87,13 @@ namespace RateMe
             int term = int.Parse(TermComboBox.SelectedItem.ToString() ?? "");
 
             SyllabusModel syllabus = new SyllabusModel(student, curriculum, course, term);
+
+
+            MainParser mainParser = new MainParser(syllabus);
+            await mainParser.GetCurriculumAsync();
+            await mainParser.GetSubjectsUrlsAsync();
+
+
         }
 
         private void LaunchLoadingBalls()

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RateMe.DataUtils
+namespace RateMe.DataUtils.Models
 {
     public class Student
     {
