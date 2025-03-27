@@ -34,7 +34,7 @@ namespace RateMe
 
         private static readonly PathGeometry LoadingBallsLoadingAnimationPath = GetLoadingBallsLoadingAnimationPathInfinity();
         private static readonly Tuple<double, double> LoadingBallsStartingCords = new(-35.0, 20.0);
-        private static readonly int BallsCount = 6;
+        private static readonly int BallsCount = 20;
         private static readonly int BallRadius = 5;
 
 
@@ -90,7 +90,7 @@ namespace RateMe
 
         private void LaunchLoadingBalls()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < BallsCount; i++)
             {
                 LaunchBall(i);
             }
@@ -143,19 +143,19 @@ namespace RateMe
             pFigure.StartPoint = new Point(-35, 20);
 
             PolyBezierSegment lowerBezierSegment = new PolyBezierSegment();
-            lowerBezierSegment.Points.Add(new Point(-20, 5));
+            lowerBezierSegment.Points.Add(new Point(-20, 2));
             lowerBezierSegment.Points.Add(new Point(-4, 10));            
             lowerBezierSegment.Points.Add(new Point(0, 20));
             lowerBezierSegment.Points.Add(new Point(4, 30));
-            lowerBezierSegment.Points.Add(new Point(20, 35));
+            lowerBezierSegment.Points.Add(new Point(20, 38));
             lowerBezierSegment.Points.Add(new Point(35, 20));
 
             PolyBezierSegment upperBezierSegment = new PolyBezierSegment();
-            lowerBezierSegment.Points.Add(new Point(20, 5));
+            lowerBezierSegment.Points.Add(new Point(20, 2));
             lowerBezierSegment.Points.Add(new Point(4, 10));
             lowerBezierSegment.Points.Add(new Point(0, 20));
             lowerBezierSegment.Points.Add(new Point(-4, 30));
-            lowerBezierSegment.Points.Add(new Point(-20, 35));
+            lowerBezierSegment.Points.Add(new Point(-20, 38));
             lowerBezierSegment.Points.Add(new Point(-35, 20));
 
             ArcSegment rlArcSegment = new ArcSegment(new Point(35, 20), new Size(15, 13), Math.PI * 0.45, false, SweepDirection.Counterclockwise, false);

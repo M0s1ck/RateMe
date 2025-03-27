@@ -414,7 +414,7 @@
                 Height="40" Width="120" Foreground="White" Background="#032169"/>
 
             <TextBlock x:Name="WaitTextBlock" HorizontalAlignment="Center" Margin="0,400,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Подождите..." Visibility="Hidden" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
-            <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,410,0,0">
+            <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="60,400,0,0">
             </Canvas>
         </Grid>
     </Grid>
