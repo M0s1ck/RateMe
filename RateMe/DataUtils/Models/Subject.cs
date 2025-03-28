@@ -8,10 +8,10 @@ namespace RateMe.DataUtils.Models
 {
     internal class Subject
     {
-        internal string Name;
-        internal int Credits;
+        internal string Name { get; }
+        internal int Credits { get; }
 
-        internal Subject(string name, /* formule, */ int credits)
+        internal Subject(string name, int credits, Dictionary<string,string> assFormulas)
         {
             Name = name;
             Credits = credits;

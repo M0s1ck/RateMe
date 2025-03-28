@@ -31,7 +31,7 @@ namespace RateMe
         private static readonly int NumberOfGroups = 10;
         private static readonly IEnumerable<string> CourseNumbers = Enumerable.Range(1, NumberOfCourses).Select(i => i.ToString());
         private static readonly IEnumerable<string> GroupNumbers = Enumerable.Range(1, NumberOfGroups).Select(i => i.ToString());
-        private static readonly string[] Terms = ["1", "2"];
+        private static readonly string[] Terms = ["1", "2", "3", "4"];
 
         private static readonly PathGeometry LoadingBallsLoadingAnimationPath = GetLoadingBallsLoadingAnimationPathInfinity();
         private static readonly Tuple<double, double> LoadingBallsStartingCords = new(-35.0, 20.0);
@@ -91,9 +91,10 @@ namespace RateMe
 
             MainParser mainParser = new MainParser(syllabus);
             await mainParser.GetCurriculumAsync();
-            await mainParser.GetSubjectsUrlsAsync();
+            await mainParser.GetSubjectsUrlsAltAsync();
+            await mainParser.GetSubjectsDataAsync();
 
-
+            Close();
         }
 
         private void LaunchLoadingBalls()

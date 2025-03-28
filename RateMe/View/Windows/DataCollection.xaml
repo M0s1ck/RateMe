@@ -406,7 +406,7 @@
             <TextBlock HorizontalAlignment="Center" Margin="650,-120,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Номер группы:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
             <ComboBox x:Name="GroupComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="650,-60,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
 
-            <TextBlock HorizontalAlignment="Center" Margin="0,40,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Семестр:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            <TextBlock HorizontalAlignment="Center" Margin="0,40,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Текущий модуль:" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
             <ComboBox x:Name="TermComboBox" Style="{DynamicResource ComboBoxStyle1}" Margin="0,100,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="50" Height="23" FontFamily="Bahnschrift SemiCondensed" FontSize="14" Foreground="#FFF3F3F3"/>
 
 
