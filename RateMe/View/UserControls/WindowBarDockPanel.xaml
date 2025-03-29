@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="RateMe.View.UserControls.WindowBarDockPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RateMe.View.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="35" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="WidowBarPanelStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Height="35" VerticalAlignment="Top">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                        <GradientStop Color="#051b50"/>
+                        <GradientStop Color="#00298b" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <DockPanel>
+                    
+                    <DockPanel HorizontalAlignment="Left">
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Margin="10,2,0,0" VerticalAlignment="Center" Text="RateMe App" FontSize="13" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+                    </DockPanel>
+                    
+                    <DockPanel Width="150" Height="35" WindowChrome.IsHitTestVisibleInChrome="True"
+                        VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1">
+
+                        <Button Style="{DynamicResource WidowBarPanelStyle}" x:Name="closeButton" Click="OnCloseButtonClick" MouseEnter="OnButtonEnter" MouseLeave="OnButtonLeave"
+                                Content="✖"  HorizontalAlignment="Right" Foreground="White" Background="Transparent" Width="45" FontWeight="Light" Margin="0,0,0,0" BorderBrush="Transparent"
+                                DockPanel.Dock="Right"/>
+
+                        <Button Style="{DynamicResource WidowBarPanelStyle}" x:Name="expandButton" Click="OnExpandButtonClick" MouseEnter="OnButtonEnter" MouseLeave="OnButtonLeave"
+                            Content="◻"  HorizontalAlignment="Right" Foreground="White" Background="Transparent" Width="45" Margin="0,0,0,0" BorderBrush="Transparent" FontSize="21"
+                            DockPanel.Dock="Right"/>
+
+                        <Button Style="{DynamicResource WidowBarPanelStyle}" x:Name="wrapButton" Click="OnWrapButtonClick" MouseEnter="OnButtonEnter" MouseLeave="OnButtonLeave"
+                            Content="-"  HorizontalAlignment="Right" Foreground="White" Background="Transparent" Width="45" Padding="0,-10,0,0" Margin="0,0,0,0" BorderBrush="Transparent" FontSize="35"
+                            DockPanel.Dock="Right" FontWeight="Light"/>
+
+                    </DockPanel>
+                    
+                </DockPanel>
+
+                
+            </Border>
+        </DockPanel>
+    </Grid>
+</UserControl>

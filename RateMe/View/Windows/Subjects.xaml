@@ -5,8 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RateMe"
         mc:Ignorable="d"
-        Title="Subjects" Height="450" Width="800">
-    <Grid>
         
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        Title="DataCollection" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
+        Background="#10151b">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="WindowGrid">
+        <Grid></Grid>
     </Grid>
 </Window>

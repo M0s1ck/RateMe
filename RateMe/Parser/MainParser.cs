@@ -14,6 +14,8 @@ namespace RateMe.Parser
 {
     internal class MainParser
     {
+        internal List<Subject> Subjects { get; private set; } = [];
+
         private readonly SyllabusModel Syllabus;
 
         private string _curriculumNameShortened;
@@ -115,6 +117,8 @@ namespace RateMe.Parser
 
         internal async Task GetSubjectsDataAsync()
         {
+            List<Subject> subjects = [];
+
             foreach(string subjectUrl in _subjectsUrls)
             {
                 using HttpResponseMessage response = await _httpClient.GetAsync(subjectUrl);
@@ -139,7 +143,12 @@ namespace RateMe.Parser
                 Dictionary<string, string> assesementFormulas = GetAssesmentFormulas(rootDocNode);
 
                 int[] modules = GetSubjectsModules(rootDocNode);
+
+                Subject sub = new Subject(subjName, credits, modules, assesementFormulas);
+                subjects.Add(sub);
             }
+
+            Subjects = subjects;
         }
 
 

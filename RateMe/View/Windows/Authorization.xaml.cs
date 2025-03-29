@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using RateMe.View.UserControls;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,9 @@ namespace RateMe
         {
             SetProjectDirectory();
             InitializeComponent();
+
+            WindowBarDockPanel bar = new(this);
+            WindowGrid.Children.Add(bar);
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -35,10 +39,12 @@ namespace RateMe
         private void AuthorizationButtonClick(object sender, RoutedEventArgs e)
         {
             DataCollection dataCollectionWindow = new();
+            Subjects subjects = new Subjects();
 
             try
             {
                 dataCollectionWindow.Show();
+                subjects.Show();
             }
             catch (Exception ex)
             {

@@ -12,10 +12,6 @@
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
         Background="#10151b">
 
-    <WindowChrome.WindowChrome>
-        <WindowChrome />
-    </WindowChrome.WindowChrome>
-
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -355,37 +351,11 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <DockPanel>
-            <Border DockPanel.Dock="Top" Height="35" VerticalAlignment="Top">
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                        <GradientStop Color="#051b50"/>
-                        <GradientStop Color="#00298b" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Width="150" Height="40" WindowChrome.IsHitTestVisibleInChrome="True"
-                                VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1">
-                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="1.5" Width="12"  Margin="25,0,0,0"/>
-                        <Border Width="12" Height="12" BorderThickness="1.4" BorderBrush="White" Margin="30,0,0,0"/>
-                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="2" Width="14"  Margin="30,0,0,0">
-                            <Rectangle.LayoutTransform>
-                                <RotateTransform Angle="-45"/>
-                            </Rectangle.LayoutTransform>
-                        </Rectangle>
-                        <Rectangle HorizontalAlignment="Left" Fill="White" Height="2" Width="14"  Margin="-11.5,0,0,0">
-                            <Rectangle.LayoutTransform>
-                                <RotateTransform Angle="45"/>
-                            </Rectangle.LayoutTransform>
-                        </Rectangle>
-                        <TextBlock Width="15" Height="15" Text="✖" Foreground="White" HorizontalAlignment="Left" Margin="35,0,0,0" FontWeight="Light"/>
+    <WindowChrome.WindowChrome>
+        <WindowChrome />
+    </WindowChrome.WindowChrome>
 
-                    </StackPanel>
-                </DockPanel>
-
-            </Border>
-        </DockPanel>
+    <Grid x:Name="WindowGrid">
 
         <Grid x:Name="MainGrid" Margin="0,60,0,0">
             <TextBlock HorizontalAlignment="Center" Margin="0,-500,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Введите фамилию и имя" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>

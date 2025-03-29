@@ -10,13 +10,17 @@ namespace RateMe.DataUtils.Models
     {
         internal string Name { get; }
         internal int Credits { get; }
+        internal int[] Modules { get; }
 
-        internal Subject(string name, int credits, Dictionary<string,string> assFormulas)
+        private Dictionary<string, string> _assFormulas;
+
+        internal Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
         {
             Name = name;
             Credits = credits;
+            Modules = modules;
+            _assFormulas = assFormulas;
         }
-
 
     }
 }

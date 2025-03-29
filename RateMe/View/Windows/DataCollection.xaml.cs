@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using RateMe.DataUtils.InterfaceCollections;
 using RateMe.DataUtils.Models;
 using RateMe.Parser;
-using static System.Net.Mime.MediaTypeNames;
+using RateMe.View.UserControls;
 
 namespace RateMe
 {
@@ -57,17 +57,15 @@ namespace RateMe
 
                 TermComboBox.ItemsSource = Terms;
                 TermComboBox.SelectedItem = Terms.Last();
+
+                WindowBarDockPanel bar = new(this);
+                WindowGrid.Children.Add(bar);
+
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
-           
-        }
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
         }
 
 
@@ -88,7 +86,7 @@ namespace RateMe
 
             SyllabusModel syllabus = new SyllabusModel(student, curriculum, course, term);
 
-
+            // Parsing (Web-sc..)
             MainParser mainParser = new MainParser(syllabus);
             await mainParser.GetCurriculumAsync();
             await mainParser.GetSubjectsUrlsAltAsync();
@@ -96,6 +94,19 @@ namespace RateMe
 
             Close();
         }
+
+
+        private void OnWindowClick(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+        }
+
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
 
         private void LaunchLoadingBalls()
         {
@@ -166,9 +177,6 @@ namespace RateMe
             lowerBezierSegment.Points.Add(new Point(-4, 30));
             lowerBezierSegment.Points.Add(new Point(-20, 38));
             lowerBezierSegment.Points.Add(new Point(-35, 20));
-
-            ArcSegment rlArcSegment = new ArcSegment(new Point(35, 20), new Size(15, 13), Math.PI * 0.45, false, SweepDirection.Counterclockwise, false);
-            ArcSegment ruArcSegment = new ArcSegment(new Point(20, 5), new Size(15, 13), Math.PI * 0.45, false, SweepDirection.Counterclockwise, false);
 
             pFigure.Segments.Add(lowerBezierSegment);
             pFigure.Segments.Add(upperBezierSegment);

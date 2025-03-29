@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RateMe.View.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,9 @@ namespace RateMe
         public Subjects()
         {
             InitializeComponent();
+            WindowBarDockPanel bar = new(this);
+
+            WindowGrid.Children.Add(bar);
         }
     }
 }
