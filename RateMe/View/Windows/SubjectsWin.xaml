@@ -43,6 +43,12 @@
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Visibility}" Value="Collapsed">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Visibility}" Value="Visible">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsMouseOver" Value="True"/>
@@ -70,6 +76,22 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="SelectionHintCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
+
+            <Setter Property="CheckBox.LayoutTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -77,30 +99,42 @@
     </WindowChrome.WindowChrome>
 
     <Grid x:Name="WindowGrid">
-        
-        <Grid x:Name="MainGrid" Margin="0,60,0,0">
+
+        <Grid x:Name="MainGrid" Margin="0,60,0,0" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="80" />
-                <RowDefinition />
+                <RowDefinition Height="370"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             
             <Grid Grid.Row="0" >
+                
                 <StackPanel Margin="30,0,0,0" HorizontalAlignment="Left">
                     <TextBlock HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите интересующие предметы" FontSize="23" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
                     <TextBlock HorizontalAlignment="Center" Margin="-40,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(Те что с галочкой будут включены)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
                 </StackPanel>
-                <Rectangle HorizontalAlignment="Center" Width="950" Height="3" Fill="White" Margin="0,50,0,0"/>
+                
+                <StackPanel Margin="0,0,20,0" HorizontalAlignment="Right">
+
+                    <CheckBox x:Name="thisModuleOnly" Content="{Binding Content}" Style="{DynamicResource SelectionHintCheckBox}" Checked="OnThisModuleOnlyChecked" Unchecked="OnThisModuleOnlyUnchecked"/>
+                    <CheckBox x:Name="removeNis" Content="Скрыть нисы" Style="{DynamicResource SelectionHintCheckBox}" Checked="OnRemoveNisChecked" Unchecked="OnRemoveNisUnchecked"/>
+                    <CheckBox x:Name="clearChoice" Content="Очистить выбор / Выбрать все" Style="{DynamicResource SelectionHintCheckBox}" Checked="OnclearChoicesChecked" Unchecked="OnclearChoicesUnchecked"/>
+
+                </StackPanel>
+                
+                <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="950" Height="3" Background="White" CornerRadius="1.5" Margin="0,-3,0,0"/>
             </Grid>
 
-            <ListBox Name="subjOptions" Grid.Row="1" VerticalAlignment="Top" SelectionMode="Single" Margin="40,0,0,0" Background="Transparent" Foreground="White" BorderBrush="Transparent"
-                     FontSize="20" FontFamily="Bahnschrift SemiCondensed" ItemContainerStyle="{DynamicResource ListBoxItemSubjectStyle}">
+            <ListBox Name="subjOptions" Grid.Row="1" VerticalAlignment="Top" SelectionMode="Single" Margin="40,0,0,0" Background="Transparent" Foreground="White" Width="960"
+                     BorderBrush="Transparent" FontSize="20" FontFamily="Bahnschrift SemiCondensed" ItemContainerStyle="{DynamicResource ListBoxItemSubjectStyle}">
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
 
-                            <CheckBox Content="{Binding Content}" Foreground="{Binding Foreground}"  HorizontalContentAlignment="{Binding HorizontalContentAlignment}"
-                                      VerticalContentAlignment="{Binding VerticalContentAlignment}" FontSize="{Binding FontSize}" FontFamily="{Binding FontFamily}" IsChecked="True">
+                            <CheckBox Content="{Binding Content}" Foreground="{Binding Foreground}"  HorizontalContentAlignment="{Binding HorizontalContentAlignment}" Width="760" 
+                                      VerticalContentAlignment="{Binding VerticalContentAlignment}" FontSize="{Binding FontSize}" FontFamily="{Binding FontFamily}"
+                                      IsChecked="True" Checked="OnSubjBoxChecked" Unchecked="OnSubjBoxUnchecked">
 
                                 <CheckBox.LayoutTransform>
                                     <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
@@ -112,7 +146,20 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
+
             </ListBox>
+
+            <Grid Grid.Row="2" HorizontalAlignment="Center">
+                <Border HorizontalAlignment="Center" VerticalAlignment="Top" Width="950" Height="3" Background="White" CornerRadius="1.5" Margin="0,0,0,0"/>
+                
+                <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" x:Name="ContinueButton" Click="OnContinueClick" HorizontalAlignment="Center"
+                        Content="Продолжить" VerticalAlignment="Center" FontSize="16"
+                        FontFamily="Bahnschrift SemiCondensed" Height="40" Width="120" Foreground="White" Background="#032169"/>
+
+                <TextBlock x:Name="selectedCountTextBlock" HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Text}"
+                           FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+            </Grid>
+            
         </Grid>
     </Grid>
 </Window>

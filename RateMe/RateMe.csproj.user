@@ -21,6 +21,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\StylesDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\UserControls\WindowBarDockPanel.xaml">
       <SubType>Designer</SubType>
     </Page>

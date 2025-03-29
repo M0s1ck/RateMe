@@ -11,6 +11,8 @@ namespace RateMe.DataUtils.Models
         internal string Name { get; }
         internal int Credits { get; }
         internal int[] Modules { get; }
+        internal bool IsNis { get; }
+
 
         private Dictionary<string, string> _assFormulas;
 
@@ -20,6 +22,7 @@ namespace RateMe.DataUtils.Models
             Credits = credits;
             Modules = modules;
             _assFormulas = assFormulas;
+            IsNis = Name.ToLower().Contains("научно-исследовательский семинар");
         }
 
         public override string ToString()

@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:RateMe"
              StartupUri="View/Windows/Authorization.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="View/StylesDictionary.xaml" />
     </Application.Resources>
 </Application>
