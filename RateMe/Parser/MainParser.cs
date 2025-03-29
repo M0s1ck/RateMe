@@ -115,7 +115,7 @@ namespace RateMe.Parser
         }
 
 
-        internal async Task GetSubjectsDataAsync()
+        internal async Task<List<Subject>> GetSubjectsDataAsync()
         {
             List<Subject> subjects = [];
 
@@ -149,6 +149,8 @@ namespace RateMe.Parser
             }
 
             Subjects = subjects;
+
+            return Subjects;
         }
 
 

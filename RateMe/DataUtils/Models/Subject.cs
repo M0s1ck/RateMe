@@ -22,5 +22,9 @@ namespace RateMe.DataUtils.Models
             _assFormulas = assFormulas;
         }
 
+        public override string ToString()
+        {
+            return $"{Name} Модули: {string.Join(' ', Modules)}";
+        }
     }
 }

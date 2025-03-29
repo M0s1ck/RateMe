@@ -26,6 +26,19 @@ namespace RateMe
             SetProjectDirectory();
             InitializeComponent();
 
+            DataCollection dataCollectionWindow = new();
+
+            try
+            {
+                dataCollectionWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+            this.Close();
+
             WindowBarDockPanel bar = new(this);
             WindowGrid.Children.Add(bar);
         }
@@ -39,12 +52,10 @@ namespace RateMe
         private void AuthorizationButtonClick(object sender, RoutedEventArgs e)
         {
             DataCollection dataCollectionWindow = new();
-            Subjects subjects = new Subjects();
 
             try
             {
                 dataCollectionWindow.Show();
-                subjects.Show();
             }
             catch (Exception ex)
             {

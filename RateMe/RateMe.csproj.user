@@ -13,7 +13,7 @@
     <Compile Update="View\Windows\DataCollection.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\Windows\Subjects.xaml.cs">
+    <Compile Update="View\Windows\SubjectsWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UserControls\DataCollectionTextForm.xaml.cs">
@@ -30,7 +30,7 @@
     <Page Update="View\Windows\DataCollection.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\Windows\Subjects.xaml">
+    <Page Update="View\Windows\SubjectsWin.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\DataCollectionTextForm.xaml">

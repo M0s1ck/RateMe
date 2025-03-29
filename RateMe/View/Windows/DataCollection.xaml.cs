@@ -66,6 +66,9 @@ namespace RateMe
             {
                 MessageBox.Show(e.ToString());
             }
+
+
+
         }
 
 
@@ -86,13 +89,20 @@ namespace RateMe
 
             SyllabusModel syllabus = new SyllabusModel(student, curriculum, course, term);
 
-            // Parsing (Web-sc..)
+            // Parsing(Web - sc..)
             MainParser mainParser = new MainParser(syllabus);
             await mainParser.GetCurriculumAsync();
             await mainParser.GetSubjectsUrlsAltAsync();
-            await mainParser.GetSubjectsDataAsync();
+            List<Subject> subjects = await mainParser.GetSubjectsDataAsync();
+
+            //List<Subject> subs = [new Subject("Алгебра", 9, [1, 2, 3, 4], []), new Subject("Матан", 9, [1, 2, 3, 4], []), new Subject("Экономика", 3, [3, 4], [])];
+
+            SubjectsWin subjectsWin= new(syllabus, subjects);
+            subjectsWin.Show();
 
             Close();
+
+
         }
 
 
