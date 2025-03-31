@@ -125,16 +125,16 @@
                 <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="950" Height="3" Background="White" CornerRadius="1.5" Margin="0,-3,0,0"/>
             </Grid>
 
-            <ListBox Name="subjOptions" Grid.Row="1" VerticalAlignment="Top" SelectionMode="Single" Margin="40,0,0,0" Background="Transparent" Foreground="White" Width="960"
+            <ListBox Name="subjOptions" ItemsSource="{Binding SubjectsObs}" Grid.Row="1" VerticalAlignment="Top" SelectionMode="Single" Margin="40,0,0,0" Background="Transparent" Foreground="White" Width="960"
                      BorderBrush="Transparent" FontSize="20" FontFamily="Bahnschrift SemiCondensed" ItemContainerStyle="{DynamicResource ListBoxItemSubjectStyle}">
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
 
-                            <CheckBox Content="{Binding Content}" Foreground="{Binding Foreground}"  HorizontalContentAlignment="{Binding HorizontalContentAlignment}" Width="760" 
-                                      VerticalContentAlignment="{Binding VerticalContentAlignment}" FontSize="{Binding FontSize}" FontFamily="{Binding FontFamily}"
-                                      IsChecked="True" Checked="OnSubjBoxChecked" Unchecked="OnSubjBoxUnchecked">
+                            <CheckBox Content="{Binding Name}" Foreground="White"  HorizontalContentAlignment="Left" Width="760" 
+                                      VerticalContentAlignment="Top" FontSize="12.5" FontFamily="Bahnschrift SemiCondensed"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay}" Checked="OnSubjBoxChecked" Unchecked="OnSubjBoxUnchecked">
 
                                 <CheckBox.LayoutTransform>
                                     <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>

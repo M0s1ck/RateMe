@@ -1,5 +1,6 @@
 ﻿using RateMe.DataUtils.Models;
 using RateMe.View.UserControls;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,10 +14,13 @@ namespace RateMe
     /// </summary>
     public partial class SubjectsWin : Window
     {
+        // private?
+        internal ObservableCollection<Subject> SubjectsObs { get; private set; } = [];
+
         private List<Subject> _selectedSubjects;
         private bool _isThisModule = false;
         private bool _displayNis = true;
-        private int _currentSubjCount;
+        private int _selectedSubjCount;
 
         private readonly SyllabusModel Syllabus;
         private readonly Dictionary<string, Subject> SubjectsByNames = [];
@@ -28,6 +32,8 @@ namespace RateMe
             WindowBarDockPanel bar = new(this);
             WindowGrid.Children.Add(bar);
 
+            this.DataContext = this.SubjectsObs;
+
             _selectedSubjects = subjects;
             Syllabus = syllabus;
             int cnt = 1;
@@ -37,28 +43,25 @@ namespace RateMe
                 // Creating subject checkbox
                 CheckBox subjOption = new CheckBox();
                 subjOption.Name = $"subjCheckBox{cnt}";
-                subjOption.Content = subject.Name;
-                subjOption.Foreground = Brushes.White;
-                subjOption.HorizontalContentAlignment = HorizontalAlignment.Left;
-                subjOption.VerticalContentAlignment = VerticalAlignment.Top;
-                subjOption.FontSize = 12.5;
-                subjOption.FontFamily = new FontFamily("Bahnschrift SemiCondensed");
-                subjOption.IsChecked = true;
 
                 ScaleTransform scale = new ScaleTransform(1.5, 1.5);
                 subjOption.RenderTransformOrigin = new Point(0.5, 0.5); // 1 / 1.5 ?
                 subjOption.RenderTransform = scale;
 
-                subjOptions.Items.Add(subjOption);
+                //subjOptions.Items.Add(subjOption);
+                SubjectsObs.Add(subject);
 
-                SubjCheckBoxesByNames[subject.Name] = (CheckBox)subjOptions.Items[cnt - 1];
                 cnt++;
 
                 SubjectsByNames[subject.Name] = subject;
+
+                
             }
 
-            _currentSubjCount = subjects.Count;
-            selectedCountTextBlock.Text = $"Выбрано предметов: {_currentSubjCount}";
+            subjOptions.ItemsSource = SubjectsObs;
+
+            _selectedSubjCount = subjects.Count;
+            selectedCountTextBlock.Text = $"Выбрано предметов: {_selectedSubjCount}";
             thisModuleOnly.Content = $"Только указанный модуль ({Syllabus.Module})";
         }
 
@@ -67,6 +70,7 @@ namespace RateMe
         {
             Keyboard.ClearFocus();
         }
+
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
@@ -91,32 +95,14 @@ namespace RateMe
 
         private void OnSubjBoxChecked(object sender, RoutedEventArgs e)
         {
-            CheckBox box = (CheckBox)sender;
-            string name = (string)box.Content;
-            Subject subject = SubjectsByNames[name];
-            _selectedSubjects.Add(subject);
-
-            _currentSubjCount++;
+            _selectedSubjCount++;
             UpdateCurrentCountText();
         }
 
 
         private void OnSubjBoxUnchecked(object sender, RoutedEventArgs e)
         {
-            CheckBox box = (CheckBox)sender;
-            string name = (string)box.Content;
-            Subject subject = SubjectsByNames[name];
-            _selectedSubjects.Remove(subject);
-
-            foreach (CheckBox realBox in subjOptions.Items)
-            {
-                if ((string)realBox.Content == name)
-                {
-                    realBox.IsChecked = false;
-                }
-            }
-
-                _currentSubjCount--;
+            _selectedSubjCount--;
             UpdateCurrentCountText();
         }
 
@@ -129,9 +115,9 @@ namespace RateMe
 
                 if (!subject.Modules.Contains(Syllabus.Module))
                 {
-                    _selectedSubjects.Remove(subject);
-                    box.IsChecked = false;
+                    subject.IsSelected = false;
                     box.Visibility = Visibility.Collapsed;
+                    _selectedSubjCount--;
                 }
             }
 
@@ -188,7 +174,7 @@ namespace RateMe
                 {
                     subjBox.IsChecked = false;
                     subjBox.Visibility = Visibility.Collapsed;
-                    _currentSubjCount--;
+                    _selectedSubjCount--;
                 }
             }
 
@@ -205,28 +191,28 @@ namespace RateMe
 
         private void OnclearChoicesChecked(object sender, RoutedEventArgs e)
         {
-            foreach (ListBoxItem item in subjOptions.Items)
+            foreach (Subject subject in SubjectsObs)
             {
-                CheckBox box = (CheckBox)item.Content;
-                box.IsChecked = false;
+                subject.IsSelected = false;
             }
 
-            subjOptions.UpdateLayout();
-
-            MainGrid.UpdateLayout();
-            UpdateLayout();
-
-            _selectedSubjects.Clear();
+            _selectedSubjCount = 0;
             UpdateCurrentCountText();
         }
 
 
         private void OnclearChoicesUnchecked(object sender, RoutedEventArgs e)
         {
+            foreach (Subject subject in SubjectsObs)
+            {
+                subject.IsSelected = true;
+            }
 
+            _selectedSubjCount = SubjectsByNames.Count;
+            UpdateCurrentCountText();
         }
 
 
-        private void UpdateCurrentCountText() => selectedCountTextBlock.Text = $"Выбрано предметов: {_selectedSubjects.Count}";
+        private void UpdateCurrentCountText() => selectedCountTextBlock.Text = $"Выбрано предметов: {_selectedSubjCount}";
     }
 }
