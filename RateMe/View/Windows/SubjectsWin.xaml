@@ -110,8 +110,8 @@
             <Grid Grid.Row="0" >
                 
                 <StackPanel Margin="30,0,0,0" HorizontalAlignment="Left">
-                    <TextBlock HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите интересующие предметы" FontSize="23" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
-                    <TextBlock HorizontalAlignment="Center" Margin="-40,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(Те что с галочкой будут включены)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите интересующие предметы" FontSize="23" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(Те что с галочкой войдут в отслеживаемые предметы)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
                 </StackPanel>
                 
                 <StackPanel Margin="0,0,20,0" HorizontalAlignment="Right">
@@ -134,7 +134,7 @@
 
                             <CheckBox Content="{Binding Name}" Foreground="White"  HorizontalContentAlignment="Left" Width="760" 
                                       VerticalContentAlignment="Top" FontSize="12.5" FontFamily="Bahnschrift SemiCondensed"
-                                      IsChecked="{Binding IsSelected, Mode=TwoWay}" Checked="OnSubjBoxChecked" Unchecked="OnSubjBoxUnchecked">
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay}" Checked="OnSubjBoxChecked" Unchecked="OnSubjBoxUnchecked" Visibility="{Binding ListVisibility}">
 
                                 <CheckBox.LayoutTransform>
                                     <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>

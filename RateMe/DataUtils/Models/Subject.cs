@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RateMe.DataUtils.Models
 {
@@ -13,6 +14,17 @@ namespace RateMe.DataUtils.Models
         public int Credits { get; }
         public int[] Modules { get; }
         public bool IsNis { get; }
+
+        public Visibility ListVisibility
+        {
+            get => _visibility;
+            set
+            {
+                _visibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public bool IsSelected
         {
             get => _isSelected;
@@ -24,6 +36,7 @@ namespace RateMe.DataUtils.Models
         }
 
         private bool _isSelected;
+        private Visibility _visibility;
         private Dictionary<string, string> _assFormulas;
 
 
@@ -35,6 +48,7 @@ namespace RateMe.DataUtils.Models
             _assFormulas = assFormulas;
             IsNis = Name.ToLower().Contains("научно-исследовательский семинар");
             _isSelected = true;
+            _visibility = Visibility.Visible;
         }
         
 
