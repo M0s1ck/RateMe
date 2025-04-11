@@ -35,9 +35,13 @@ namespace RateMe.DataUtils.Models
             }
         }
 
+
+        public Formula Formula { get; set; }
+
         private bool _isSelected;
         private Visibility _visibility;
         private Dictionary<string, string> _assFormulas;
+
 
 
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
@@ -58,6 +62,27 @@ namespace RateMe.DataUtils.Models
         private void NotifyPropertyChanged(string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        public void SetFormula(int module)
+        {
+            foreach ((string name, string val) in _assFormulas)
+            {
+                if (name.Contains($"{module}st") || name.Contains($"{module}nd") || name.Contains($"{module}rd") || name.Contains($"{module}th"))
+                {
+                    try
+                    {
+                        Formula = new Formula(val);
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Console.WriteLine(e);
+                    }
+
+                    break;
+                }
+            }
         }
 
 

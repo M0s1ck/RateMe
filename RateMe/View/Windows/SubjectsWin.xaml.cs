@@ -59,6 +59,7 @@ namespace RateMe
             {
                 if (subject.IsSelected)
                 {
+                    subject.SetFormula(Syllabus.Module);
                     selectedSubjs.Add(subject);
                 }
             }
