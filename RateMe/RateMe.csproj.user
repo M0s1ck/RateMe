@@ -13,6 +13,9 @@
     <Compile Update="View\Windows\DataCollection.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Windows\GradesWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Windows\SubjectsWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -31,6 +34,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Windows\DataCollection.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Windows\GradesWin.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Windows\SubjectsWin.xaml">

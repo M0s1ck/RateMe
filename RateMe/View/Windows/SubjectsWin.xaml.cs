@@ -1,5 +1,6 @@
 ﻿using RateMe.DataUtils.Models;
 using RateMe.View.UserControls;
+using RateMe.View.Windows;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
@@ -60,9 +61,9 @@ namespace RateMe
                 {
                     selectedSubjs.Add(subject);
                 }
-            }    
+            }
 
-            // new(Syllabus, _selectedSubjs)
+            GradesWin gradesWin = new(Syllabus, selectedSubjs);
             // Close()
 
         }

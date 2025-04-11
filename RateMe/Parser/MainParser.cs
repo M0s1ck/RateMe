@@ -30,15 +30,15 @@ namespace RateMe.Parser
 
         private static readonly string CurriculumHtmlTemplate = @"<a class=""link"" href=""(https://www\.hse\.ru/ba/([a-z]+)/)"">{0}</a>";
 
-        private static readonly string SubjectUrlXpathTemplate = "//html/body/div[1]/div[7]/div/div[2]/div/div/div[2]/div[{0}]";
-        private static readonly string SubjectAssessmentNumerableXpathTemplate = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[2]/div/div[3]/div/div[6]/div/ul/li[{0}]/div[1]";    
-        private static readonly string SubjectFormulaNumerableXpathTemplate = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[2]/div/div[3]/div/div[6]/div/ul/li[{0}]/div[2]";
+        private static readonly string SubjectUrlXpathTemplate = "//html/body/div[1]/div[6]/div/div[2]/div/div/div[2]/div[{0}]";
+        private static readonly string SubjectAssessmentNumerableXpathTemplate = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[2]/div/div[3]/div/div[6]/div/ul/li[{0}]/div[1]";    
+        private static readonly string SubjectFormulaNumerableXpathTemplate = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[2]/div/div[3]/div/div[6]/div/ul/li[{0}]/div[2]";
 
-        private static readonly string SubjectNameXpath = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[1]/h1";
-        private static readonly string SubjectCreditsXpath = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[1]/div[2]/div[3]/div[1]";
-        private static readonly string SubjectAssessmentXpath = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[2]/div/div[2]/div/div[6]/div/ul/li/div[1]/span";
-        private static readonly string SubjectFormulaXpath = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[2]/div/div[2]/div/div[6]/div/ul/li/div[2]";
-        private static readonly string SubjectModulesXpath = "//html/body/div[1]/div[7]/div/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div[2]/dl/dd";
+        private static readonly string SubjectNameXpath = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[1]/h1";
+        private static readonly string SubjectCreditsXpath = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[1]/div[2]/div[3]/div[1]";
+        private static readonly string SubjectAssessmentXpath = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[2]/div/div[2]/div/div[6]/div/ul/li/div[1]/span";
+        private static readonly string SubjectFormulaXpath = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[2]/div/div[2]/div/div[6]/div/ul/li/div[2]";
+        private static readonly string SubjectModulesXpath = "//html/body/div[1]/div[6]/div/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div[2]/dl/dd";
                                                           
         private static readonly int CurrentStudyYear = GetCurrentStudyYear();
 
@@ -90,7 +90,7 @@ namespace RateMe.Parser
                 {
                     string subjXpath = string.Format(SubjectUrlXpathTemplate, i + 2);
                     subjNode = curriculumCoursesDoc.DocumentNode.SelectSingleNode(subjXpath);
-
+                                                                                              
                     if (subjNode == null)
                     {
                         break;
