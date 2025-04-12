@@ -38,10 +38,14 @@ namespace RateMe.View.Windows
 
             _syllabus = syllabus;
 
-
-            ObservableCollection<ControlElement> FormulaObj = [new ControlElement("Кр1", 0.2), new ControlElement("Кр2", 0.3)];
-
             grades.ItemsSource = Subjects;
+
+            Binding nameBinding = new Binding("Кр1")
+            {
+                Mode = BindingMode.Default,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+
 
 
         }

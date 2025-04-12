@@ -21,7 +21,40 @@
             <Grid.Resources>
                 <DataTemplate x:Key="FormulaTemplate">
 
-                    <DataGrid ItemsSource="{Binding FormulaObj1}" AutoGenerateColumns="False" BorderBrush="White" Background="Transparent" Foreground="White" HeadersVisibility="Column">
+                    <ItemsControl ItemsSource="{Binding FormulaObj1}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
+
+                                    <TextBox Text="{Binding Name}"/>
+                                    <TextBox Text="{Binding Weigt}"/>
+                                    <TextBox Text="{Binding Grade}"/>
+                                    
+                                    <StackPanel.Resources>
+                                        <Style TargetType="{x:Type TextBox}">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                                            <Setter Property="Height" Value="20" />
+                                            <Setter Property="Width" Value="Auto" />
+                                            <Setter Property="FontSize" Value="12" />
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- <DataGrid ItemsSource="{Binding FormulaObj1}" AutoGenerateColumns="False" BorderBrush="White" Background="Transparent" Foreground="White" HeadersVisibility="Column">
 
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Элемент" Binding="{Binding Name}" Width="20" FontSize="17" />
@@ -53,7 +86,7 @@
                                 <Setter Property="VerticalContentAlignment" Value="Center" />
                             </Style>
                         </DataGrid.RowStyle>
-                    </DataGrid>
+                    </DataGrid> -->
 
                 </DataTemplate>
 
