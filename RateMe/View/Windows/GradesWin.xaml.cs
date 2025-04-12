@@ -1,6 +1,8 @@
 ﻿using RateMe.DataUtils.Models;
+using RateMe.View.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,14 +22,28 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class GradesWin : Window
     {
-        private List<Subject> _subjects;
+        internal ObservableCollection<Subject> Subjects { get; private set; } = [];
         private SyllabusModel _syllabus;
 
         public GradesWin(SyllabusModel syllabus, List<Subject> subjects)
         {
-            _subjects = subjects;
-            _syllabus = syllabus;
             InitializeComponent();
+            WindowBarDockPanel bar = new(this);
+            windowGrid.Children.Add(bar);
+
+            foreach (Subject subject in subjects)
+            {
+                Subjects.Add(subject);
+            }
+
+            _syllabus = syllabus;
+
+
+            ObservableCollection<ControlElement> FormulaObj = [new ControlElement("Кр1", 0.2), new ControlElement("Кр2", 0.3)];
+
+            grades.ItemsSource = Subjects;
+
+
         }
     }
 }

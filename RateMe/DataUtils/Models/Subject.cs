@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -35,8 +36,10 @@ namespace RateMe.DataUtils.Models
             }
         }
 
+        // Temp
+        public ObservableCollection<ControlElement> FormulaObj1 { get; } = [new ControlElement("Кр1", 0.2), new ControlElement("Кр2", 0.3)];
 
-        public Formula Formula { get; set; }
+        public Formula FormulaObj { get; set; }
 
         private bool _isSelected;
         private Visibility _visibility;
@@ -73,7 +76,7 @@ namespace RateMe.DataUtils.Models
                 {
                     try
                     {
-                        Formula = new Formula(val);
+                        FormulaObj = new Formula(val);
                     }
                     catch (ArgumentOutOfRangeException e)
                     {
