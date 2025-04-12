@@ -40,12 +40,6 @@ namespace RateMe.View.Windows
 
             grades.ItemsSource = Subjects;
 
-            Binding nameBinding = new Binding("Кр1")
-            {
-                Mode = BindingMode.Default,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            };
-
 
 
         }

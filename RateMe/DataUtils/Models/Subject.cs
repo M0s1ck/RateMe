@@ -12,9 +12,18 @@ namespace RateMe.DataUtils.Models
     public class Subject : INotifyPropertyChanged
     {
         public string Name { get; }
-        public int Credits { get; }
         public int[] Modules { get; }
         public bool IsNis { get; }
+
+        public int Credits
+        {
+            get => _credits;
+            set
+            {
+                _credits = value < 0 ? 0 : value > 15 ? 15 : value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public Visibility ListVisibility
         {
@@ -41,6 +50,7 @@ namespace RateMe.DataUtils.Models
 
         public Formula FormulaObj { get; set; }
 
+        private int _credits;
         private bool _isSelected;
         private Visibility _visibility;
         private Dictionary<string, string> _assFormulas;
@@ -50,7 +60,7 @@ namespace RateMe.DataUtils.Models
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
         {
             Name = name;
-            Credits = credits;
+            _credits = credits;
             Modules = modules;
             _assFormulas = assFormulas;
             IsNis = Name.ToLower().Contains("научно-исследовательский семинар");

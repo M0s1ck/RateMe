@@ -138,7 +138,7 @@ namespace RateMe.Parser
 
                 HtmlNode? subjCreditsNode = rootDocNode.SelectSingleNode(SubjectCreditsXpath);
                 string subjCreditsText = subjCreditsNode?.InnerText ?? string.Empty;
-                int credits = int.TryParse(subjCreditsText, out credits) ? credits : -1;
+                int credits = int.TryParse(subjCreditsText, out credits) ? credits : 0;
 
                 Dictionary<string, string> assesementFormulas = GetAssesmentFormulas(rootDocNode);
 

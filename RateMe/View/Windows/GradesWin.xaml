@@ -21,7 +21,7 @@
             <Grid.Resources>
                 <DataTemplate x:Key="FormulaTemplate">
 
-                    <ItemsControl ItemsSource="{Binding FormulaObj1}">
+                    <ItemsControl ItemsSource="{Binding FormulaObj}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
@@ -32,9 +32,9 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
 
-                                    <TextBox Text="{Binding Name}"/>
-                                    <TextBox Text="{Binding Weigt}"/>
-                                    <TextBox Text="{Binding Grade}"/>
+                                    <TextBox Text="{Binding Name, Mode=TwoWay}"/>
+                                    <TextBox Text="{Binding Weight, Mode=TwoWay}"/>
+                                    <TextBox Text="{Binding Grade, Mode=TwoWay}"/>
                                     
                                     <StackPanel.Resources>
                                         <Style TargetType="{x:Type TextBox}">
@@ -99,7 +99,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17"/>
                     <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="600" />
-                    <DataGridTextColumn Header="Credits" Binding="{Binding Credits}" Width="100"/>
+                    <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100"/>
                 </DataGrid.Columns>
 
                 <DataGrid.Resources>

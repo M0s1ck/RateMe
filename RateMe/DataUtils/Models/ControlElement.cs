@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace RateMe.DataUtils.Models
 {
-    public class ControlElement
+    public class ControlElement : INotifyPropertyChanged
     {
         public string Name 
         {
@@ -14,6 +15,7 @@ namespace RateMe.DataUtils.Models
             set
             {
                 _name = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -24,6 +26,7 @@ namespace RateMe.DataUtils.Models
             set
             {
                 _weight = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -33,6 +36,7 @@ namespace RateMe.DataUtils.Models
             set
             {
                 _grade = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -48,6 +52,11 @@ namespace RateMe.DataUtils.Models
             _grade = 0;
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
 
+        private void NotifyPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

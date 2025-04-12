@@ -90,12 +90,15 @@ namespace RateMe
             SyllabusModel syllabus = new SyllabusModel(student, curriculum, course, term);
 
             // Parsing(Web - sc..)
-            MainParser mainParser = new MainParser(syllabus);
+            //MainParser mainParser = new MainParser(syllabus);
             //await mainParser.GetCurriculumAsync();
             //await mainParser.GetSubjectsUrlsAltAsync();
             //List<Subject> subjects = await mainParser.GetSubjectsDataAsync();
 
-            List<Subject> subjects = [new Subject("Алгебра1", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
+            Subject alg = new Subject("Алгебра1", 9, [1, 2, 3, 4], []);
+            alg.FormulaObj = new Formula("0,21∙О_(Кр-3мод)+ 0,1∙О_(Сем-2)+0,08∙О_(ИДЗ-3 и 4 мод)+ 0,21∙О_(Коллоквиум-3 и 4мод)+0,5∙О_(Экз.раб.-2)");
+
+            List<Subject> subjects = [alg, new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
                                   new Subject("Алгебраnvsknksvnk4", 9, [1, 2, 3], []), new Subject("Матанsvmsmvlmslvmlsv5", 9, [3, 4], []), new Subject("Экономика6", 3, [3, 4], []),
                                   new Subject("Алгебра7", 9, [1, 2, 3, 4], []), new Subject("Матан8", 9, [1, 2, 3, 4], []), new Subject("Экономика9", 3, [3, 4], []),
                                   new Subject("Алгебра10", 9, [1, 2, 3, 4], []), new Subject("Матан,vs,v;s,;v,;s,v;,sv,s;v,sv;s,vvs;s,;,sv;s,v;s11", 9, [1, 2, 3], []), new Subject("Экономика12", 3, [3, 4], []),
