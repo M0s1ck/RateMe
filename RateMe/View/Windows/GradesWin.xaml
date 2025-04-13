@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:RateMe.View.Windows"
         mc:Ignorable="d"
         
+        MouseDown="OnWindowClick"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
         Title="GradesWin" Height="860" Width="1600" WindowStartupLocation="CenterScreen"
         Background="#10151b">
@@ -20,123 +21,121 @@
 
             <Grid.Resources>
                 <DataTemplate x:Key="FormulaTemplate">
-
                     <ItemsControl ItemsSource="{Binding FormulaObj}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        
+
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
+                                <Border CornerRadius="{Binding ViewBorderRadius}" BorderBrush="White" Background="Transparent" BorderThickness="{Binding ViewBorderThickness}" Panel.ZIndex="1">
+                                    <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
 
-                                    <TextBox Text="{Binding Name, Mode=TwoWay}"/>
-                                    <TextBox Text="{Binding Weight, Mode=TwoWay}"/>
-                                    <TextBox Text="{Binding Grade, Mode=TwoWay}"/>
-                                    
-                                    <StackPanel.Resources>
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="Background" Value="Transparent"/>
-                                            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                                            <Setter Property="Height" Value="20" />
-                                            <Setter Property="Width" Value="Auto" />
-                                            <Setter Property="FontSize" Value="12" />
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    
-                                </StackPanel>
+                                        <TextBox Text="{Binding Name, Mode=TwoWay}"/>
+                                        <TextBox Text="{Binding Weight, Mode=TwoWay}" BorderThickness="0,1,0,1"/>
+                                        <TextBox Text="{Binding Grade, Mode=TwoWay}"/>
+
+                                        <StackPanel.Resources>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                <Setter Property="Height" Value="20" />
+                                                <Setter Property="Width" Value="Auto" />
+                                                <Setter Property="FontSize" Value="14" />
+                                                <Setter Property="CaretBrush" Value="White" />
+                                                <Setter Property="BorderBrush" Value="White" />
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Padding" Value="0,2,0,0" />
+                                            </Style>
+                                        </StackPanel.Resources>
+
+                                    </StackPanel>
+                                </Border>
+
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <!-- <DataGrid ItemsSource="{Binding FormulaObj1}" AutoGenerateColumns="False" BorderBrush="White" Background="Transparent" Foreground="White" HeadersVisibility="Column">
-
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Элемент" Binding="{Binding Name}" Width="20" FontSize="17" />
-                            <DataGridTextColumn Header="Вес" Binding="{Binding Weight, StringFormat={}{2f}}" Width="20" />
-                            <DataGridTextColumn Header="Оценка" Binding="{Binding Grade}" Width="20" />
-                        </DataGrid.Columns>
-
-                        <DataGrid.Resources>
-                            <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="BorderBrush" Value="White" />
-                                <Setter Property="BorderBrush" Value="White" />
-                                <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
-                                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                <Setter Property="Height" Value="20" />
-                                <Setter Property="FontSize" Value="10" />
-                            </Style>
-                        </DataGrid.Resources>
-
-                        <DataGrid.RowStyle>
-                            <Style TargetType="{x:Type DataGridRow}">
-                                <Setter Property="BorderBrush" Value="White" />
-                                <Setter Property="BorderThickness" Value="1,1,1,1" />
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="Foreground" Value="White" />
-                                <Setter Property="Height" Value="20" />
-                                <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
-                                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid> -->
-
                 </DataTemplate>
 
             </Grid.Resources>
 
+            <Border CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
+                <DataGrid x:Name="grades" ItemsSource="{Binding Subjects}" AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single"
+                      Width="1200" Background="Transparent" BorderBrush="Transparent" Foreground="White">
 
-            <DataGrid x:Name="grades" ItemsSource="{Binding Subjects}" AutoGenerateColumns="False" HeadersVisibility="Column"
-                      Width="1200" Background="Transparent" BorderBrush="White" Foreground="White">
-                
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17"/>
-                    <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="600" />
-                    <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100"/>
-                </DataGrid.Columns>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17" />
+                        <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="600" />
+                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100" FontSize="15" />
+                        <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="100" FontSize="16" />
+                    </DataGrid.Columns>
 
-                <DataGrid.Resources>
-                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="BorderBrush" Value="White" />
-                        <Setter Property="BorderBrush" Value="White" />
-                        <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="Height" Value="50" />
-                        <Setter Property="FontSize" Value="20" />
-                    </Style>
+                    <DataGrid.Resources>
 
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Style.Setters>
-                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                        </Style.Setters>
-                    </Style>
-                </DataGrid.Resources>
+                        <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="BorderThickness" Value="0,0,2,0"/>
+                            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Height" Value="50" />
+                            <Setter Property="FontSize" Value="20" />
+                        </Style>
 
-                <DataGrid.RowStyle>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="BorderBrush" Value="White" />
-                        <Setter Property="BorderThickness" Value="1,1,1,1" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Foreground" Value="White" />
-                        <Setter Property="Height" Value="80" />
-                        <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                    </Style>
-                </DataGrid.RowStyle>
-                
-                
 
-            </DataGrid>
+                        <Style TargetType="{x:Type DataGridCell}">
+
+                            <Style.Setters>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style.Setters>
+
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Trigger>
+                            </Style.Triggers>
+
+                        </Style>
+                    </DataGrid.Resources>
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="BorderThickness" Value="1,2,1,0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Height" Value="80" />
+                            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="-1" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{x:Null}" />
+                                    <Setter Property="BorderBrush" Value="White" />
+                                </Trigger>
+                            </Style.Triggers>
+
+                        </Style>
+                    </DataGrid.RowStyle>
+
+
+
+                </DataGrid>
+            </Border>
         </Grid>
     </Grid>
 </Window>

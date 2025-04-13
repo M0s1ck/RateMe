@@ -26,12 +26,18 @@ namespace RateMe.DataUtils.Models
             foreach (Match match in matches)
             {
                 string name = match.Groups[3].Value;
-                double.TryParse(match.Groups[2].Value, NumberStyles.Any, CultureInfo.CurrentCulture, out double weight);
+                string w = match.Groups[2].Value;
+                w = w.Replace(',', '.');
+                double.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out double weight);
 
                 ControlElement elem = new ControlElement(name, weight);
-                double w = elem.Weight;
                 Add(elem);
             }
+
+            this[0].ViewBorderRadius = new System.Windows.CornerRadius(3, 0, 0, 3);
+            this[0].ViewBorderThickness = new System.Windows.Thickness(2, 2, 1, 2);
+            this[^1].ViewBorderRadius = new System.Windows.CornerRadius(0, 3, 3, 0);
+            this[^1].ViewBorderThickness = new System.Windows.Thickness(1, 2, 2, 2);
         }
     }
 }

@@ -43,5 +43,10 @@ namespace RateMe.View.Windows
 
 
         }
+
+        private void OnWindowClick(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+        }
     }
 }

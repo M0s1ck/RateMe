@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows;
 
 namespace RateMe.DataUtils.Models
 {
@@ -19,13 +20,13 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-
         public double Weight
         {
             get => _weight;
             set
             {
                 _weight = value;
+                OnGradesUpdated();
                 NotifyPropertyChanged();
             }
         }
@@ -36,9 +37,13 @@ namespace RateMe.DataUtils.Models
             set
             {
                 _grade = value;
+                OnGradesUpdated();
                 NotifyPropertyChanged();
             }
         }
+
+        public CornerRadius ViewBorderRadius { get; set; } = new CornerRadius();
+        public Thickness ViewBorderThickness { get; set; } = new Thickness(1, 2, 1, 2);
 
         private string _name;
         private double _weight;
@@ -51,6 +56,17 @@ namespace RateMe.DataUtils.Models
             _weight = weight;
             _grade = 0;
         }
+
+
+        public event GradesUpdatedHandler GradesUpdated;
+
+        public delegate void GradesUpdatedHandler();
+
+        private void OnGradesUpdated()
+        {
+            GradesUpdated?.Invoke();
+        }
+        
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -11,9 +11,19 @@ namespace RateMe.DataUtils.Models
 {
     public class Subject : INotifyPropertyChanged
     {
-        public string Name { get; }
         public int[] Modules { get; }
         public bool IsNis { get; }
+        public Formula FormulaObj { get; set; }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public int Credits
         {
@@ -45,44 +55,86 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-        // Temp
-        public ObservableCollection<ControlElement> FormulaObj1 { get; } = [new ControlElement("Кр1", 0.2), new ControlElement("Кр2", 0.3)];
+        public double Score
+        {
+            get => _score;
+            set
+            {
+                _score = value;
+                NotifyPropertyChanged();
+            }
+        }
 
-        public Formula FormulaObj { get; set; }
 
+        
+        private string _name;
         private int _credits;
         private bool _isSelected;
+        private double _score;
         private Visibility _visibility;
         private Dictionary<string, string> _assFormulas;
-
 
 
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
         {
             Name = name;
             _credits = credits;
+            _score = 0;
             Modules = modules;
             _assFormulas = assFormulas;
             IsNis = Name.ToLower().Contains("научно-исследовательский семинар");
             _isSelected = true;
             _visibility = Visibility.Visible;
         }
-        
+
+        public void UpdateScore()
+        {
+            double score = 0;
+
+            foreach (ControlElement elem in FormulaObj)
+            {
+                score += elem.Weight * elem.Grade;
+            }
+
+            Score = Math.Round(score, 2);
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
 
         private void NotifyPropertyChanged(string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         public void SetFormula(int module)
+        {
+            bool success = SetFormulaForModule(module);
+            if (success)
+            {
+                return;
+            }
+
+            bool success2 = SetFormulaForModule(module+1);
+            if (success2)
+            {
+                return;
+            }
+
+            bool success3 = SetFormulaForModule(module+2);
+            if (success3)
+            {
+                return;
+            }
+
+            bool success4 = SetFormulaForModule(module-1);
+        }
+
+
+        private bool SetFormulaForModule(int module)
         {
             foreach ((string name, string val) in _assFormulas)
             {
-                if (name.Contains($"{module}st") || name.Contains($"{module}nd") || name.Contains($"{module}rd") || name.Contains($"{module}th"))
+                if (FindModuleName(name, module))
                 {
                     try
                     {
@@ -96,6 +148,24 @@ namespace RateMe.DataUtils.Models
                     break;
                 }
             }
+
+            if (FormulaObj == null)
+            {
+                return false;
+            }
+
+            foreach (ControlElement elem in FormulaObj)
+            {
+                elem.GradesUpdated += UpdateScore;
+            }
+
+            UpdateScore();
+            return true;
+        }
+
+        private static bool FindModuleName(string formulaName, int module)
+        {
+            return formulaName.Contains($"{module}st") || formulaName.Contains($"{module}nd") || formulaName.Contains($"{module}rd") || formulaName.Contains($"{module}th");
         }
 
 
