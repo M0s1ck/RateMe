@@ -3,6 +3,7 @@ using RateMe.View.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,9 +45,24 @@ namespace RateMe.View.Windows
 
         }
 
+
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
         {
             Keyboard.ClearFocus();
+        }
+
+
+        private void OnEditGearClick(object sender, MouseButtonEventArgs e)
+        {
+            Subject? subject = ((FrameworkElement)sender)?.DataContext as Subject;
+
+            if (subject == null)
+            {
+                MessageBox.Show("Null Subject");
+                return;
+            }
+
+            MessageBox.Show(subject.Name);
         }
     }
 }

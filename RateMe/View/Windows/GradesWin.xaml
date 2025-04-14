@@ -8,6 +8,7 @@
         
         MouseDown="OnWindowClick"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        xmlns:UserControls="clr-namespace:RateMe.View.UserControls"
         Title="GradesWin" Height="860" Width="1600" WindowStartupLocation="CenterScreen"
         Background="#10151b">
     
@@ -62,6 +63,10 @@
                     </ItemsControl>
                 </DataTemplate>
 
+                <DataTemplate x:Key="EditTemplate">
+                    <UserControls:SettingsGear MouseDown="OnEditGearClick"/>
+                </DataTemplate>
+                
             </Grid.Resources>
 
             <Border CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
@@ -73,6 +78,7 @@
                         <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="600" />
                         <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100" FontSize="15" />
                         <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="100" FontSize="16" />
+                        <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="100"/>
                     </DataGrid.Columns>
 
                     <DataGrid.Resources>

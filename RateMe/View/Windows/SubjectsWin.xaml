@@ -22,7 +22,7 @@
             </Setter>
         </Style>
         <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#152e9aDA"/>
-        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#114f9f"/> <!-- a826A0Da -->
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#114f9f"/>
         <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
         <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
         <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
