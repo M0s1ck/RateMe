@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace RateMe.DataUtils.Models
+{
+    public class DataHintTextModel : INotifyPropertyChanged
+    {
+        public string Data
+        {
+            get => _data;
+            set
+            {
+                //MessageBox.Show($"Being set with value={value}");
+                _data = value;
+
+                if (value == string.Empty)
+                {
+                    HintVisibility = Visibility.Visible;
+                }
+                else
+                {
+                    HintVisibility = Visibility.Hidden;
+                }
+                NotifyPropertyChanged();
+            }
+        }
+
+        public Visibility HintVisibility
+        {
+            get => _hintVisibility;
+            set
+            {
+                _hintVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string Hint { get; }
+
+        private string _data = string.Empty;
+        private Visibility _hintVisibility = Visibility.Visible;
+
+
+        public DataHintTextModel(string data, string hint, Visibility hintVisibility)
+        {
+            Data = data;
+            Hint = hint;
+            HintVisibility = hintVisibility;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

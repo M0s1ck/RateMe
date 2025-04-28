@@ -307,8 +307,8 @@
             <TextBlock HorizontalAlignment="Center" Margin="0,-500,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Введите фамилию и имя" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
             <TextBlock HorizontalAlignment="Center" Margin="0,-460,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(По ним будут браться оценочки из табличек)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
 
-            <UserControls:DataCollectionTextForm x:Name="SurameTextBox" Hint="Фамилия" Width="150" Height="20" HorizontalAlignment="Center" Margin="-400,-380,0,0" VerticalAlignment="Center"/>
-            <UserControls:DataCollectionTextForm x:Name="NameTextBox" Hint="Имя" Width="150" Height="20" HorizontalAlignment="Center" Margin="400,-380,0,0" VerticalAlignment="Center"/>
+            <UserControls:DataCollectionTextForm x:Name="SurameTextBox" Hint="Фамилия" Width="200" FontSize="15" Height="28" HorizontalAlignment="Center" Margin="-400,-380,0,0" VerticalAlignment="Center"/>
+            <UserControls:DataCollectionTextForm x:Name="NameTextBox" Hint="Имя" Width="150" FontSize="15" Height="28" HorizontalAlignment="Center" Margin="400,-380,0,0" VerticalAlignment="Center"/>
 
             <TextBlock HorizontalAlignment="Center" Margin="0,-250,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Выберите данные о программе" FontSize="18" FontFamily="Bahnschrift SemiBold Condensed" Foreground="White"/>
             <TextBlock HorizontalAlignment="Center" Margin="0,-205,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="(Некоторые формулы будут автоматически подгружены)" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>

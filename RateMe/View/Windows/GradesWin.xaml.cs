@@ -41,8 +41,6 @@ namespace RateMe.View.Windows
 
             grades.ItemsSource = Subjects;
 
-
-
         }
 
 
@@ -62,7 +60,11 @@ namespace RateMe.View.Windows
                 return;
             }
 
-            MessageBox.Show(subject.Name);
+            // MessageBox.Show(subject.Name);
+            
+            SubjectEditWin subjWin = new SubjectEditWin(subject);
+            subjWin.Show();
+            subjWin.Activate();
         }
     }
 }

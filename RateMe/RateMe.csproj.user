@@ -7,6 +7,12 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\UserControls\ControlElementsTable.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\UserControls\DataHintTextBox.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\UserControls\SettingsGear.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -19,6 +25,9 @@
     <Compile Update="View\Windows\GradesWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Windows\SubjectEditWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Windows\SubjectsWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -28,6 +37,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\StylesDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\UserControls\ControlElementsTable.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\UserControls\DataHintTextBox.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\SettingsGear.xaml">
@@ -43,6 +58,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Windows\GradesWin.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Windows\SubjectEditWin.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Windows\SubjectsWin.xaml">

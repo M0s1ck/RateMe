@@ -38,11 +38,26 @@ namespace RateMe.View.UserControls
         public string Data
         {
             get { return _data; }
+            set { 
+                _data = value;
+            }
+        }
+
+        public DataCollectionTextForm(string hint, string data)
+        {
+            InitializeComponent();
+            _hint = hint;
+            Data = data;
+
+            DataCollectionHint.Visibility = Visibility.Hidden;
+            DataCollectionTextBox.Text = data;
         }
 
         public DataCollectionTextForm()
         {
             InitializeComponent();
+            _hint = "";
+            _data = "";
         }
 
         private void OnDataCollectionInput(object sender, TextChangedEventArgs e)
