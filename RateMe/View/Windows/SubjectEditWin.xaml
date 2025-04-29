@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:RateMe.View.Windows"
         mc:Ignorable="d"
         
@@ -10,8 +11,28 @@
         MouseLeave="OnMouseLeave"
         MouseEnter="OnMouseEnter"
         Title="DataCollection" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
-        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:UserControls="clr-namespace:RateMe.View.UserControls"
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:UserControls="clr-namespace:RateMe.View.UserControls" 
         Background="#10151b">
+
+    <Window.Resources>
+        <Style x:Key="AddDeleteButton" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
+        <Style x:Key="AddDeleteBorder" TargetType="{x:Type Border}">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="7"/>
+        </Style>
+        
+    </Window.Resources>
     
     <WindowChrome.WindowChrome>
         <WindowChrome />
@@ -24,16 +45,48 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="70" />
                 <RowDefinition Height="200"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition/>
+
+
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <UserControls:DataHintTextBox x:Name="subjTetx2" VerticalAlignment="Top" TextBoxFontSize="21" TextBoxHeight="40" TextBoxMinWidth="160" TextBlockFontSize="15"/>
             </Grid>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" Margin="50,0,50,0">
                 <UserControls:ControlElementsTable x:Name="gradesTable"/>
             </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Border x:Name="removeBorder" Style="{StaticResource AddDeleteBorder}" MouseLeftButtonDown="OnRemoveClick" MouseEnter="OnRemoveMouseEnter" MouseLeave="OnRemoveMouseLeave"/>
+                        <Rectangle x:Name="horBar2" Width="30" Height="6" Fill="White" Panel.ZIndex="-1"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Border x:Name="addBorder" Style="{StaticResource AddDeleteBorder}" MouseLeftButtonDown="OnAddClick" MouseEnter="OnAddMouseEnter" MouseLeave="OnAddMouseLeave"/>
+                        <Rectangle x:Name="vertBar" Width="6" Height="30" Fill="White" Panel.ZIndex="-1"/>
+                        <Rectangle x:Name="horBar" Width="30" Height="6" Fill="White" Panel.ZIndex="-1"/>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <ContentControl Height="100">
+                            <svgc:SvgViewbox Source="/Assets/trash-can-svgrepo-com (1).svg"/>
+                        </ContentControl>
+                    </Grid>
+
+
+
+                </Grid>
+            </Grid>
+
         </Grid>
     </Grid>
 </Window>

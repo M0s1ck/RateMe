@@ -9,7 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\trash-can-svgrepo-com %281%29.svg" />
+    <None Remove="Assets\trash-can-svgrepo-com.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
+    <PackageReference Include="SharpVectors" Version="1.8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\trash-can-svgrepo-com (1).svg" />
   </ItemGroup>
 
 </Project>

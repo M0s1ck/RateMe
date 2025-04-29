@@ -49,6 +49,12 @@ namespace RateMe.DataUtils.Models
         private double _weight;
         private double _grade;
 
+        public ControlElement()
+        {
+            _name = "Элемент контроля";
+            _weight = 0;
+            _grade = 0;
+        }
 
         public ControlElement(string name, double weight) 
         {
@@ -58,7 +64,7 @@ namespace RateMe.DataUtils.Models
         }
 
 
-        public event GradesUpdatedHandler GradesUpdated;
+        public event GradesUpdatedHandler? GradesUpdated;
 
         public delegate void GradesUpdatedHandler();
 

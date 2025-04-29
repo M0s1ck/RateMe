@@ -21,20 +21,58 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class SubjectEditWin : Window
     {
+        Subject TheSubject { get; }
+
+        static readonly SolidColorBrush ColorWhenEntered = new SolidColorBrush(Colors.DimGray);
+        static readonly SolidColorBrush ColorWhenLeft = new SolidColorBrush(Colors.White);
+
         public SubjectEditWin(Subject subject)
         {
             InitializeComponent();
             WindowBarDockPanel bar = new(this);
             windowGrid.Children.Add(bar);
 
-
+            TheSubject = subject;
             Topmost = true;
-            DataContext = subject;
+            DataContext = TheSubject;
 
-            DataHintTextModel subjectNameTextModel = new DataHintTextModel(subject.Name, "Название предмета", Visibility.Visible);
+            DataHintTextModel subjectNameTextModel = new DataHintTextModel(TheSubject.Name, "Название предмета", Visibility.Visible);
             subjTetx2.DataContext = subjectNameTextModel;
 
-            gradesTable.DataContext = subject;
+            gradesTable.DataContext = TheSubject;
+        }
+
+
+        private void OnAddClick(object sender, MouseButtonEventArgs e)
+        {
+            TheSubject.FormulaObj.Add(new ControlElement());
+        }
+
+        private void OnRemoveClick(object sender, MouseButtonEventArgs e)
+        {
+            TheSubject.FormulaObj.Add(new ControlElement());
+        }
+
+        private void OnRemoveMouseEnter(object sender, MouseEventArgs e)
+        {
+            horBar2.Fill = ColorWhenEntered;
+        }
+
+        private void OnRemoveMouseLeave(object sender, MouseEventArgs e)
+        {
+            horBar2.Fill = ColorWhenLeft;
+        }
+
+        private void OnAddMouseEnter(object sender, MouseEventArgs e)
+        {
+            vertBar.Fill = ColorWhenEntered;
+            horBar.Fill = ColorWhenEntered;
+        }
+
+        private void OnAddMouseLeave(object sender, MouseEventArgs e)
+        {
+            vertBar.Fill = ColorWhenLeft;
+            horBar.Fill = ColorWhenLeft;
         }
 
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
