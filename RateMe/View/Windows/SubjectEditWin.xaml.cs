@@ -21,7 +21,8 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class SubjectEditWin : Window
     {
-        Subject TheSubject { get; }
+        private Subject _theSubject;
+        private Subject _updatedSubject;
 
         static readonly SolidColorBrush ColorWhenEntered = new SolidColorBrush(Colors.DimGray);
         static readonly SolidColorBrush ColorWhenLeft = new SolidColorBrush(Colors.White);
@@ -31,26 +32,45 @@ namespace RateMe.View.Windows
             InitializeComponent();
             WindowBarDockPanel bar = new(this);
             windowGrid.Children.Add(bar);
-
-            TheSubject = subject;
             Topmost = true;
-            DataContext = TheSubject;
 
-            DataHintTextModel subjectNameTextModel = new DataHintTextModel(TheSubject.Name, "Название предмета", Visibility.Visible);
+            _theSubject = subject;
+            _updatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
+            _updatedSubject.FormulaObj = [];
+            
+            foreach (ControlElement elem in subject.FormulaObj)
+            {
+                ControlElement newElem = new ControlElement(elem.Name, elem.Weight);
+                _updatedSubject.FormulaObj.Add(newElem);
+            }
+
+            DataContext = _updatedSubject;
+
+            DataHintTextModel subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета", Visibility.Visible);
             subjTetx2.DataContext = subjectNameTextModel;
 
-            gradesTable.DataContext = TheSubject;
+            gradesTable.DataContext = _updatedSubject;
         }
 
 
         private void OnAddClick(object sender, MouseButtonEventArgs e)
         {
-            TheSubject.FormulaObj.Add(new ControlElement());
+            _updatedSubject.FormulaObj.Add(new ControlElement());
         }
 
         private void OnRemoveClick(object sender, MouseButtonEventArgs e)
         {
-            TheSubject.FormulaObj.Add(new ControlElement());
+            
+        }
+
+        private void OnRemovalClick(object sender, RoutedEventArgs e)
+        {
+            ControlElement? elem = ((FrameworkElement)sender)?.DataContext as ControlElement;
+
+            if (elem != null)
+            {
+                _updatedSubject.FormulaObj.Remove(elem);
+            }
         }
 
         private void OnRemoveMouseEnter(object sender, MouseEventArgs e)

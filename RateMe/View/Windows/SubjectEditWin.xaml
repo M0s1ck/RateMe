@@ -15,13 +15,6 @@
         Background="#10151b">
 
     <Window.Resources>
-        <Style x:Key="AddDeleteButton" TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="White"/>
-            <Setter Property="BorderThickness" Value="2"/>
-        </Style>
 
         <Style x:Key="AddDeleteBorder" TargetType="{x:Type Border}">
             <Setter Property="Width" Value="50"/>
@@ -31,7 +24,67 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="7"/>
         </Style>
-        
+
+        <Style x:Key="optionText" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="21"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="RemovalButtonStyle" TargetType="{x:Type Button}">
+            <Style.Setters>
+                <Setter Property="Content" Value="✖"/>
+                <Setter Property="Foreground" Value="#4A0011"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Width" Value="45"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="BorderBrush" Value="#4A0011"/>
+                <Setter Property="Padding" Value="0,-2,0,0"/>
+            </Style.Setters>
+            
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="White"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+            
+        </Style>
+
+        <Style x:Key="RemovalButtonStyle1" TargetType="Button">
+            <Setter Property="Content" Value="✖"/>
+            <Setter Property="Foreground" Value="#970026"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="BorderBrush" Value="#970026"/>
+            <Setter Property="Padding" Value="0,-5,0,0"/>
+            <Setter Property="Height" Value="20"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border 
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="Red"/>
+                                <Setter Property="BorderBrush" Value="Red"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
     </Window.Resources>
     
     <WindowChrome.WindowChrome>
@@ -44,9 +97,10 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="70" />
-                <RowDefinition Height="200"/>
                 <RowDefinition Height="100"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="80"/>
                 <RowDefinition/>
 
 
@@ -61,28 +115,59 @@
             </Grid>
 
             <Grid Grid.Row="2">
-                <Grid>
+                <ItemsControl ItemsSource="{Binding FormulaObj}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,50,0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                
+                                <Button Click="OnRemovalClick" Style="{StaticResource RemovalButtonStyle1}"/>                               
+                                
+                            </Grid>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid HorizontalAlignment="Center">
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="400"/>
                         <ColumnDefinition Width="400"/>
-                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Style="{StaticResource optionText}" Text="Убрать элемент"/>
+                    <TextBlock Grid.Column="1" Style="{StaticResource optionText}" Text="Добавить элемент"/>
+                </Grid>
+                
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
                     <Grid Grid.Column="0">
                         <Border x:Name="removeBorder" Style="{StaticResource AddDeleteBorder}" MouseLeftButtonDown="OnRemoveClick" MouseEnter="OnRemoveMouseEnter" MouseLeave="OnRemoveMouseLeave"/>
                         <Rectangle x:Name="horBar2" Width="30" Height="6" Fill="White" Panel.ZIndex="-1"/>
                     </Grid>
+                    
                     <Grid Grid.Column="1">
                         <Border x:Name="addBorder" Style="{StaticResource AddDeleteBorder}" MouseLeftButtonDown="OnAddClick" MouseEnter="OnAddMouseEnter" MouseLeave="OnAddMouseLeave"/>
                         <Rectangle x:Name="vertBar" Width="6" Height="30" Fill="White" Panel.ZIndex="-1"/>
                         <Rectangle x:Name="horBar" Width="30" Height="6" Fill="White" Panel.ZIndex="-1"/>
                     </Grid>
-                    <Grid Grid.Column="2">
-                        <ContentControl Height="100">
-                            <svgc:SvgViewbox Source="/Assets/trash-can-svgrepo-com (1).svg"/>
-                        </ContentControl>
-                    </Grid>
-
-
 
                 </Grid>
             </Grid>

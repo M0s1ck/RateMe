@@ -13,6 +13,7 @@ namespace RateMe.DataUtils.Models
     {
         private static Regex regex = new(@"((0[.,]\d+)\s*[*∙]\s*(.+?))\s*([\+\n]|(\. )|$)");
         
+        public Formula() : base() { }
 
         public Formula(string sFormula) : base()
         {
