@@ -22,7 +22,7 @@ namespace RateMe.View.Windows
     public partial class SubjectEditWin : Window
     {
         private Subject _theSubject;
-        private Subject _updatedSubject;
+        public Subject UpdatedSubject { get; private set; }
 
         static readonly SolidColorBrush ColorWhenEntered = new SolidColorBrush(Colors.DimGray);
         static readonly SolidColorBrush ColorWhenLeft = new SolidColorBrush(Colors.White);
@@ -35,32 +35,48 @@ namespace RateMe.View.Windows
             Topmost = true;
 
             _theSubject = subject;
-            _updatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
-            _updatedSubject.FormulaObj = [];
+            UpdatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
+            UpdatedSubject.FormulaObj = [];
             
             foreach (ControlElement elem in subject.FormulaObj)
             {
                 ControlElement newElem = new ControlElement(elem.Name, elem.Weight);
-                _updatedSubject.FormulaObj.Add(newElem);
+                newElem.Grade = elem.Grade;
+                UpdatedSubject.FormulaObj.Add(newElem);
             }
 
-            DataContext = _updatedSubject;
+            DataContext = UpdatedSubject;
 
-            DataHintTextModel subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета", Visibility.Visible);
+            DataHintTextModel subjectNameTextModel = new DataHintTextModel(UpdatedSubject.Name, "Название предмета", Visibility.Visible);
             subjTetx2.DataContext = subjectNameTextModel;
 
-            gradesTable.DataContext = _updatedSubject;
+            gradesTable.DataContext = UpdatedSubject;
         }
 
+        private void OnSaveClick(object sender, RoutedEventArgs e)
+        {
+            _theSubject.Name = UpdatedSubject.Name;
+            _theSubject.Credits = UpdatedSubject.Credits;
+            _theSubject.FormulaObj.Clear();
+            _theSubject.Score = 0;
+
+            foreach (ControlElement elem in UpdatedSubject.FormulaObj)
+            {
+                _theSubject.FormulaObj.Add(elem);
+                _theSubject.Score += elem.Weight * elem.Grade;
+            }
+
+            Close();
+        }
 
         private void OnAddClick(object sender, MouseButtonEventArgs e)
         {
-            _updatedSubject.FormulaObj.Add(new ControlElement());
+            UpdatedSubject.FormulaObj.Add(new ControlElement());
         }
 
         private void OnRemoveClick(object sender, MouseButtonEventArgs e)
         {
-            
+            removalButtonList.Visibility = removalButtonList.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void OnRemovalClick(object sender, RoutedEventArgs e)
@@ -69,8 +85,13 @@ namespace RateMe.View.Windows
 
             if (elem != null)
             {
-                _updatedSubject.FormulaObj.Remove(elem);
+                UpdatedSubject.FormulaObj.Remove(elem);
             }
+        }
+
+        private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void OnRemoveMouseEnter(object sender, MouseEventArgs e)

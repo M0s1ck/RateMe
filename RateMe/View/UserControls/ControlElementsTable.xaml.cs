@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RateMe.DataUtils.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,44 @@ namespace RateMe.View.UserControls
         public ControlElementsTable()
         {
             InitializeComponent();
+        }
+
+        private void OnNameChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender != null)
+            {
+                ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
+                element.Name = ((TextBox)sender).Text;
+            }
+            
+        }
+
+        private void OnWeightChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender != null)
+            {
+                ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
+                string w = ((TextBox)sender).Text;
+                bool good = double.TryParse(w, out double weight);
+                if (good)
+                {
+                    element.Weight = double.Round(weight, 4);
+                }
+            }
+        }
+
+        private void OnGradeChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender != null)
+            {
+                ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
+                string g = ((TextBox)sender).Text;
+                bool good = double.TryParse(g, out double grade);
+                if (good)
+                {
+                    element.Grade = double.Round(grade, 4);
+                }
+            }
         }
     }
 }

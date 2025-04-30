@@ -19,7 +19,7 @@
                     <Border CornerRadius="{Binding ViewBorderRadius}" BorderBrush="White" Background="Transparent" BorderThickness="{Binding ViewBorderThickness}" Panel.ZIndex="1">
                         <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
 
-                            <TextBox Text="{Binding Name, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding Name, Mode=TwoWay}" TextChanged="OnNameChanged"/>
                             <TextBox Text="{Binding Weight, Mode=TwoWay}" BorderThickness="0,1,0,1"/>
                             <TextBox Text="{Binding Grade, Mode=TwoWay}"/>
 
