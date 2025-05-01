@@ -1,5 +1,6 @@
 .vs/
 bin/
 obj/
+*.db
 ToDo's.txt
 Temp.txt

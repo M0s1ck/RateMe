@@ -14,6 +14,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RateMe.DataUtils.InterfaceCollections;
+using RateMe.DataUtils.LocalDbModels;
 using RateMe.DataUtils.Models;
 using RateMe.Parser;
 using RateMe.View.UserControls;
@@ -44,6 +45,8 @@ namespace RateMe
             try
             {
                 InitializeComponent();
+
+                SubjectsContext aa = new SubjectsContext();
 
                 Curriculums curriculums = new Curriculums();
                 CurriculumsComboBox.ItemsSource = curriculums;
