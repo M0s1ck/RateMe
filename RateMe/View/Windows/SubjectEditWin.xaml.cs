@@ -35,6 +35,7 @@ namespace RateMe.View.Windows
             WindowBarDockPanel bar = new(this);
             windowGrid.Children.Add(bar);
             Topmost = true;
+            MinusButton.vertBar.Visibility = Visibility.Hidden;
 
             _theSubject = subject;
             UpdatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
@@ -100,28 +101,6 @@ namespace RateMe.View.Windows
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void OnRemoveMouseEnter(object sender, MouseEventArgs e)
-        {
-            horBar2.Fill = ColorWhenEntered;
-        }
-
-        private void OnRemoveMouseLeave(object sender, MouseEventArgs e)
-        {
-            horBar2.Fill = ColorWhenLeft;
-        }
-
-        private void OnAddMouseEnter(object sender, MouseEventArgs e)
-        {
-            vertBar.Fill = ColorWhenEntered;
-            horBar.Fill = ColorWhenEntered;
-        }
-
-        private void OnAddMouseLeave(object sender, MouseEventArgs e)
-        {
-            vertBar.Fill = ColorWhenLeft;
-            horBar.Fill = ColorWhenLeft;
         }
 
         private void OnWindowClick(object sender, MouseButtonEventArgs e)

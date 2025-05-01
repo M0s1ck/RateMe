@@ -1,0 +1,27 @@
+<UserControl x:Class="RateMe.View.UserControls.PlusButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:RateMe.View.UserControls"
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="50">
+    
+    <UserControl.Resources>
+        <Style x:Key="AddDeleteBorder" TargetType="{x:Type Border}">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="7"/>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Border Style="{StaticResource AddDeleteBorder}" MouseEnter="OnAddMouseEnter" MouseLeave="OnAddMouseLeave"/>
+        <Rectangle x:Name="vertBar" Width="6" Height="30" Fill="White" Panel.ZIndex="-1"/>
+        <Rectangle x:Name="horBar" Width="30" Height="6" Fill="White" Panel.ZIndex="-1"/>
+    </Grid>
+    
+</UserControl>

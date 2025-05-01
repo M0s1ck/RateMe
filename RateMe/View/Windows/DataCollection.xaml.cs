@@ -125,7 +125,7 @@ namespace RateMe
 
 
 
-            SubjectsWin subjectsWin = new(syllabus, subjects);
+            SubjectsWin subjectsWin = new(syllabus, []);
             subjectsWin.Show();
             Close();            
         }

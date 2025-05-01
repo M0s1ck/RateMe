@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:RateMe.View.Windows"
         mc:Ignorable="d"
         
-        MouseDown="OnWindowClick"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-        xmlns:UserControls="clr-namespace:RateMe.View.UserControls"
+        xmlns:userControls="clr-namespace:RateMe.View.UserControls"
+        xmlns:svg="http://sharpvectors.codeplex.com/runtime/" xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         Title="GradesWin" Height="860" Width="1600" WindowStartupLocation="CenterScreen"
-        Background="#10151b">
+        Background="#10151b" MouseDown="OnWindowClick">
     
 
     <WindowChrome.WindowChrome>
@@ -21,13 +21,36 @@
         <Grid x:Name="MainGrid" Margin="0,60,0,0" HorizontalAlignment="Center">
 
             <Grid.Resources>
+                <Style x:Key="OptionText" TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontSize" Value="20"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+                
                 <DataTemplate x:Key="FormulaTemplate">
-                    <UserControls:ControlElementsTable></UserControls:ControlElementsTable>
+                    <userControls:ControlElementsTable></userControls:ControlElementsTable>
                 </DataTemplate>
 
                 <DataTemplate x:Key="EditTemplate">
-                    <UserControls:SettingsGear MouseDown="OnEditGearClick"/>
+                    <userControls:SettingsGear MouseDown="OnEditGearClick"/>
                 </DataTemplate>
+                
+                <DataTemplate x:Key="TrashBinTemplate">
+                    <Grid>
+                        <Button Click="OnTrashBinClick" MouseEnter="OnTrashBinEnter" MouseLeave="OnTrashBinLeave" Height="30" Width="30" 
+                                Background="Transparent" BorderBrush="Transparent" OverridesDefaultStyle="True">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Image Source="{svgc:SvgImage Source=/Assets/trash-can-svgrepo-com (1).svg, AppName=RateMe}"/>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+                
             </Grid.Resources>
             
             <Grid.ColumnDefinitions>
@@ -36,16 +59,22 @@
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
             
+            <Grid Grid.Column="0">
+                <TextBlock Style="{StaticResource OptionText}" Text="Добавить предмет" Margin="0,0,0,100"/>
+                <userControls:PlusButton MouseLeftButtonDown="OnAddSubject"/>
+            </Grid>
+            
             <Border Grid.Column="1" CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
                 <DataGrid x:Name="grades" ItemsSource="{Binding Subjects}" AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single"
                       Width="1200" Background="Transparent" BorderBrush="Transparent" Foreground="White">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17" />
-                        <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="600" />
+                        <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="630" />
                         <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100" FontSize="15" />
                         <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="100" FontSize="16" />
-                        <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="100"/>
+                        <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="80"/>
+                        <DataGridTemplateColumn CellTemplate="{StaticResource TrashBinTemplate}" Header="Remove" Width="80"/>
                     </DataGrid.Columns>
 
                     <DataGrid.Resources>
@@ -104,9 +133,6 @@
 
                         </Style>
                     </DataGrid.RowStyle>
-
-
-
                 </DataGrid>
             </Border>
             

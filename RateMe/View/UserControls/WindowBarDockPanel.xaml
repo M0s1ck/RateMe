@@ -55,6 +55,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
+    
     <Grid>
         <DockPanel>
             <Border DockPanel.Dock="Top" Height="35" VerticalAlignment="Top">

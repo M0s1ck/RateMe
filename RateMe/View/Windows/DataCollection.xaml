@@ -10,6 +10,7 @@
         MouseDown="OnWindowClick"
         Title="DataCollection" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        xmlns:svg="http://sharpvectors.codeplex.com/runtime/" xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         Background="#10151b">
 
     <Window.Resources>
@@ -329,9 +330,12 @@
             <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" x:Name="ContinueButton" Click="OnContinueClick" HorizontalAlignment="Center" Margin="0,300,0,0" Content="Продолжить" VerticalAlignment="Center" FontSize="16" FontFamily="Bahnschrift SemiCondensed"
                 Height="40" Width="120" Foreground="White" Background="#032169"/>
 
+            <svgc:SvgViewbox Width="24" Height="24" Source="/RateMe;component/Assets/circle-user-svgrepo-com.svg" Margin="0,300,200,0" Panel.ZIndex="1"/>
+
             <TextBlock x:Name="WaitTextBlock" HorizontalAlignment="Center" Margin="0,400,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Text="Подождите..." Visibility="Hidden" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Foreground="White"/>
             <Canvas x:Name="BallsCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="60,400,0,0">
             </Canvas>
+            
         </Grid>
     </Grid>
 </Window>

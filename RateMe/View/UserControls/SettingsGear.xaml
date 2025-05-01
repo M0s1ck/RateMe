@@ -29,46 +29,4 @@
 
         </Canvas>
     </Grid>
-    <!--
-    <Canvas x:Name="Canv" >
-
-        
-        
-        <Ellipse x:Name="topRightElp" Width="22" Height="30" Fill="#10151b" Panel.ZIndex="5">
-            <Ellipse.RenderTransform>
-                <RotateTransform Angle="36"/>
-            </Ellipse.RenderTransform>
-        </Ellipse>
-
-        <Ellipse x:Name="topLeftElp" Width="22" Height="30" Fill="#10151b" Panel.ZIndex="5">
-            <Ellipse.RenderTransform>
-                <RotateTransform Angle="-36"/>
-            </Ellipse.RenderTransform>
-        </Ellipse>
-
-        <Ellipse Width="20" Height="20" Fill="#10151b"/>
-
-        <Rectangle Width="20" Height="5" Fill="#10151b" Margin="0,0,0,43"/>
-
-        <Rectangle Width="20" Height="5" Fill="#10151b" Margin="3,4,37,51">
-            
-        </Rectangle>
-        <Rectangle Width="20" Height="5" Fill="#10151b" Margin="5,32,35,23">
-            <Rectangle.RenderTransform>
-                <TransformGroup>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-72"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Rectangle.RenderTransform>
-        </Rectangle>
-        
-        <Ellipse Width="22" Height="30" Fill="#10151b" Margin="-6,58,44,-28" Panel.ZIndex="5">
-            <Ellipse.RenderTransform>
-                <RotateTransform Angle="-108"/>
-            </Ellipse.RenderTransform>
-        </Ellipse>
-        
-    </Canvas>
-    -->
 </UserControl>

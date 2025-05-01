@@ -73,8 +73,15 @@ namespace RateMe.DataUtils.Models
         private bool _isSelected;
         private double _score;
         private Visibility _visibility;
-        private readonly Dictionary<string, string> _assFormulas = []; 
+        private readonly Dictionary<string, string> _assFormulas = [];
 
+
+        public Subject()
+        {
+            _name = string.Empty;
+            FormulaObj = [];
+            LocalModel = new SubjectLocal();
+        }
         
         // Created from hse site. 
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)

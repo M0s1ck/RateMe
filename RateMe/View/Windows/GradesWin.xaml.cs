@@ -41,12 +41,18 @@ namespace RateMe.View.Windows
             foreach (Subject subject in subjects)
             {
                 Subjects.Add(subject);
+                subject.LocalModel = new SubjectLocal { Name = subject.Name, Credits = subject.Credits, Elements = [] };
+
+                foreach (ControlElement elem in subject.FormulaObj)
+                {
+                    subject.LocalModel.Elements.Add(elem.LocalModel);
+                }
+
+                _localDb.Add(subject.LocalModel);
             }
 
             _syllabus = syllabus;
-
             grades.ItemsSource = Subjects;
-
         }
 
 
@@ -76,6 +82,17 @@ namespace RateMe.View.Windows
                 Subjects.Add(subj);
             }
         }
+        
+        private void OnAddSubject(object sender, MouseButtonEventArgs e)
+        {
+            Subject subject = new();
+            Subjects.Add(subject);
+            _localDb.Add(subject.LocalModel);
+            
+            SubjectEditWin subjWin = new SubjectEditWin(subject);
+            subjWin.Show();
+            subjWin.Activate();
+        }
 
         private void OnEditGearClick(object sender, MouseButtonEventArgs e)
         {
@@ -94,6 +111,38 @@ namespace RateMe.View.Windows
             subjWin.Activate();
         }
         
+        private void OnTrashBinClick(object sender, RoutedEventArgs e)
+        {
+            Subject? subject = ((FrameworkElement)sender)?.DataContext as Subject;
+            
+            if (subject == null)
+            {
+                return; 
+            }
+
+            RemoveSubjectWin win = new(subject);
+            win.RemovalAgreed += RemoveSubject;
+            win.Show();
+        }
+
+        private void RemoveSubject(Subject subject)
+        {
+            Subjects.Remove(subject);
+            _localDb.Remove(subject.LocalModel);
+        }
+
+        private void OnTrashBinEnter(object sender, MouseEventArgs e)
+        {
+            Button trashBin = (Button)sender;
+            trashBin.Height = 35;
+            trashBin.Width = 35;
+        }
         
+        private void OnTrashBinLeave(object sender, MouseEventArgs e)
+        {
+            Button trashBin = (Button)sender;
+            trashBin.Height = 30;
+            trashBin.Width = 30;
+        }
     }
 }
