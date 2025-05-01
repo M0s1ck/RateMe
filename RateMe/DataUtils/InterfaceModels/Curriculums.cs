@@ -1,15 +1,9 @@
-﻿using RateMe.DataUtils.JsonModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
+using RateMe.DataUtils.JsonModels;
 
-namespace RateMe.DataUtils.InterfaceCollections
+namespace RateMe.DataUtils.InterfaceModels
 {
     public class Curriculums : ObservableCollection<string>
     {

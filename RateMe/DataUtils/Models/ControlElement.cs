@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows;
+using RateMe.DataUtils.LocalDbModels;
 
 namespace RateMe.DataUtils.Models
 {
     public class ControlElement : INotifyPropertyChanged
     {
+        public ControlElementLocal LocalModel { get; set; }
+        
         public string Name 
         {
             get => _name;
@@ -54,6 +57,7 @@ namespace RateMe.DataUtils.Models
             _name = "Элемент контроля";
             _weight = 0;
             _grade = 0;
+            LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
         public ControlElement(string name, double weight) 
@@ -61,8 +65,23 @@ namespace RateMe.DataUtils.Models
             _name = name;
             _weight = weight;
             _grade = 0;
+            LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
+        public ControlElement(ControlElementLocal elemLocal)
+        {
+            _name = elemLocal.Name;
+            _weight = elemLocal.Weight;
+            _grade = elemLocal.Grade;
+            LocalModel = elemLocal;
+        }
+
+        public void UpdateLocalModel()
+        {
+            LocalModel.Name = Name;
+            LocalModel.Grade = Grade;
+            LocalModel.Weight = Weight;
+        }
 
         public event GradesUpdatedHandler? GradesUpdated;
 
@@ -72,7 +91,6 @@ namespace RateMe.DataUtils.Models
         {
             GradesUpdated?.Invoke();
         }
-        
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

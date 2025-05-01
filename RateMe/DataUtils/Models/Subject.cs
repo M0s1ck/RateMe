@@ -6,14 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using RateMe.DataUtils.LocalDbModels;
 
 namespace RateMe.DataUtils.Models
 {
     public class Subject : INotifyPropertyChanged
     {
-        public int[] Modules { get; }
+        public int[] Modules { get; } = [];
         public bool IsNis { get; }
         public Formula FormulaObj { get; set; }
+        public SubjectLocal LocalModel { get; set; } 
 
         public string Name
         {
@@ -66,15 +68,15 @@ namespace RateMe.DataUtils.Models
         }
 
 
-        
-        private string _name;
+        private string _name = string.Empty;
         private int _credits;
         private bool _isSelected;
         private double _score;
         private Visibility _visibility;
-        private Dictionary<string, string> _assFormulas;
+        private readonly Dictionary<string, string> _assFormulas = []; 
 
-
+        
+        // Created from hse site. 
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
         {
             Name = name;
@@ -85,6 +87,37 @@ namespace RateMe.DataUtils.Models
             IsNis = Name.ToLower().Contains("научно-исследовательский семинар");
             _isSelected = true;
             _visibility = Visibility.Visible;
+            FormulaObj = [];
+            LocalModel = new SubjectLocal { Name = this.Name, Credits = this.Credits, Elements = [] };
+        }
+        
+        // Created from local db. 
+        public Subject(SubjectLocal localSubj)
+        {
+            Name = localSubj.Name;
+            Credits = localSubj.Credits;
+            FormulaObj = [];
+
+            foreach (ControlElementLocal elemLocal in localSubj.Elements)
+            {
+                ControlElement elem = new ControlElement(elemLocal);
+                FormulaObj.Add(elem);
+                elem.GradesUpdated += UpdateScore;
+            }
+            
+            UpdateScore();
+            LocalModel = localSubj;
+        }
+
+        public void UpdateLocalModel()
+        {
+            LocalModel.Name = Name;
+            LocalModel.Credits = Credits;
+
+            foreach (ControlElement elem in FormulaObj)
+            {
+                elem.UpdateLocalModel();
+            }
         }
 
         public void UpdateScore()
@@ -126,7 +159,7 @@ namespace RateMe.DataUtils.Models
                 return;
             }
 
-            bool success4 = SetFormulaForModule(module-1);
+            SetFormulaForModule(module-1);
         }
 
 

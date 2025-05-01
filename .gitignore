@@ -1,6 +1,12 @@
 .vs/
 bin/
 obj/
+.idea/
+*.DotSettings.user
+
 *.db
+*.db-shm
+*.db-wal
+
 ToDo's.txt
 Temp.txt

@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using RateMe.DataUtils.InterfaceCollections;
+using RateMe.DataUtils.InterfaceModels;
 using RateMe.DataUtils.LocalDbModels;
 using RateMe.DataUtils.Models;
 using RateMe.Parser;

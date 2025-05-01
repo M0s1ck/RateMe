@@ -24,6 +24,8 @@ namespace RateMe.View.Windows
         private Subject _theSubject;
         public Subject UpdatedSubject { get; private set; }
 
+        private DataHintTextModel _subjectNameTextModel;
+
         static readonly SolidColorBrush ColorWhenEntered = new SolidColorBrush(Colors.DimGray);
         static readonly SolidColorBrush ColorWhenLeft = new SolidColorBrush(Colors.White);
 
@@ -37,31 +39,34 @@ namespace RateMe.View.Windows
             _theSubject = subject;
             UpdatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
             UpdatedSubject.FormulaObj = [];
+            UpdatedSubject.LocalModel = subject.LocalModel;
             
             foreach (ControlElement elem in subject.FormulaObj)
             {
                 ControlElement newElem = new ControlElement(elem.Name, elem.Weight);
                 newElem.Grade = elem.Grade;
+                newElem.LocalModel = elem.LocalModel;
                 UpdatedSubject.FormulaObj.Add(newElem);
             }
 
             DataContext = UpdatedSubject;
 
-            DataHintTextModel subjectNameTextModel = new DataHintTextModel(UpdatedSubject.Name, "Название предмета", Visibility.Visible);
-            subjTetx2.DataContext = subjectNameTextModel;
+            _subjectNameTextModel = new DataHintTextModel(UpdatedSubject.Name, "Название предмета", Visibility.Visible);
+            subjTetx2.DataContext = _subjectNameTextModel;
 
             gradesTable.DataContext = UpdatedSubject;
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
         {
-            _theSubject.Name = UpdatedSubject.Name;
+            _theSubject.Name = _subjectNameTextModel.Data;
             _theSubject.Credits = UpdatedSubject.Credits;
             _theSubject.FormulaObj.Clear();
             _theSubject.Score = 0;
 
             foreach (ControlElement elem in UpdatedSubject.FormulaObj)
             {
+                elem.GradesUpdated += _theSubject.UpdateScore;
                 _theSubject.FormulaObj.Add(elem);
                 _theSubject.Score += elem.Weight * elem.Grade;
             }
@@ -71,7 +76,9 @@ namespace RateMe.View.Windows
 
         private void OnAddClick(object sender, MouseButtonEventArgs e)
         {
-            UpdatedSubject.FormulaObj.Add(new ControlElement());
+            ControlElement newElem = new ControlElement();
+            UpdatedSubject.FormulaObj.Add(newElem);
+            UpdatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
         }
 
         private void OnRemoveClick(object sender, MouseButtonEventArgs e)
@@ -86,6 +93,7 @@ namespace RateMe.View.Windows
             if (elem != null)
             {
                 UpdatedSubject.FormulaObj.Remove(elem);
+                UpdatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
             }
         }
 

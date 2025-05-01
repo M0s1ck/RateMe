@@ -15,6 +15,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.EntityFrameworkCore;
+using RateMe.DataUtils.LocalDbModels;
 
 namespace RateMe.View.Windows
 {
@@ -26,11 +28,15 @@ namespace RateMe.View.Windows
         internal ObservableCollection<Subject> Subjects { get; private set; } = [];
         private SyllabusModel _syllabus;
 
+        private static SubjectsContext _localDb = new SubjectsContext();
+
         public GradesWin(SyllabusModel syllabus, List<Subject> subjects)
         {
             InitializeComponent();
             WindowBarDockPanel bar = new(this);
             windowGrid.Children.Add(bar);
+
+            LoadSubjectsFromLocalDb();
 
             foreach (Subject subject in subjects)
             {
@@ -49,6 +55,27 @@ namespace RateMe.View.Windows
             Keyboard.ClearFocus();
         }
 
+        private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Subject subject in Subjects)
+            {
+                subject.UpdateLocalModel();
+            }
+
+            await _localDb.SaveChangesAsync();
+            Close();
+        }
+
+        private void LoadSubjectsFromLocalDb()
+        {
+            List <SubjectLocal> subjectLocals = _localDb.Subjects.Include(s => s.Elements).ToList();
+            
+            foreach (SubjectLocal subjLocal in subjectLocals)
+            {
+                Subject subj = new(subjLocal);
+                Subjects.Add(subj);
+            }
+        }
 
         private void OnEditGearClick(object sender, MouseButtonEventArgs e)
         {
@@ -66,5 +93,7 @@ namespace RateMe.View.Windows
             subjWin.Show();
             subjWin.Activate();
         }
+        
+        
     }
 }

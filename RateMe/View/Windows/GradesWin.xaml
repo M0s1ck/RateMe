@@ -28,10 +28,15 @@
                 <DataTemplate x:Key="EditTemplate">
                     <UserControls:SettingsGear MouseDown="OnEditGearClick"/>
                 </DataTemplate>
-                
             </Grid.Resources>
-
-            <Border CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="1200"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Grid.Column="1" CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
                 <DataGrid x:Name="grades" ItemsSource="{Binding Subjects}" AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single"
                       Width="1200" Background="Transparent" BorderBrush="Transparent" Foreground="White">
 
@@ -104,6 +109,13 @@
 
                 </DataGrid>
             </Border>
+            
+            <Grid Grid.Column="2">
+                <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,700,0,0"
+                        Content="Сохранить и выйти" VerticalAlignment="Center" FontSize="18"
+                        FontFamily="Bahnschrift SemiCondensed" Height="50" Width="160" Foreground="White" Background="#032169"/> 
+            </Grid>
+            
         </Grid>
     </Grid>
 </Window>
