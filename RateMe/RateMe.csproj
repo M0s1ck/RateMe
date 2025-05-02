@@ -26,7 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\trash-can-svgrepo-com (1).svg" />
+    <None Remove="Assets\info-circle.svg" />
+    <Resource Include="Assets\info-circle.svg" />
+    <None Remove="Assets\heart-tilted.svg" />
+    <Resource Include="Assets\heart-tilted.svg" />
+    <None Remove="Assets\trash-can.svg" />
+    <Resource Include="Assets\trash-can.svg" />
   </ItemGroup>
 
 </Project>

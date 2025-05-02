@@ -25,10 +25,10 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class GradesWin : Window
     {
-        internal ObservableCollection<Subject> Subjects { get; private set; } = [];
+        private ObservableCollection<Subject> Subjects { get; } = [];
         private SyllabusModel _syllabus;
 
-        private static SubjectsContext _localDb = new SubjectsContext();
+        private static readonly SubjectsContext LocalDb = new SubjectsContext();
 
         public GradesWin(SyllabusModel syllabus, List<Subject> subjects)
         {
@@ -48,7 +48,7 @@ namespace RateMe.View.Windows
                     subject.LocalModel.Elements.Add(elem.LocalModel);
                 }
 
-                _localDb.Add(subject.LocalModel);
+                LocalDb.Add(subject.LocalModel);
             }
 
             _syllabus = syllabus;
@@ -68,13 +68,13 @@ namespace RateMe.View.Windows
                 subject.UpdateLocalModel();
             }
 
-            await _localDb.SaveChangesAsync();
+            await LocalDb.SaveChangesAsync();
             Close();
         }
 
         private void LoadSubjectsFromLocalDb()
         {
-            List <SubjectLocal> subjectLocals = _localDb.Subjects.Include(s => s.Elements).ToList();
+            List <SubjectLocal> subjectLocals = LocalDb.Subjects.Include(s => s.Elements).ToList();
             
             foreach (SubjectLocal subjLocal in subjectLocals)
             {
@@ -87,7 +87,7 @@ namespace RateMe.View.Windows
         {
             Subject subject = new();
             Subjects.Add(subject);
-            _localDb.Add(subject.LocalModel);
+            LocalDb.Add(subject.LocalModel);
             
             SubjectEditWin subjWin = new SubjectEditWin(subject);
             subjWin.Show();
@@ -128,7 +128,7 @@ namespace RateMe.View.Windows
         private void RemoveSubject(Subject subject)
         {
             Subjects.Remove(subject);
-            _localDb.Remove(subject.LocalModel);
+            LocalDb.Remove(subject.LocalModel);
         }
 
         private void OnTrashBinEnter(object sender, MouseEventArgs e)
@@ -143,6 +143,12 @@ namespace RateMe.View.Windows
             Button trashBin = (Button)sender;
             trashBin.Height = 30;
             trashBin.Width = 30;
+        }
+
+        private void OnInfoClick(object sender,RoutedEventArgs e)
+        {
+            InfoWin infoWin = new();
+            infoWin.Show();
         }
     }
 }

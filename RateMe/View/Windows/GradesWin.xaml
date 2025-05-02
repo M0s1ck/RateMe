@@ -11,68 +11,61 @@
         xmlns:svg="http://sharpvectors.codeplex.com/runtime/" xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         Title="GradesWin" Height="860" Width="1600" WindowStartupLocation="CenterScreen"
         Background="#10151b" MouseDown="OnWindowClick">
-    
 
     <WindowChrome.WindowChrome>
         <WindowChrome />
     </WindowChrome.WindowChrome>
+    
+    <Window.Resources>
+        <Style x:Key="OptionText" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+            
+        <DataTemplate x:Key="FormulaTemplate">
+            <userControls:ControlElementsTable></userControls:ControlElementsTable>
+        </DataTemplate>
+
+        <DataTemplate x:Key="EditTemplate">
+            <userControls:SettingsGear MouseDown="OnEditGearClick"/>
+        </DataTemplate>
+            
+        <DataTemplate x:Key="TrashBinTemplate">
+            <Grid>
+                <userControls:CoolSvgButton Size="30" BiggerSize="35" Source="/Assets/trash-can.svg" WhenClicked="OnTrashBinClick"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
 
     <Grid x:Name="windowGrid">
-        <Grid x:Name="MainGrid" Margin="0,60,0,0" HorizontalAlignment="Center">
-
-            <Grid.Resources>
-                <Style x:Key="OptionText" TargetType="{x:Type TextBlock}">
-                    <Setter Property="FontSize" Value="20"/>
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                </Style>
-                
-                <DataTemplate x:Key="FormulaTemplate">
-                    <userControls:ControlElementsTable></userControls:ControlElementsTable>
-                </DataTemplate>
-
-                <DataTemplate x:Key="EditTemplate">
-                    <userControls:SettingsGear MouseDown="OnEditGearClick"/>
-                </DataTemplate>
-                
-                <DataTemplate x:Key="TrashBinTemplate">
-                    <Grid>
-                        <Button Click="OnTrashBinClick" MouseEnter="OnTrashBinEnter" MouseLeave="OnTrashBinLeave" Height="30" Width="30" 
-                                Background="Transparent" BorderBrush="Transparent" OverridesDefaultStyle="True">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Button.Template>
-                            <Image Source="{svgc:SvgImage Source=/Assets/trash-can-svgrepo-com (1).svg, AppName=RateMe}"/>
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-                
-            </Grid.Resources>
+        <Grid Margin="0,60,0,0" HorizontalAlignment="Center">
             
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="1200"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200" /> 
+                <ColumnDefinition Width="*" />   
+                <ColumnDefinition Width="200" /> 
             </Grid.ColumnDefinitions>
             
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0"  Width="200">
+                <TextBlock Style="{StaticResource OptionText}" Text="Info" FontSize="19" VerticalAlignment="Top" Margin="0,17,0,0"/>
+                <userControls:CoolSvgButton Size="40" BiggerSize="45" Source="/Assets/info-circle.svg" VerticalAlignment="Top" Margin="0,45,0,0" WhenClicked="OnInfoClick"/>
+                
                 <TextBlock Style="{StaticResource OptionText}" Text="Добавить предмет" Margin="0,0,0,100"/>
                 <userControls:PlusButton MouseLeftButtonDown="OnAddSubject"/>
             </Grid>
             
             <Border Grid.Column="1" CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
                 <DataGrid x:Name="grades" ItemsSource="{Binding Subjects}" AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single"
-                      Width="1200" Background="Transparent" BorderBrush="Transparent" Foreground="White">
+                      Background="Transparent" BorderBrush="Transparent" Foreground="White" CanUserAddRows="False" HorizontalAlignment="Stretch">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17" />
-                        <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="630" />
-                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="100" FontSize="15" />
-                        <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="100" FontSize="16" />
+                        <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="*" />
+                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="70" FontSize="15" />
+                        <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="88" FontSize="16" />
                         <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="80"/>
                         <DataGridTemplateColumn CellTemplate="{StaticResource TrashBinTemplate}" Header="Remove" Width="80"/>
                     </DataGrid.Columns>
@@ -88,8 +81,7 @@
                             <Setter Property="Height" Value="50" />
                             <Setter Property="FontSize" Value="20" />
                         </Style>
-
-
+                        
                         <Style TargetType="{x:Type DataGridCell}">
 
                             <Style.Setters>
@@ -136,12 +128,11 @@
                 </DataGrid>
             </Border>
             
-            <Grid Grid.Column="2">
-                <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,700,0,0"
-                        Content="Сохранить и выйти" VerticalAlignment="Center" FontSize="18"
+            <Grid Grid.Column="2" DockPanel.Dock="Right" Width="200">
+                <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,0,0,50"
+                        Content="Сохранить и выйти" VerticalAlignment="Bottom" FontSize="18" 
                         FontFamily="Bahnschrift SemiCondensed" Height="50" Width="160" Foreground="White" Background="#032169"/> 
             </Grid>
-            
         </Grid>
     </Grid>
 </Window>
