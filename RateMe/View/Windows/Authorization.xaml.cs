@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RateMe.DataUtils.JsonModels;
+using RateMe.DataUtils.Models;
+using RateMe.View.Windows;
 using Path = System.IO.Path;
 
 namespace RateMe
@@ -21,8 +23,15 @@ namespace RateMe
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string _email;
-        private string _password;
+        private string _email = string.Empty;
+        private string _password = string.Empty;
+
+        #region StaticConsts
+        private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+        private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
+        private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
+        #endregion
+        
 
         public MainWindow()
         {
@@ -32,18 +41,15 @@ namespace RateMe
             WindowBarDockPanel bar = new(this);
             WindowGrid.Children.Add(bar);
             
-            Config? config = GetConfig();
+            Config? config = JsonModelsHandler.GetConfig();
             OpenNextWin(config);
             
             Close();
         }
 
-        private Config? GetConfig()
+        private static Config GetConfig()
         {
-            string dir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-            string path = Path.Combine(dir, "config.json");
-            string jsonContent = File.ReadAllText(path);
-
+            string jsonContent = File.ReadAllText(ConfigJsonPath);
             Config? config = JsonSerializer.Deserialize<Config>(jsonContent);
             
             if (config == null)
@@ -54,7 +60,7 @@ namespace RateMe
             return config;
         }
 
-        private void OpenNextWin(Config? config)
+        private static void OpenNextWin(Config? config)
         {
             if (config == null || !config.IsSubjectsLoaded)
             {
@@ -67,15 +73,30 @@ namespace RateMe
                 {
                     MessageBox.Show(ex.ToString());
                 }
+                return;
             }
-            else
-            {
-                
-            }
-            
-            
-        } 
 
+            SyllabusModel syllabus = JsonModelsHandler.GetSyllabus();
+            GradesWin gradesWin = new GradesWin(syllabus);
+            gradesWin.Show();
+        }
+        
+        
+        private static SyllabusModel GetSyllabus()
+        {
+            string jsonContent = File.ReadAllText(SyllabusJsonPath);
+            SyllabusModel? syllabus = JsonSerializer.Deserialize<SyllabusModel>(jsonContent);
+            
+            if (syllabus == null)
+            {
+                MessageBox.Show("Couldn't deserialize Data\\syllabus.json");
+                return new SyllabusModel();
+            }
+
+            return syllabus;
+        }
+
+        
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Welcome back, {_email} : {_password}!");
@@ -100,7 +121,7 @@ namespace RateMe
         }
 
 
-        private void emailEntered(object sender, TextChangedEventArgs e)
+        private void EmailEntered(object sender, TextChangedEventArgs e)
         {
             if (EmailTextBox.Text == string.Empty)
             {
@@ -114,7 +135,7 @@ namespace RateMe
             _email = EmailTextBox.Text;
         }
 
-        private void passwordEntered(object sender, TextChangedEventArgs e)
+        private void PasswordEntered(object sender, TextChangedEventArgs e)
         {
             if (PasswordTextBox.Text == string.Empty)
             {

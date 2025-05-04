@@ -8,13 +8,14 @@ namespace RateMe.DataUtils.Models
 {
     public class Student
     {
-        public string Surname { get; }
+        public string Surname { get; } = string.Empty;
 
-        public string Name { get; }
+        public string Name { get; } = string.Empty;
 
         public int Group { get; }
-
-
+        
+        public Student() {}
+        
         public Student(string surname, string name, int group)
         {
             Surname = surname;
@@ -26,7 +27,5 @@ namespace RateMe.DataUtils.Models
         {
             return $"{Surname} {Name} : {Group}";
         }
-
-
     }
 }

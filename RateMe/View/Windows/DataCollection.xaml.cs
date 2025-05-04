@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +18,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RateMe.DataUtils.InterfaceModels;
+using RateMe.DataUtils.JsonModels;
 using RateMe.DataUtils.LocalDbModels;
 using RateMe.DataUtils.Models;
 using RateMe.Parser;
@@ -28,6 +33,8 @@ namespace RateMe
     {
         private Storyboard _ballsStoryBoard = new Storyboard();
 
+        #region staticConsts
+        
         private static readonly int NumberOfCourses = 4;
         private static readonly int NumberOfGroups = 10;
         private static readonly IEnumerable<string> CourseNumbers = Enumerable.Range(1, NumberOfCourses).Select(i => i.ToString());
@@ -38,7 +45,14 @@ namespace RateMe
         private static readonly Tuple<double, double> LoadingBallsStartingCords = new(-35.0, 20.0);
         private static readonly int BallsCount = 20;
         private static readonly int BallRadius = 5;
-
+        
+        private static readonly string DataDir = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data");
+        private static readonly string SyllabusJsonPath = System.IO.Path.Combine(DataDir, "syllabus.json");
+        private static readonly JsonSerializerOptions JsonOptions = new()
+            { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic), };
+        
+        #endregion
+        
 
         public DataCollection()
         {
@@ -87,14 +101,7 @@ namespace RateMe
             ContinueButton.IsEnabled = false;
 
             // Collected data building up
-            int groupNumber = int.Parse(GroupComboBox.SelectedItem.ToString() ?? "");
-            Student student = new Student(SurameTextBox.Data, NameTextBox.Data, groupNumber);
-
-            string curriculum = CurriculumsComboBox.SelectedItem.ToString() ?? "";
-            int course = int.Parse(CourseComboBox.SelectedItem.ToString() ?? "");
-            int term = int.Parse(TermComboBox.SelectedItem.ToString() ?? "");
-
-            SyllabusModel syllabus = new SyllabusModel(student, curriculum, course, term);
+            
 
             // Parsing(Web - sc..)
             //MainParser mainParser = new MainParser(syllabus);
@@ -114,6 +121,7 @@ namespace RateMe
             Subject eco = new Subject("Economics", 9, [1, 2, 3, 4], []);
             eco.FormulaObj = new Formula("0.13 * Выполнение тестов онлайн-курса + 0.29 * Контрольная работа №1 (микроэкономика) + 0.29 * Контрольная работа №2 (макроэкономика) + 0.29 * Оценка за работу на семинарах");
 
+            SyllabusModel syllabus = HandleSyllabus();
 
             List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
                                   //new Subject("Алгебраnvsknksvnk4", 9, [1, 2, 3], []), new Subject("Матанsvmsmvlmslvmlsv5", 9, [3, 4], []), new Subject("Экономика6", 3, [3, 4], []),
@@ -136,12 +144,20 @@ namespace RateMe
             Keyboard.ClearFocus();
         }
 
-
-        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        private SyllabusModel HandleSyllabus()
         {
-            Close();
-        }
+            int groupNumber = int.Parse(GroupComboBox.SelectedItem.ToString() ?? "");
+            Student student = new Student(SurameTextBox.Data, NameTextBox.Data, groupNumber);
 
+            string curriculum = CurriculumsComboBox.SelectedItem.ToString() ?? "";
+            int course = int.Parse(CourseComboBox.SelectedItem.ToString() ?? "");
+            int term = int.Parse(TermComboBox.SelectedItem.ToString() ?? "");
+
+            SyllabusModel syllabus = new(student, curriculum, course, term);
+            JsonModelsHandler.SaveSyllabus(syllabus);
+
+            return syllabus;
+        }
 
         private void LaunchLoadingBalls()
         {

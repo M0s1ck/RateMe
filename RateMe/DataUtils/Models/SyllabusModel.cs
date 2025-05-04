@@ -9,11 +9,16 @@ namespace RateMe.DataUtils.Models
     public class SyllabusModel
     {
         public Student Student { get; }
-        public string Curriculum { get; }
+        public string Curriculum { get; } = string.Empty;
         public int Course { get; }
         public int Module { get; }
 
 
+        public SyllabusModel()
+        {
+            Student = new Student();
+        }
+        
         public SyllabusModel(Student student, string curriculum, int course, int semester)
         {
             Student = student;
@@ -24,7 +29,7 @@ namespace RateMe.DataUtils.Models
 
         public override string ToString()
         {
-            return $"{Student.ToString()} {Curriculum} {Course} {Module}";
+            return $"{Student} {Curriculum} {Course} {Module}";
         }
     }
 }

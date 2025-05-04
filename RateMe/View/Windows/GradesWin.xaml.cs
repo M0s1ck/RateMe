@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
+using RateMe.DataUtils.JsonModels;
 using RateMe.DataUtils.LocalDbModels;
 
 namespace RateMe.View.Windows
@@ -55,6 +56,9 @@ namespace RateMe.View.Windows
             grades.ItemsSource = Subjects;
         }
 
+        public GradesWin(SyllabusModel syllabus) : this(syllabus, []) 
+        { }
+
 
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
         {
@@ -81,6 +85,11 @@ namespace RateMe.View.Windows
                 Subject subj = new(subjLocal);
                 Subjects.Add(subj);
             }
+            
+            // Log to config
+            Config config = JsonModelsHandler.GetConfig();
+            config.IsSubjectsLoaded = true;
+            JsonModelsHandler.SaveConfig(config);
         }
         
         private void OnAddSubject(object sender, MouseButtonEventArgs e)

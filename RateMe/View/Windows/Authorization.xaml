@@ -77,13 +77,13 @@
                 Height="42" Width="96" Background="#FF525AD2" BorderThickness="2,2,2,2" FontSize="16" FontFamily="Bahnschrift SemiBold" BorderBrush="#FF0E0808" Click="SendButton_Click"/>
             <Rectangle Stroke="Black" Margin="238,77,238,139" RenderTransformOrigin="0.498,0.533"/>
 
-            <TextBox Name="EmailTextBox" TextChanged="emailEntered"  HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
+            <TextBox Name="EmailTextBox" TextChanged="EmailEntered"  HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
              Width="252" Height="37" Foreground="#000000" FontSize="16" TextAlignment="Center" Background="Transparent" RenderTransformOrigin="0.52,-0.444" FontFamily="Bahnschrift"/>
             <TextBlock Name="EmailHint" HorizontalAlignment="Center" Margin="0,113,0,0" TextWrapping="Wrap" Text="email" VerticalAlignment="Top"
              Width="252" Height="37" Foreground="#FF5B5B5B" FontSize="16" TextAlignment="Center" Background="#FFAAC5FF" RenderTransformOrigin="0.52,-0.444" Panel.ZIndex="-1"/>
 
 
-            <TextBox Name="PasswordTextBox" TextChanged="passwordEntered"  HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
+            <TextBox Name="PasswordTextBox" TextChanged="PasswordEntered"  HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
             Width="252" Height="37" Foreground="#000000" FontSize="16" TextAlignment="Center" Background="Transparent" RenderTransformOrigin="0.52,-0.444" FontFamily="Bahnschrift"/>
             <TextBlock Name="PasswordHint" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" Text="password" VerticalAlignment="Top"
             Width="252" Height="37" Foreground="#FF5B5B5B" FontSize="16" TextAlignment="Center" Background="#FFAAC5FF" RenderTransformOrigin="0.52,-0.444" Panel.ZIndex="-1"/>
