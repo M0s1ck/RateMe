@@ -1,47 +1,29 @@
-﻿using RateMe.View.UserControls;
-using System.IO;
-using System.Text;
-using System.Text.Json;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using RateMe.DataUtils.JsonModels;
 using RateMe.DataUtils.Models;
-using RateMe.View.Windows;
-using Path = System.IO.Path;
+using RateMe.View.UserControls;
 
-namespace RateMe
+namespace RateMe.View.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private string _email = string.Empty;
         private string _password = string.Empty;
-
-        #region StaticConsts
-        private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-        private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
-        private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
-        #endregion
         
-
+        
         public MainWindow()
         {
-            SetProjectDirectory();
+            // SetProjectDirectory();
             InitializeComponent();
             
             WindowBarDockPanel bar = new(this);
             WindowGrid.Children.Add(bar);
             
-            Config? config = JsonModelsHandler.GetConfig();
+            Config config = JsonModelsHandler.GetConfig();
             OpenNextWin(config);
             
             Close();
@@ -121,14 +103,5 @@ namespace RateMe
 
             _password = PasswordTextBox.Text;
         }
-
-        private static void SetProjectDirectory()
-        {
-            string defaultPath = Directory.GetCurrentDirectory();
-            string[] defaultPathArr = defaultPath.Split(System.IO.Path.DirectorySeparatorChar);
-            string projectPath = string.Join(System.IO.Path.DirectorySeparatorChar, defaultPathArr[..^3]);
-            Directory.SetCurrentDirectory(projectPath);
-        }
-
     }
 }
