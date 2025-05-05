@@ -32,6 +32,8 @@
     <Resource Include="Assets\heart-tilted.svg" />
     <None Remove="Assets\trash-can.svg" />
     <Resource Include="Assets\trash-can.svg" />
+    <None Remove="Assets\refresh.svg" />
+    <Resource Include="Assets\refresh.svg" />
   </ItemGroup>
 
 </Project>

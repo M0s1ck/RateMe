@@ -8,11 +8,11 @@ namespace RateMe.DataUtils.Models
 {
     public class Student
     {
-        public string Surname { get; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
 
-        public string Name { get; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public int Group { get; }
+        public int Group { get; set; }
         
         public Student() {}
         

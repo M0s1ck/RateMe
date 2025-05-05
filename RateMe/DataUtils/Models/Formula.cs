@@ -11,7 +11,7 @@ namespace RateMe.DataUtils.Models
 {
     public class Formula : ObservableCollection<ControlElement>
     {
-        private static Regex regex = new(@"((0[.,]\d+)\s*[*∙]\s*(.+?))\s*([\+\n]|(\. )|$)");
+        private static Regex regex = new(@"((0[.,]\d+)\s*[*∗∙]\s*(.+?))\s*([\+\n]|(\. )|$)");
         
         public Formula() : base() { }
 

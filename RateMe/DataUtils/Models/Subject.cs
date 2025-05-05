@@ -148,25 +148,8 @@ namespace RateMe.DataUtils.Models
 
         public void SetFormula(int module)
         {
-            bool success = SetFormulaForModule(module);
-            if (success)
-            {
-                return;
-            }
-
-            bool success2 = SetFormulaForModule(module+1);
-            if (success2)
-            {
-                return;
-            }
-
-            bool success3 = SetFormulaForModule(module+2);
-            if (success3)
-            {
-                return;
-            }
-
-            SetFormulaForModule(module-1);
+            _ = SetFormulaForModule(module) || SetFormulaForModule(module+1) || SetFormulaForModule(module+2) || SetFormulaForModule(module+3)
+                || SetFormulaForModule(module - 1) || SetFormulaForModule(module - 2) || SetFormulaForModule(module - 3);
         }
 
 
@@ -189,7 +172,7 @@ namespace RateMe.DataUtils.Models
                 }
             }
 
-            if (FormulaObj == null)
+            if (FormulaObj.Count == 0)
             {
                 return false;
             }

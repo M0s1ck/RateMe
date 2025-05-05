@@ -23,7 +23,7 @@ namespace RateMe.Parser
         private readonly Regex _curriculumRegex;
         private readonly HttpClient _httpClient = new HttpClient();
 
-
+        #region staticConsts
         private static readonly string BachUrl = @"https://www.hse.ru/education/bachelor";
         private static readonly string CurriculumCoursesPageUrlTemplate = @"https://www.hse.ru/ba/{0}/courses?course={1}.1.{1}.4&page={2}&year={3}";
         private static readonly int PageSubjectsCount = 20;
@@ -43,7 +43,7 @@ namespace RateMe.Parser
         private static readonly int CurrentStudyYear = GetCurrentStudyYear();
 
         private static readonly Regex[] ModulesRegexes = [new(@"(\d)\s*,\s*(\d)"), new(@"(\d)\s*-\s*(\d)"), new(@"\d")];
-
+        #endregion
 
         public MainParser(SyllabusModel syllabus)
         {

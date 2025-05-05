@@ -1,20 +1,8 @@
 ﻿using RateMe.DataUtils.Models;
 using RateMe.View.UserControls;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using RateMe.DataUtils.JsonModels;
 using RateMe.DataUtils.LocalDbModels;
@@ -140,18 +128,33 @@ namespace RateMe.View.Windows
             LocalDb.Remove(subject.LocalModel);
         }
 
-        private void OnTrashBinEnter(object sender, MouseEventArgs e)
+        private void OnRedoClick(object sender, RoutedEventArgs e)
         {
-            Button trashBin = (Button)sender;
-            trashBin.Height = 35;
-            trashBin.Width = 35;
+            RedoWin redo = new RedoWin();
+            redo.RedoAgreed += Redo;
+            redo.Show();
         }
-        
-        private void OnTrashBinLeave(object sender, MouseEventArgs e)
+
+        private async Task Redo(bool withSave)
         {
-            Button trashBin = (Button)sender;
-            trashBin.Height = 30;
-            trashBin.Width = 30;
+            if (!withSave)
+            {
+                foreach (Subject subject in Subjects)
+                {
+                    Subjects.Remove(subject);
+                    LocalDb.Remove(subject.LocalModel);
+                }
+            }
+
+            await LocalDb.SaveChangesAsync();
+            Close();
+            DataCollection dataWin = new();
+            dataWin.Show();
+            
+            // Log to config
+            Config config = JsonModelsHandler.GetConfig();
+            config.IsSubjectsLoaded = false;
+            JsonModelsHandler.SaveConfig(config);
         }
 
         private void OnInfoClick(object sender,RoutedEventArgs e)

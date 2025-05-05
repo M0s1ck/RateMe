@@ -46,19 +46,7 @@ namespace RateMe
             
             Close();
         }
-
-        private static Config GetConfig()
-        {
-            string jsonContent = File.ReadAllText(ConfigJsonPath);
-            Config? config = JsonSerializer.Deserialize<Config>(jsonContent);
-            
-            if (config == null)
-            {
-                throw new IOException("Couldn't deserialize Data\\config.json");
-            }
-
-            return config;
-        }
+        
 
         private static void OpenNextWin(Config? config)
         {
@@ -81,21 +69,6 @@ namespace RateMe
             gradesWin.Show();
         }
         
-        
-        private static SyllabusModel GetSyllabus()
-        {
-            string jsonContent = File.ReadAllText(SyllabusJsonPath);
-            SyllabusModel? syllabus = JsonSerializer.Deserialize<SyllabusModel>(jsonContent);
-            
-            if (syllabus == null)
-            {
-                MessageBox.Show("Couldn't deserialize Data\\syllabus.json");
-                return new SyllabusModel();
-            }
-
-            return syllabus;
-        }
-
         
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {

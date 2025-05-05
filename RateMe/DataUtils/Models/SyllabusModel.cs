@@ -8,10 +8,10 @@ namespace RateMe.DataUtils.Models
 {
     public class SyllabusModel
     {
-        public Student Student { get; }
-        public string Curriculum { get; } = string.Empty;
-        public int Course { get; }
-        public int Module { get; }
+        public Student Student { get; set; }
+        public string Curriculum { get; set; } = string.Empty;
+        public int Course { get; set; }
+        public int Module { get; set; }
 
 
         public SyllabusModel()
