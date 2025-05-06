@@ -3,6 +3,7 @@ bin/
 obj/
 .idea/
 *.DotSettings.user
+*.csproj.user
 
 *.db
 *.db-shm
@@ -11,3 +12,6 @@ obj/
 ToDo's.txt
 Temp.txt
 syllabus.json
+
+RateMeApiServer/Controllers/WeatherForecastController.cs
+RateMeApiServer/WeatherForecast.cs

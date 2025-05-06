@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMe", "RateMe\RateMe.csproj", "{D95C114D-BCE0-486B-AECF-4D78A901BFF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeApiServer", "RateMeApiServer\RateMeApiServer.csproj", "{38F82A49-C400-4068-A5E3-A6B0D0A47909}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D95C114D-BCE0-486B-AECF-4D78A901BFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D95C114D-BCE0-486B-AECF-4D78A901BFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D95C114D-BCE0-486B-AECF-4D78A901BFF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F82A49-C400-4068-A5E3-A6B0D0A47909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F82A49-C400-4068-A5E3-A6B0D0A47909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F82A49-C400-4068-A5E3-A6B0D0A47909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F82A49-C400-4068-A5E3-A6B0D0A47909}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
