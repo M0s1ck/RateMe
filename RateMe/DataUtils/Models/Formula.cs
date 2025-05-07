@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RateMe.DataUtils.Models
 {
@@ -15,6 +10,7 @@ namespace RateMe.DataUtils.Models
         
         public Formula() : base() { }
 
+        // Via formula from pud (might not be 100% accurate)
         public Formula(string sFormula) : base()
         {
             MatchCollection matches = regex.Matches(sFormula);

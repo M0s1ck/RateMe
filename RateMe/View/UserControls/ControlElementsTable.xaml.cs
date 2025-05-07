@@ -1,18 +1,6 @@
 ﻿using RateMe.DataUtils.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RateMe.View.UserControls
 {
@@ -31,9 +19,10 @@ namespace RateMe.View.UserControls
             if (sender != null)
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
-                element.Name = ((TextBox)sender).Text;
+                if (element != null)
+                    element.Name = ((TextBox)sender).Text;
             }
-            
+
         }
 
         private void OnWeightChanged(object sender, TextChangedEventArgs e)
@@ -60,7 +49,7 @@ namespace RateMe.View.UserControls
                 if (good && element != null)
                 {
                     element.Grade = grade;
-                    ((TextBox)sender).Text = grade == 0 ? "0": grade.ToString();
+                    ((TextBox)sender).Text = grade == 0 ? "0" : grade.ToString();
                 }
             }
         }

@@ -9,13 +9,14 @@ namespace RateMe.DataUtils.JsonModels;
 
 public class JsonModelsHandler
 {
+    #region static consts
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
     private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
     private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
     private static readonly JsonSerializerOptions JsonOptions = new()
         { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic), };
-    
-    
+    #endregion
+
     public static SyllabusModel GetSyllabus()
     {
         string jsonContent = File.ReadAllText(SyllabusJsonPath);
