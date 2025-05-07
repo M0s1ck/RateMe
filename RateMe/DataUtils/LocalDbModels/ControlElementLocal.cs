@@ -14,8 +14,8 @@ namespace RateMe.DataUtils.LocalDbModels
         public int ElementId { get; set; }
         [MaxLength(200)]
         public string Name { get; set; }
-        public double Weight { get; set; }
-        public double Grade { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Grade { get; set; }
 
         public int SubjectId { get; set; }
         public SubjectLocal Subject { get; set; }

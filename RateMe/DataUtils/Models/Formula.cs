@@ -29,7 +29,7 @@ namespace RateMe.DataUtils.Models
                 string name = match.Groups[3].Value;
                 string w = match.Groups[2].Value;
                 w = w.Replace(',', '.');
-                double.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out double weight);
+                decimal.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal weight);
 
                 ControlElement elem = new ControlElement(name, weight);
                 Add(elem);

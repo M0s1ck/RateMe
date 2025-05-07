@@ -42,10 +42,10 @@ namespace RateMe.View.UserControls
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
                 string w = ((TextBox)sender).Text;
-                bool good = double.TryParse(w, out double weight);
-                if (good)
+                bool good = decimal.TryParse(w, out decimal weight);
+                if (good && element != null)
                 {
-                    element.Weight = double.Round(weight, 4);
+                    element.Weight = weight;
                 }
             }
         }
@@ -56,10 +56,11 @@ namespace RateMe.View.UserControls
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
                 string g = ((TextBox)sender).Text;
-                bool good = double.TryParse(g, out double grade);
-                if (good)
+                bool good = decimal.TryParse(g, out decimal grade);
+                if (good && element != null)
                 {
-                    element.Grade = double.Round(grade, 4);
+                    element.Grade = grade;
+                    ((TextBox)sender).Text = grade == 0 ? "0": grade.ToString();
                 }
             }
         }

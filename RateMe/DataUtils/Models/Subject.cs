@@ -57,7 +57,7 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-        public double Score
+        public decimal Score
         {
             get => _score;
             set
@@ -71,7 +71,7 @@ namespace RateMe.DataUtils.Models
         private string _name = string.Empty;
         private int _credits;
         private bool _isSelected;
-        private double _score;
+        private decimal _score;
         private Visibility _visibility;
         private readonly Dictionary<string, string> _assFormulas = [];
 
@@ -129,14 +129,14 @@ namespace RateMe.DataUtils.Models
 
         public void UpdateScore()
         {
-            double score = 0;
+            decimal score = 0;
 
             foreach (ControlElement elem in FormulaObj)
             {
                 score += elem.Weight * elem.Grade;
             }
 
-            Score = Math.Round(score, 2);
+            Score = score;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
