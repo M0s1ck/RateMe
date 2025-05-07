@@ -17,7 +17,7 @@ namespace RateMe.View.Windows
         private ObservableCollection<Subject> Subjects { get; } = [];
         private SyllabusModel _syllabus;
 
-        private static readonly SubjectsContext LocalDb = new SubjectsContext();
+        private readonly SubjectsContext localDb = new SubjectsContext();
 
         public GradesWin(SyllabusModel syllabus, List<Subject> subjects)
         {
@@ -37,7 +37,7 @@ namespace RateMe.View.Windows
                     subject.LocalModel.Elements.Add(elem.LocalModel);
                 }
 
-                LocalDb.Add(subject.LocalModel);
+                localDb.Add(subject.LocalModel);
             }
 
             _syllabus = syllabus;
@@ -60,13 +60,13 @@ namespace RateMe.View.Windows
                 subject.UpdateLocalModel();
             }
 
-            await LocalDb.SaveChangesAsync();
+            await localDb.SaveChangesAsync();
             Close();
         }
 
         private void LoadSubjectsFromLocalDb()
         {
-            List <SubjectLocal> subjectLocals = LocalDb.Subjects.Include(s => s.Elements).ToList();
+            List <SubjectLocal> subjectLocals = localDb.Subjects.Include(s => s.Elements).ToList();
             
             foreach (SubjectLocal subjLocal in subjectLocals)
             {
@@ -84,7 +84,7 @@ namespace RateMe.View.Windows
         {
             Subject subject = new();
             Subjects.Add(subject);
-            LocalDb.Add(subject.LocalModel);
+            localDb.Add(subject.LocalModel);
             
             SubjectEditWin subjWin = new SubjectEditWin(subject);
             subjWin.Show();
@@ -125,7 +125,7 @@ namespace RateMe.View.Windows
         private void RemoveSubject(Subject subject)
         {
             Subjects.Remove(subject);
-            LocalDb.Remove(subject.LocalModel);
+            localDb.Remove(subject.LocalModel);
         }
 
         private void OnRedoClick(object sender, RoutedEventArgs e)
@@ -142,11 +142,18 @@ namespace RateMe.View.Windows
                 foreach (Subject subject in Subjects)
                 {
                     Subjects.Remove(subject);
-                    LocalDb.Remove(subject.LocalModel);
+                    localDb.Remove(subject.LocalModel);
+                }
+            }
+            else
+            {
+                foreach (Subject subject in Subjects)
+                {
+                    subject.UpdateLocalModel();
                 }
             }
 
-            await LocalDb.SaveChangesAsync();
+            await localDb.SaveChangesAsync();
             Close();
             DataCollection dataWin = new();
             dataWin.Show();

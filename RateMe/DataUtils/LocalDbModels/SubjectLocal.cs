@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RateMe.DataUtils.LocalDbModels
 {
@@ -11,7 +6,7 @@ namespace RateMe.DataUtils.LocalDbModels
     {
         [Key]
         public int SubjectId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int Credits { get; set; }
         public List<ControlElementLocal> Elements { get; set; } = [];
     }
