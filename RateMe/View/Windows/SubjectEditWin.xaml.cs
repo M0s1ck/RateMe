@@ -1,23 +1,12 @@
 ﻿using RateMe.DataUtils.Models;
 using RateMe.View.UserControls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RateMe.View.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для SubjectEditWin.xaml
+    /// Window for editing the picked subject.
     /// </summary>
     public partial class SubjectEditWin : Window
     {
@@ -26,8 +15,6 @@ namespace RateMe.View.Windows
 
         private DataHintTextModel _subjectNameTextModel;
 
-        static readonly SolidColorBrush ColorWhenEntered = new SolidColorBrush(Colors.DimGray);
-        static readonly SolidColorBrush ColorWhenLeft = new SolidColorBrush(Colors.White);
 
         public SubjectEditWin(Subject subject)
         {

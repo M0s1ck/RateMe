@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
 using RateMe.DataUtils.LocalDbModels;
 
 namespace RateMe.DataUtils.Models
 {
+    /// <summary>
+    /// The main model for the desktop app.
+    /// Holds and updates model for local db.
+    /// </summary>
     public class Subject : INotifyPropertyChanged
     {
         public int[] Modules { get; } = [];
@@ -57,7 +55,7 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-        public double Score
+        public decimal Score
         {
             get => _score;
             set
@@ -71,7 +69,7 @@ namespace RateMe.DataUtils.Models
         private string _name = string.Empty;
         private int _credits;
         private bool _isSelected;
-        private double _score;
+        private decimal _score;
         private Visibility _visibility;
         private readonly Dictionary<string, string> _assFormulas = [];
 
@@ -80,10 +78,10 @@ namespace RateMe.DataUtils.Models
         {
             _name = string.Empty;
             FormulaObj = [];
-            LocalModel = new SubjectLocal();
+            LocalModel = new() {Name = this.Name };
         }
         
-        // Created from hse site. 
+        // From hse site. 
         public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
         {
             Name = name;
@@ -98,7 +96,7 @@ namespace RateMe.DataUtils.Models
             LocalModel = new SubjectLocal { Name = this.Name, Credits = this.Credits, Elements = [] };
         }
         
-        // Created from local db. 
+        // From local db. 
         public Subject(SubjectLocal localSubj)
         {
             Name = localSubj.Name;
@@ -129,14 +127,14 @@ namespace RateMe.DataUtils.Models
 
         public void UpdateScore()
         {
-            double score = 0;
+            decimal score = 0;
 
             foreach (ControlElement elem in FormulaObj)
             {
                 score += elem.Weight * elem.Grade;
             }
 
-            Score = Math.Round(score, 2);
+            Score = score;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -191,10 +189,9 @@ namespace RateMe.DataUtils.Models
             return formulaName.Contains($"{module}st") || formulaName.Contains($"{module}nd") || formulaName.Contains($"{module}rd") || formulaName.Contains($"{module}th");
         }
 
-
         public override string ToString()
         {
-            return $"{Name} Модули: {string.Join(' ', Modules)}";
+            return $"{Name} subject";
         }
     }
 }

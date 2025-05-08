@@ -1,11 +1,6 @@
 ﻿using RateMe.DataUtils.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 
 using HtmlAgilityPack;
@@ -18,7 +13,7 @@ namespace RateMe.Parser
 
         private readonly SyllabusModel Syllabus;
 
-        private string _curriculumNameShortened;
+        private string _curriculumNameShortened = string.Empty;
         private List<string> _subjectsUrls = [];
         private readonly Regex _curriculumRegex;
         private readonly HttpClient _httpClient = new HttpClient();

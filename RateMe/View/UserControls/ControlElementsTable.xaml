@@ -20,8 +20,8 @@
                         <StackPanel Orientation="Vertical" Background="Transparent" HorizontalAlignment="Stretch">
 
                             <TextBox Text="{Binding Name, Mode=TwoWay}" TextChanged="OnNameChanged"/>
-                            <TextBox Text="{Binding Weight, Mode=TwoWay}" BorderThickness="0,1,0,1"/>
-                            <TextBox Text="{Binding Grade, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding Weight, Mode=TwoWay, StringFormat={}{0:0.##}}" BorderThickness="0,1,0,1"/>
+                            <TextBox Text="{Binding Grade, Mode=TwoWay, StringFormat={}{0:0.##}}" TextChanged="OnGradeChanged" />
 
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type TextBox}">
