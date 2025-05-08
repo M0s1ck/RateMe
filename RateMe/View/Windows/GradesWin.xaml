@@ -69,7 +69,7 @@
                         <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17" />
                         <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="*" />
                         <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="70" FontSize="15" />
-                        <DataGridTextColumn Header="Накоп" Binding="{Binding Score}" IsReadOnly="True" Width="88" FontSize="16" />
+                        <DataGridTextColumn Header="Накоп" Binding="{Binding Score, StringFormat={}{0:0.##}}" IsReadOnly="True" Width="88" FontSize="16" />
                         <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="80"/>
                         <DataGridTemplateColumn CellTemplate="{StaticResource TrashBinTemplate}" Header="Remove" Width="80"/>
                     </DataGrid.Columns>

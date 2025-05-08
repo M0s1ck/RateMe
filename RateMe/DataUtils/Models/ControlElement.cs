@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using RateMe.DataUtils.LocalDbModels;
 
@@ -23,7 +18,7 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-        public double Weight
+        public decimal Weight
         {
             get => _weight;
             set
@@ -34,7 +29,7 @@ namespace RateMe.DataUtils.Models
             }
         }
 
-        public double Grade
+        public decimal Grade
         {
             get => _grade;
             set
@@ -49,8 +44,8 @@ namespace RateMe.DataUtils.Models
         public Thickness ViewBorderThickness { get; set; } = new Thickness(1, 2, 1, 2);
 
         private string _name;
-        private double _weight;
-        private double _grade;
+        private decimal _weight;
+        private decimal _grade;
 
         public ControlElement()
         {
@@ -60,7 +55,7 @@ namespace RateMe.DataUtils.Models
             LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
-        public ControlElement(string name, double weight) 
+        public ControlElement(string name, decimal weight) 
         {
             _name = name;
             _weight = weight;

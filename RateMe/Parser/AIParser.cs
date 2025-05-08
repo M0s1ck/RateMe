@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 
 namespace RateMe.Parser
 {
@@ -11,7 +6,7 @@ namespace RateMe.Parser
     {
         private HttpClient _client;
 
-        private static string DeepQwenUrl = "https://openrouter.ai/api/v1/chat/completions";
+        // private static string DeepQwenUrl = "https://openrouter.ai/api/v1/chat/completions";
 
         public AIParser() {
             _client = new HttpClient();

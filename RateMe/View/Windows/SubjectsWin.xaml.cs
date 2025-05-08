@@ -2,7 +2,6 @@
 using RateMe.View.UserControls;
 using RateMe.View.Windows;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,7 +12,6 @@ namespace RateMe
     /// </summary>
     public partial class SubjectsWin : Window
     {
-        // private?
         internal ObservableCollection<Subject> SubjectsObs { get; private set; } = [];
 
         private bool _isThisModule = false;

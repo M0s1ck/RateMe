@@ -1,18 +1,6 @@
 ﻿using RateMe.DataUtils.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RateMe.View.UserControls
 {
@@ -31,9 +19,10 @@ namespace RateMe.View.UserControls
             if (sender != null)
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
-                element.Name = ((TextBox)sender).Text;
+                if (element != null)
+                    element.Name = ((TextBox)sender).Text;
             }
-            
+
         }
 
         private void OnWeightChanged(object sender, TextChangedEventArgs e)
@@ -42,10 +31,10 @@ namespace RateMe.View.UserControls
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
                 string w = ((TextBox)sender).Text;
-                bool good = double.TryParse(w, out double weight);
-                if (good)
+                bool good = decimal.TryParse(w, out decimal weight);
+                if (good && element != null)
                 {
-                    element.Weight = double.Round(weight, 4);
+                    element.Weight = weight;
                 }
             }
         }
@@ -56,10 +45,11 @@ namespace RateMe.View.UserControls
             {
                 ControlElement? element = ((FrameworkElement)sender).DataContext as ControlElement;
                 string g = ((TextBox)sender).Text;
-                bool good = double.TryParse(g, out double grade);
-                if (good)
+                bool good = decimal.TryParse(g, out decimal grade);
+                if (good && element != null)
                 {
-                    element.Grade = double.Round(grade, 4);
+                    element.Grade = grade;
+                    ((TextBox)sender).Text = grade == 0 ? "0" : grade.ToString();
                 }
             }
         }

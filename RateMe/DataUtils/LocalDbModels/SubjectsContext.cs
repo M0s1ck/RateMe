@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RateMe.DataUtils.LocalDbModels
 {
+    /// <summary>
+    /// Context for local SqlLite db.
+    /// Holds 2 tables: for subjects and for control elements.
+    /// </summary>
     internal class SubjectsContext : DbContext
     {
         public DbSet<SubjectLocal> Subjects { get; set; }
