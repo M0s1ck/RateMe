@@ -133,6 +133,9 @@
             </Border>
             
             <Grid Grid.Column="2" DockPanel.Dock="Right" Width="200">
+
+                <userControls:CoolSvgButton Size="45" BiggerSize="51" Source="/Assets/user-circle.svg" VerticalAlignment="Top" Margin="0,35,0,0" WhenClicked="OnAccountClick"/>
+
                 <Button Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,0,0,50"
                         Content="Сохранить и выйти" VerticalAlignment="Bottom" FontSize="18" 
                         FontFamily="Bahnschrift SemiCondensed" Height="50" Width="160" Foreground="White" Background="#032169"/>

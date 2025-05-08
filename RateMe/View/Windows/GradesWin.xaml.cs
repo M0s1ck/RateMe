@@ -128,6 +128,14 @@ namespace RateMe.View.Windows
             localDb.Remove(subject.LocalModel);
         }
 
+
+        private void OnAccountClick(object sender, RoutedEventArgs e)
+        {
+            AuthWin authWin = new();
+            authWin.Show();
+        }
+
+
         private void OnRedoClick(object sender, RoutedEventArgs e)
         {
             RedoWin redo = new RedoWin();

@@ -19,6 +19,9 @@
     <Compile Update="View\UserControls\WindowBarDockPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Windows\AuthWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Windows\DataCollection.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -49,6 +52,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\WindowBarDockPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Windows\AuthWin.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Windows\Authorization.xaml">

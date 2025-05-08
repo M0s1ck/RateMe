@@ -12,6 +12,8 @@
     <None Remove="Assets\circle-user-svgrepo-com.svg" />
     <None Remove="Assets\trash-can-svgrepo-com %281%29.svg" />
     <None Remove="Assets\trash-can-svgrepo-com.svg" />
+    <None Remove="Assets\user-circle.svg" />
+    <None Remove="Assets\user.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +37,8 @@
     <None Remove="Assets\trash-can.svg" />
     <Resource Include="Assets\trash-can.svg" />
     <None Remove="Assets\refresh.svg" />
+    <Resource Include="Assets\user-circle.svg" />
+    <Resource Include="Assets\user.svg" />
     <Resource Include="Assets\refresh.svg" />
   </ItemGroup>
 
