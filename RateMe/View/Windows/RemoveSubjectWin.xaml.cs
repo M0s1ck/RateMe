@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
-using RateMe.DataUtils.Models;
+using RateMe.Models.ClientModels;
 using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;

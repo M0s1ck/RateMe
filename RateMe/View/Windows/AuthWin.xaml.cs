@@ -1,4 +1,6 @@
-﻿using RateMe.DataUtils.Models;
+﻿using RateMe.Api;
+using RateMe.Models.ClientModels;
+using RateMe.Models.DtoModels;
 using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
@@ -10,14 +12,20 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class AuthWin : Window
     {
-        private static readonly string[] AuTasks = ["Войти", "Sign up"]; 
+        public DataHintTextModel LogInEmailModel { get; }
+        public DataHintTextModel LogInPassModel { get; }
 
-        public DataHintTextModel EmailModel { get; }
-        public DataHintTextModel PassModel { get; }
-        public DataHintTextModel SecondPassModel { get; }
+        public DataHintTextModel SignUpEmailModel { get; }
+        public DataHintTextModel SignUpPassModel { get; }
+        public DataHintTextModel NameModel { get; }
+        public DataHintTextModel SurnameModel { get; }
 
-        private string _auTask;
+
         private bool _isLogIn;
+        private ServerApi _serverApi;
+
+        private static readonly string[] AuTasks = ["Войти", "Sign up"];
+        private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
 
         public AuthWin()
         {
@@ -26,23 +34,43 @@ namespace RateMe.View.Windows
             windowGrid.Children.Add(bar);
 
             DataContext = this;
-            EmailModel = new DataHintTextModel(string.Empty, "Email", Visibility.Visible);
-            PassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
-            SecondPassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
+            LogInEmailModel = new DataHintTextModel(string.Empty, "Email", Visibility.Visible);
+            LogInPassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
 
-            _isLogIn = true;
-            _auTask = _isLogIn ? AuTasks[0] : AuTasks[1];
-            FlipTaskButton.Content = _auTask;
+            SignUpEmailModel = new DataHintTextModel(string.Empty, "Email", Visibility.Visible);
+            SignUpPassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
+            NameModel = new DataHintTextModel(string.Empty, "Имя", Visibility.Visible);
+            SurnameModel = new DataHintTextModel(string.Empty, "Фамилия", Visibility.Visible);
+
+            _isLogIn = false;
+            FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
+            QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
+
+            _serverApi = new ServerApi();
+        }
+
+
+        private async void OnSignUpClick(object sender, RoutedEventArgs e)
+        {
+            User user = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
+            await _serverApi.PostUserAsync(user);            
+        }
+
+
+        private void OnLogInClick(object sender, RoutedEventArgs e) 
+        {
+            MessageBox.Show("AAAA LOg innn");
         }
 
 
         private void OnFlipTaskClick(object sender, RoutedEventArgs e)
         {
             _isLogIn = !_isLogIn;
-            _auTask = _isLogIn ? AuTasks[0] : AuTasks[1];
-            FlipTaskButton.Content = _auTask;
+            FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
+            QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
 
             LogInPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            SignUpPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
 

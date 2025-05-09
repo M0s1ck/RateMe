@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RateMe.View.UserControls" xmlns:models="clr-namespace:RateMe.DataUtils.Models" d:DataContext="{d:DesignInstance Type=models:DataHintTextModel}"
+             xmlns:local="clr-namespace:RateMe.View.UserControls" xmlns:models="clr-namespace:RateMe.Models.ClientModels" d:DataContext="{d:DesignInstance Type=models:DataHintTextModel}"
              mc:Ignorable="d">
 
     <Grid>
@@ -40,6 +40,7 @@
                  FontSize="{Binding TextBoxFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  Height="{Binding TextBoxHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  MinWidth="{Binding TextBoxMinWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 MaxWidth="{Binding TextBoxMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  CaretIndex="10000" >
 
             <TextBox.Resources>
@@ -52,6 +53,7 @@
         <TextBlock x:Name="hintTextBlock" Text="{ Binding Hint}" Visibility="{ Binding HintVisibility }"
                    FontSize="{Binding TextBlockFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    HorizontalAlignment="Center" VerticalAlignment="Center"  Foreground="#FF989898"
-                    Width="150" TextAlignment="Center" FontFamily="Bahnschrift" Panel.ZIndex="-1" />
+                   Width="{Binding TextBlockWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   TextAlignment="Center" FontFamily="Bahnschrift" Panel.ZIndex="-1" />
     </Grid>
 </UserControl>

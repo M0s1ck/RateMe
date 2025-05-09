@@ -2,12 +2,12 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace RateMe.DataUtils.Models
+namespace RateMe.Models.ClientModels
 {
     public class Formula : ObservableCollection<ControlElement>
     {
         private static Regex regex = new(@"((0[.,]\d+)\s*[*∗∙]\s*(.+?))\s*([\+\n]|(\. )|$)");
-        
+
         public Formula() : base() { }
 
         // Via formula from pud (might not be 100% accurate)

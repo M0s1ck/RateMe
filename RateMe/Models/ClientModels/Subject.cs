@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using RateMe.DataUtils.LocalDbModels;
+using RateMe.Models.LocalDbModels;
 
-namespace RateMe.DataUtils.Models
+namespace RateMe.Models.ClientModels
 {
     /// <summary>
     /// The main model for the desktop app.
@@ -13,7 +13,7 @@ namespace RateMe.DataUtils.Models
         public int[] Modules { get; } = [];
         public bool IsNis { get; }
         public Formula FormulaObj { get; set; }
-        public SubjectLocal LocalModel { get; set; } 
+        public SubjectLocal LocalModel { get; set; }
 
         public string Name
         {
@@ -78,11 +78,11 @@ namespace RateMe.DataUtils.Models
         {
             _name = string.Empty;
             FormulaObj = [];
-            LocalModel = new() {Name = this.Name };
+            LocalModel = new() { Name = Name };
         }
-        
+
         // From hse site. 
-        public Subject(string name, int credits, int[] modules, Dictionary<string,string> assFormulas)
+        public Subject(string name, int credits, int[] modules, Dictionary<string, string> assFormulas)
         {
             Name = name;
             _credits = credits;
@@ -93,9 +93,9 @@ namespace RateMe.DataUtils.Models
             _isSelected = true;
             _visibility = Visibility.Visible;
             FormulaObj = [];
-            LocalModel = new SubjectLocal { Name = this.Name, Credits = this.Credits, Elements = [] };
+            LocalModel = new SubjectLocal { Name = Name, Credits = Credits, Elements = [] };
         }
-        
+
         // From local db. 
         public Subject(SubjectLocal localSubj)
         {
@@ -109,7 +109,7 @@ namespace RateMe.DataUtils.Models
                 FormulaObj.Add(elem);
                 elem.GradesUpdated += UpdateScore;
             }
-            
+
             UpdateScore();
             LocalModel = localSubj;
         }
@@ -146,7 +146,7 @@ namespace RateMe.DataUtils.Models
 
         public void SetFormula(int module)
         {
-            _ = SetFormulaForModule(module) || SetFormulaForModule(module+1) || SetFormulaForModule(module+2) || SetFormulaForModule(module+3)
+            _ = SetFormulaForModule(module) || SetFormulaForModule(module + 1) || SetFormulaForModule(module + 2) || SetFormulaForModule(module + 3)
                 || SetFormulaForModule(module - 1) || SetFormulaForModule(module - 2) || SetFormulaForModule(module - 3);
         }
 

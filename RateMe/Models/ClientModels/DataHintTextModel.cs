@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace RateMe.DataUtils.Models
+namespace RateMe.Models.ClientModels
 {
     public class DataHintTextModel : INotifyPropertyChanged
     {

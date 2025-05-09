@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RateMe.DataUtils.LocalDbModels
+namespace RateMe.Models.LocalDbModels
 {
     public class SubjectLocal
     {

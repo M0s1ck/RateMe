@@ -1,5 +1,4 @@
-﻿
-namespace RateMe.DataUtils.Models
+﻿namespace RateMe.Models.ClientModels
 {
     public class SyllabusModel
     {
@@ -13,7 +12,7 @@ namespace RateMe.DataUtils.Models
         {
             Student = new Student();
         }
-        
+
         public SyllabusModel(Student student, string curriculum, int course, int semester)
         {
             Student = student;

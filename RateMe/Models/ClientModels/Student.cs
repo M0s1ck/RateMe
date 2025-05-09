@@ -1,5 +1,4 @@
-﻿
-namespace RateMe.DataUtils.Models
+﻿namespace RateMe.Models.ClientModels
 {
     public class Student
     {
@@ -8,9 +7,9 @@ namespace RateMe.DataUtils.Models
         public string Name { get; set; } = string.Empty;
 
         public int Group { get; set; }
-        
-        public Student() {}
-        
+
+        public Student() { }
+
         public Student(string surname, string name, int group)
         {
             Surname = surname;

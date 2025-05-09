@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using RateMe.DataUtils.LocalDbModels;
+using RateMe.Models.LocalDbModels;
 
-namespace RateMe.DataUtils.Models
+namespace RateMe.Models.ClientModels
 {
     public class ControlElement : INotifyPropertyChanged
     {
         public ControlElementLocal LocalModel { get; set; }
-        
-        public string Name 
+
+        public string Name
         {
             get => _name;
             set
@@ -55,7 +55,7 @@ namespace RateMe.DataUtils.Models
             LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
-        public ControlElement(string name, decimal weight) 
+        public ControlElement(string name, decimal weight)
         {
             _name = name;
             _weight = weight;

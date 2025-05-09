@@ -1,4 +1,5 @@
 {
-  "IsSubjectsLoaded": false,
-  "IsFirstTime": false
+  "IsSubjectsLoaded": true,
+  "IsFirstTime": false,
+  "ApiUrl": "http://localhost:5200/api"
 }

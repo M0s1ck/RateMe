@@ -13,7 +13,6 @@
     <None Remove="Assets\trash-can-svgrepo-com %281%29.svg" />
     <None Remove="Assets\trash-can-svgrepo-com.svg" />
     <None Remove="Assets\user-circle.svg" />
-    <None Remove="Assets\user.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="SharpVectors" Version="1.8.4.2" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
@@ -38,7 +38,6 @@
     <Resource Include="Assets\trash-can.svg" />
     <None Remove="Assets\refresh.svg" />
     <Resource Include="Assets\user-circle.svg" />
-    <Resource Include="Assets\user.svg" />
     <Resource Include="Assets\refresh.svg" />
   </ItemGroup>
 

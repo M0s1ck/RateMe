@@ -1,5 +1,4 @@
-﻿
-namespace RateMe.DataUtils.JsonModels
+﻿namespace RateMe.Models.JsonModels
 {
     class CurriculumsModel
     {

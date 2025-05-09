@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RateMe.DataUtils.LocalDbModels
+namespace RateMe.Models.LocalDbModels
 {
     public class ControlElementLocal
     {
@@ -21,7 +21,7 @@ namespace RateMe.DataUtils.LocalDbModels
 
         public ControlElementLocal(SubjectLocal subj)
         {
-            this.Subject = subj;
+            Subject = subj;
             Name = "NotInit";
         }
     }

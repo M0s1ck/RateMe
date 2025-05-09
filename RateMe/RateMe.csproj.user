@@ -13,6 +13,9 @@
     <Compile Update="View\UserControls\DataHintTextBox.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\UserControls\NormalButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\UserControls\SettingsGear.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -46,6 +49,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\DataHintTextBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\UserControls\NormalButton.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\UserControls\SettingsGear.xaml">

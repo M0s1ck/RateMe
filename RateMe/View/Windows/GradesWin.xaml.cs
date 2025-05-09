@@ -1,11 +1,11 @@
-﻿using RateMe.DataUtils.Models;
-using RateMe.View.UserControls;
+﻿using RateMe.View.UserControls;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
-using RateMe.DataUtils.JsonModels;
-using RateMe.DataUtils.LocalDbModels;
+using RateMe.Models.ClientModels;
+using RateMe.Models.JsonModels;
+using RateMe.Models.LocalDbModels;
 
 namespace RateMe.View.Windows
 {
