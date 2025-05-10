@@ -22,7 +22,7 @@ namespace RateMe.View.Windows
 
 
         private bool _isLogIn;
-        private ServerApi _serverApi;
+        private UserApi _userApi;
 
         private static readonly string[] AuTasks = ["Войти", "Sign up"];
         private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
@@ -46,20 +46,31 @@ namespace RateMe.View.Windows
             FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
             QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
 
-            _serverApi = new ServerApi();
+            _userApi = new UserApi();
         }
 
 
         private async void OnSignUpClick(object sender, RoutedEventArgs e)
         {
             User user = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
-            await _serverApi.PostUserAsync(user);            
+            int? id = await _userApi.SignUpUserAsync(user);
+            
+            if (id != null)
+            {
+                MessageBox.Show($"You've been signed up! Your id: {id}");
+            }
         }
 
 
-        private void OnLogInClick(object sender, RoutedEventArgs e) 
+        private async void OnLogInClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("AAAA LOg innn");
+            AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
+            User? user = await _userApi.AuthUserAsync(request);
+
+            if (user != null)
+            {
+                MessageBox.Show($"Hello, {user.Name} {user.Surname}");
+            }
         }
 
 

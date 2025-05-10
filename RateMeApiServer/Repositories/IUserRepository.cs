@@ -5,6 +5,7 @@ namespace RateMeApiServer.Repositories
     public interface IUserRepository
     {
         Task<User?> GetByIdAsync(int id);
-        Task AddAsync(User user);
+        Task<int> AddAsync(User user);
+        Task<User> AuthAsync(string email, string password);
     }
 }
