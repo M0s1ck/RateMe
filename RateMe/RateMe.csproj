@@ -41,4 +41,8 @@
     <Resource Include="Assets\refresh.svg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Api\Services\" />
+  </ItemGroup>
+
 </Project>

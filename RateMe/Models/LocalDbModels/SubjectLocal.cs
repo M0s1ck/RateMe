@@ -6,6 +6,7 @@ namespace RateMe.Models.LocalDbModels
     {
         [Key]
         public int SubjectId { get; set; }
+        [MaxLength(200)]
         public required string Name { get; set; }
         public int Credits { get; set; }
         public List<ControlElementLocal> Elements { get; set; } = [];

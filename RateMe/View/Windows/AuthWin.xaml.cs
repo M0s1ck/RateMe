@@ -4,6 +4,7 @@ using RateMe.Models.DtoModels;
 using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
+using RateMe.Api.Clients;
 
 namespace RateMe.View.Windows
 {
@@ -19,10 +20,10 @@ namespace RateMe.View.Windows
         public DataHintTextModel SignUpPassModel { get; }
         public DataHintTextModel NameModel { get; }
         public DataHintTextModel SurnameModel { get; }
-
-
+        
         private bool _isLogIn;
-        private UserApi _userApi;
+        private readonly UserClient _userClient;
+        // private readonly SubjectsApi _subjectsApi;
 
         private static readonly string[] AuTasks = ["Войти", "Sign up"];
         private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
@@ -46,14 +47,14 @@ namespace RateMe.View.Windows
             FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
             QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
 
-            _userApi = new UserApi();
+            _userClient = new UserClient();
         }
 
 
         private async void OnSignUpClick(object sender, RoutedEventArgs e)
         {
             User user = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
-            int? id = await _userApi.SignUpUserAsync(user);
+            int? id = await _userClient.SignUpUserAsync(user);
             
             if (id != null)
             {
@@ -65,7 +66,7 @@ namespace RateMe.View.Windows
         private async void OnLogInClick(object sender, RoutedEventArgs e)
         {
             AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
-            User? user = await _userApi.AuthUserAsync(request);
+            User? user = await _userClient.AuthUserAsync(request);
 
             if (user != null)
             {
