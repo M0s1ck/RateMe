@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Services\" />
+    <ProjectReference Include="..\RateMeShared\RateMeShared.csproj" />
   </ItemGroup>
 
 </Project>

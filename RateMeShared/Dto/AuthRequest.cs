@@ -1,4 +1,4 @@
-namespace RateMe.Models.DtoModels;
+namespace RateMeShared.Dto;
 
 public class AuthRequest
 {

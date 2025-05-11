@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RateMeApiServer.Models.Dto;
 using RateMeApiServer.Services;
+using RateMeShared.Dto;
 
 namespace RateMeApiServer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -60,7 +60,7 @@ namespace RateMeApiServer.Controllers
         /// <response code="404">If such email was not found</response>
         /// <response code="401">If password is wrong</response>
         [HttpPost("auth")]
-        public async Task<IActionResult> LogIn(AuthRequestDto authRequest)
+        public async Task<IActionResult> LogIn(AuthRequest authRequest)
         {
             try
             {

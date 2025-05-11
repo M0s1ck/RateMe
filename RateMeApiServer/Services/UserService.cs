@@ -1,6 +1,6 @@
-﻿using RateMeApiServer.Models.Dto;
-using RateMeApiServer.Models.Entities;
+﻿using RateMeApiServer.Models.Entities;
 using RateMeApiServer.Repositories;
+using RateMeShared.Dto;
 
 namespace RateMeApiServer.Services
 {
@@ -50,7 +50,7 @@ namespace RateMeApiServer.Services
             return await _userRepository.AddAsync(user);
         }
 
-        public async Task<UserDto> AuthUserAsync(AuthRequestDto authRequest)
+        public async Task<UserDto> AuthUserAsync(AuthRequest authRequest)
         {
             User user = await _userRepository.AuthAsync(authRequest.Email, authRequest.Password);
             UserDto userDto = new()

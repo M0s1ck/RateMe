@@ -1,4 +1,4 @@
-﻿using RateMeApiServer.Models.Dto;
+﻿using RateMeShared.Dto;
 
 namespace RateMeApiServer.Services
 {
@@ -6,6 +6,6 @@ namespace RateMeApiServer.Services
     {
         Task<UserDto> GetUserByIdAsync(int id);
         Task<int> AddUserAsync(UserDto userDto);
-        Task<UserDto> AuthUserAsync(AuthRequestDto authRequestDto);
+        Task<UserDto> AuthUserAsync(AuthRequest authRequestDto);
     }
 }

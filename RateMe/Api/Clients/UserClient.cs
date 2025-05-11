@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Windows;
-using RateMe.Models.DtoModels;
+using RateMeShared.Dto;
 
 namespace RateMe.Api.Clients
 {
@@ -12,11 +12,12 @@ namespace RateMe.Api.Clients
     {
         public UserClient() : base() { }
         
-        public async Task<int?> SignUpUserAsync(User user)
+        
+        public async Task<int?> SignUpUserAsync(UserDto userDto)
         {
             try
             {
-                using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/User/signup", user);
+                using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/users/signup", userDto);
                 string msg = await response.Content.ReadAsStringAsync();
                 
                 if (response.StatusCode == HttpStatusCode.Conflict)
@@ -30,7 +31,7 @@ namespace RateMe.Api.Clients
                 }
                 else
                 {
-                    MessageBox.Show($"Unhandled response:  {msg}");
+                    MessageBox.Show($"Unhandled response: {response.StatusCode} {msg} ");
                 }
             }
             catch (HttpRequestException ex)
@@ -48,9 +49,10 @@ namespace RateMe.Api.Clients
             return null;
         }
 
-        public async Task<User?> AuthUserAsync(AuthRequest authRequest) //TODO: wrap in try catch
+        
+        public async Task<UserDto?> AuthUserAsync(AuthRequest authRequest) //TODO: wrap in try catch
         {
-            using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/User/auth", authRequest);
+            using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/users/auth", authRequest);
             string msg = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -63,7 +65,7 @@ namespace RateMe.Api.Clients
             }
             else if (response.StatusCode == HttpStatusCode.OK)
             {
-                User? user = JsonSerializer.Deserialize<User>(msg, options: CaseInsensitiveOptions);
+                UserDto? user = JsonSerializer.Deserialize<UserDto>(msg, options: CaseInsensitiveOptions);
                 return user;
             }
             else

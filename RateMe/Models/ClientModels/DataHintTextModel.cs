@@ -48,6 +48,9 @@ namespace RateMe.Models.ClientModels
             HintVisibility = hintVisibility;
         }
 
+        public DataHintTextModel(string hint) : this(string.Empty, hint, Visibility.Visible)
+        { }
+        
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void NotifyPropertyChanged(string propertyName = "")

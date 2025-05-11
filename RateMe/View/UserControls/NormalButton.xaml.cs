@@ -26,6 +26,9 @@ namespace RateMe.View.UserControls
 
         public static readonly DependencyProperty HoverBackgroundProp =
             DependencyProperty.Register(nameof(BackHover), typeof(Brush), typeof(NormalButton), new PropertyMetadata(Brushes.BlueViolet));
+        
+        public static readonly DependencyProperty DisabledBackgroundProp =
+            DependencyProperty.Register(nameof(BackDisabled), typeof(Brush), typeof(NormalButton), new PropertyMetadata(Brushes.BlueViolet));
 
         public static readonly DependencyProperty ContentProp =
             DependencyProperty.Register(nameof(TheContent), typeof(string), typeof(NormalButton), new PropertyMetadata("Hello"));
@@ -65,6 +68,12 @@ namespace RateMe.View.UserControls
         {
             get => (Brush)GetValue(HoverBackgroundProp);
             set => SetValue(HoverBackgroundProp, value);
+        }
+        
+        public Brush BackDisabled
+        {
+            get => (Brush)GetValue(DisabledBackgroundProp);
+            set => SetValue(DisabledBackgroundProp, value);
         }
 
         public string TheContent
@@ -107,7 +116,7 @@ namespace RateMe.View.UserControls
             get => (Thickness)GetValue(MarginProp);
             set => SetValue(MarginProp, value);
         }
-
+        
 
         public NormalButton()
         {

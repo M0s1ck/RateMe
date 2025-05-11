@@ -36,6 +36,9 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{Binding BackHover, ElementName=root}"/>
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{Binding BackDisabled, ElementName=root}"/>
+                        </Trigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>

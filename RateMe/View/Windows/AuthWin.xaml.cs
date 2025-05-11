@@ -1,10 +1,11 @@
 ﻿using RateMe.Api;
 using RateMe.Models.ClientModels;
-using RateMe.Models.DtoModels;
 using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
 using RateMe.Api.Clients;
+using RateMe.Api.Services;
+using RateMeShared.Dto;
 
 namespace RateMe.View.Windows
 {
@@ -23,6 +24,8 @@ namespace RateMe.View.Windows
         
         private bool _isLogIn;
         private readonly UserClient _userClient;
+
+        private SubjectsService _subjectsService;
         // private readonly SubjectsApi _subjectsApi;
 
         private static readonly string[] AuTasks = ["Войти", "Sign up"];
@@ -35,38 +38,46 @@ namespace RateMe.View.Windows
             windowGrid.Children.Add(bar);
 
             DataContext = this;
-            LogInEmailModel = new DataHintTextModel(string.Empty, "Email", Visibility.Visible);
-            LogInPassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
+            LogInEmailModel = new DataHintTextModel("Email");
+            LogInPassModel = new DataHintTextModel("Password");
 
-            SignUpEmailModel = new DataHintTextModel(string.Empty, "Email", Visibility.Visible);
-            SignUpPassModel = new DataHintTextModel(string.Empty, "Password", Visibility.Visible);
-            NameModel = new DataHintTextModel(string.Empty, "Имя", Visibility.Visible);
-            SurnameModel = new DataHintTextModel(string.Empty, "Фамилия", Visibility.Visible);
+            SignUpEmailModel = new DataHintTextModel("Email");
+            SignUpPassModel = new DataHintTextModel("Password");
+            NameModel = new DataHintTextModel("Имя");
+            SurnameModel = new DataHintTextModel("Фамилия");
 
             _isLogIn = false;
             FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
             QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
-
+            
             _userClient = new UserClient();
+            
+            SubjectsClient subjectsClient = new SubjectsClient();
+            _subjectsService = new SubjectsService(subjectsClient);
         }
 
 
         private async void OnSignUpClick(object sender, RoutedEventArgs e)
         {
-            User user = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
-            int? id = await _userClient.SignUpUserAsync(user);
+            SignUpButton.IsEnabled = false;
+            
+            UserDto userDto = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
+            int? id = await _userClient.SignUpUserAsync(userDto);
             
             if (id != null)
             {
                 MessageBox.Show($"You've been signed up! Your id: {id}");
+                await _subjectsService.PushSubjectsByUserId((int)id);
             }
+            
+            SignUpButton.IsEnabled = true;
         }
 
 
         private async void OnLogInClick(object sender, RoutedEventArgs e)
         {
             AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
-            User? user = await _userClient.AuthUserAsync(request);
+            UserDto? user = await _userClient.AuthUserAsync(request);
 
             if (user != null)
             {
