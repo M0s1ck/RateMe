@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
-using RateMe.DataUtils.LocalDbModels;
+using RateMe.Models.LocalDbModels;
 
 namespace RateMe
 {

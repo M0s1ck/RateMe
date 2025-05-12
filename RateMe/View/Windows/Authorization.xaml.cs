@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using RateMe.DataUtils.JsonModels;
-using RateMe.DataUtils.Models;
+using RateMe.Models.ClientModels;
+using RateMe.Models.JsonModels;
 using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows

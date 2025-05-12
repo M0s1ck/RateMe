@@ -1,4 +1,4 @@
-﻿using RateMe.DataUtils.Models;
+﻿using RateMe.Models.ClientModels;
 using RateMe.View.UserControls;
 using RateMe.View.Windows;
 using System.Collections.ObjectModel;

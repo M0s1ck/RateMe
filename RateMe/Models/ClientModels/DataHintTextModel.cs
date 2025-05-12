@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace RateMe.DataUtils.Models
+namespace RateMe.Models.ClientModels
 {
     public class DataHintTextModel : INotifyPropertyChanged
     {
@@ -48,6 +48,9 @@ namespace RateMe.DataUtils.Models
             HintVisibility = hintVisibility;
         }
 
+        public DataHintTextModel(string hint) : this(string.Empty, hint, Visibility.Visible)
+        { }
+        
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void NotifyPropertyChanged(string propertyName = "")

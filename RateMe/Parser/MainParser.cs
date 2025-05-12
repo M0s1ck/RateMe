@@ -1,9 +1,9 @@
-﻿using RateMe.DataUtils.Models;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Windows;
 
 using HtmlAgilityPack;
+using RateMe.Models.ClientModels;
 
 namespace RateMe.Parser
 {

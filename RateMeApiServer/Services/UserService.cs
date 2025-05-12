@@ -1,6 +1,6 @@
-﻿using RateMeApiServer.Models.Dto;
-using RateMeApiServer.Models.Entities;
+﻿using RateMeApiServer.Models.Entities;
 using RateMeApiServer.Repositories;
+using RateMeShared.Dto;
 
 namespace RateMeApiServer.Services
 {
@@ -24,7 +24,7 @@ namespace RateMeApiServer.Services
                 throw new KeyNotFoundException($"User with id={id} was not found");
             }
 
-            UserDto userResponseDto = new()
+            UserDto userDto = new()
             { 
                 Id = user.Id,
                 Email = user.Email,
@@ -33,11 +33,11 @@ namespace RateMeApiServer.Services
                 Surname = user.Surname
             };
 
-            return userResponseDto;
+            return userDto;
         }
 
 
-        public async Task AddUserAsync(UserDto userRequestDto)
+        public async Task<int> AddUserAsync(UserDto userRequestDto)
         {
             User user = new()
             {
@@ -47,7 +47,22 @@ namespace RateMeApiServer.Services
                 Surname = userRequestDto.Surname
             };
 
-            await _userRepository.AddAsync(user);
+            return await _userRepository.AddAsync(user);
+        }
+
+        public async Task<UserDto> AuthUserAsync(AuthRequest authRequest)
+        {
+            User user = await _userRepository.AuthAsync(authRequest.Email, authRequest.Password);
+            UserDto userDto = new()
+            { 
+                Id = user.Id,
+                Email = user.Email,
+                Password = user.Password,
+                Name = user.Name,
+                Surname = user.Surname
+            };
+
+            return userDto;
         }
     }
 }

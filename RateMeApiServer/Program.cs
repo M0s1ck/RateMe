@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using RateMeApiServer.Data;
 using RateMeApiServer.Repositories;
@@ -9,9 +10,10 @@ namespace RateMeApiServer
     {
         static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddHttpLogging(_ => { });
 
             builder.Services.AddControllers();
 
@@ -24,13 +26,20 @@ namespace RateMeApiServer
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
+            builder.Services.AddSwaggerGen(options =>
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+            });
+
+            WebApplication app = builder.Build();
+
+            app.UseHttpLogging();
+
+            using (IServiceScope scope = app.Services.CreateScope())
+            {
+                using AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 dbContext.Database.Migrate();
             }
 
@@ -40,6 +49,8 @@ namespace RateMeApiServer
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.MapGet("/", () => "Hello World!");
 
             app.UseAuthorization();
 

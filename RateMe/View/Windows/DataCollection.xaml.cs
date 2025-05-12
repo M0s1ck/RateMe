@@ -4,10 +4,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using RateMe.DataUtils.InterfaceModels;
-using RateMe.DataUtils.JsonModels;
-using RateMe.DataUtils.LocalDbModels;
-using RateMe.DataUtils.Models;
+using RateMe.Models.ClientModels;
+using RateMe.Models.InterfaceModels;
+using RateMe.Models.JsonModels;
+using RateMe.Models.LocalDbModels;
 using RateMe.Parser;
 using RateMe.View.UserControls;
 

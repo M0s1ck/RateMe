@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RateMe.DataUtils.LocalDbModels;
+using RateMe.Models.LocalDbModels;
 
 #nullable disable
 

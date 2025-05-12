@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.IO;
 
-namespace RateMe.DataUtils.LocalDbModels
+namespace RateMe.Models.LocalDbModels
 {
     /// <summary>
     /// Context for local SqlLite db.
@@ -14,7 +14,7 @@ namespace RateMe.DataUtils.LocalDbModels
 
         public string DbPath { get; }
 
-        public SubjectsContext() 
+        public SubjectsContext()
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "Data");
             DbPath = Path.Combine(path, "subjects.db");

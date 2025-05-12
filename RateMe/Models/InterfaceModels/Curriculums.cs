@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-using RateMe.DataUtils.JsonModels;
+using RateMe.Models.JsonModels;
 
-namespace RateMe.DataUtils.InterfaceModels
+namespace RateMe.Models.InterfaceModels
 {
     public class Curriculums : ObservableCollection<string>
     {
