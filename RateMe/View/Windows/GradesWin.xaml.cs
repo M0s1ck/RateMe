@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
+using RateMe.Repositories;
 
 namespace RateMe.View.Windows
 {
@@ -129,10 +130,17 @@ namespace RateMe.View.Windows
         }
 
 
-        private void OnAccountClick(object sender, RoutedEventArgs e)
+        private async void OnAccountClick(object sender, RoutedEventArgs e)
         {
             AuthWin authWin = new();
             authWin.Show();
+            
+            foreach (Subject subject in Subjects)
+            {
+                subject.UpdateLocalModel();
+            }
+
+            await localDb.SaveChangesAsync();
         }
 
 

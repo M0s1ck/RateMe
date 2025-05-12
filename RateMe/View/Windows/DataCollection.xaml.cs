@@ -9,6 +9,7 @@ using RateMe.Models.InterfaceModels;
 using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Parser;
+using RateMe.Repositories;
 using RateMe.View.UserControls;
 
 namespace RateMe

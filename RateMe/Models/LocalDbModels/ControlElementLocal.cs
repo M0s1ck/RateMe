@@ -13,6 +13,8 @@ namespace RateMe.Models.LocalDbModels
 
         public int SubjectId { get; set; }
         public SubjectLocal Subject { get; set; }
+        
+        public int RemoteId { get; set; }
 
         public ControlElementLocal()
         {

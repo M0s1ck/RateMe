@@ -6,6 +6,7 @@ public class Subject
 {
     [Key]
     public int Id { get; set; }
+    
     [MaxLength(200)]
     public required string Name { get; set; }
     public int Credits { get; set; }

@@ -9,6 +9,8 @@ namespace RateMe.Models.LocalDbModels
         [MaxLength(200)]
         public required string Name { get; set; }
         public int Credits { get; set; }
+        
+        public int RemoteId { get; set; }
         public List<ControlElementLocal> Elements { get; set; } = [];
     }
 }

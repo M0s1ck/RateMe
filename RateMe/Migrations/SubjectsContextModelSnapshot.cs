@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RateMe.Models.LocalDbModels;
+using RateMe.Repositories;
 
 #nullable disable
 
@@ -16,24 +17,28 @@ namespace RateMe.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.5");
 
-            modelBuilder.Entity("RateMe.DataUtils.LocalDbModels.ControlElementLocal", b =>
+            modelBuilder.Entity("RateMe.Models.LocalDbModels.ControlElementLocal", b =>
                 {
                     b.Property<int>("ElementId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Grade")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("Grade")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("RemoteId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SubjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Weight")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("Weight")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ElementId");
 
@@ -42,7 +47,7 @@ namespace RateMe.Migrations
                     b.ToTable("Elements");
                 });
 
-            modelBuilder.Entity("RateMe.DataUtils.LocalDbModels.SubjectLocal", b =>
+            modelBuilder.Entity("RateMe.Models.LocalDbModels.SubjectLocal", b =>
                 {
                     b.Property<int>("SubjectId")
                         .ValueGeneratedOnAdd()
@@ -53,16 +58,20 @@ namespace RateMe.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("RemoteId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("SubjectId");
 
                     b.ToTable("Subjects");
                 });
 
-            modelBuilder.Entity("RateMe.DataUtils.LocalDbModels.ControlElementLocal", b =>
+            modelBuilder.Entity("RateMe.Models.LocalDbModels.ControlElementLocal", b =>
                 {
-                    b.HasOne("RateMe.DataUtils.LocalDbModels.SubjectLocal", "Subject")
+                    b.HasOne("RateMe.Models.LocalDbModels.SubjectLocal", "Subject")
                         .WithMany("Elements")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -71,7 +80,7 @@ namespace RateMe.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("RateMe.DataUtils.LocalDbModels.SubjectLocal", b =>
+            modelBuilder.Entity("RateMe.Models.LocalDbModels.SubjectLocal", b =>
                 {
                     b.Navigation("Elements");
                 });

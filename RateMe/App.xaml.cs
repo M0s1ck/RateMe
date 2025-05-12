@@ -2,6 +2,7 @@
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using RateMe.Models.LocalDbModels;
+using RateMe.Repositories;
 
 namespace RateMe
 {

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.IO;
+﻿using System.IO;
+using Microsoft.EntityFrameworkCore;
+using RateMe.Models.LocalDbModels;
 
-namespace RateMe.Models.LocalDbModels
+namespace RateMe.Repositories
 {
     /// <summary>
     /// Context for local SqlLite db.
