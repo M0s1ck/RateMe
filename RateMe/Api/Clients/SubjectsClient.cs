@@ -12,7 +12,7 @@ public class SubjectsClient : BaseClient
     public SubjectsClient() : base()
     { }
 
-    public async Task<List<SubjectId>?> PushSubjects(SubjectsByUserId subjects)
+    public async Task<List<SubjectId>?> PushSubjectsByUserId(SubjectsByUserId subjects)
     {
         string userIdStr = subjects.UserId.ToString();
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync($"api/users/{userIdStr}/subjects", subjects);
@@ -31,7 +31,7 @@ public class SubjectsClient : BaseClient
             return null;
         }
         
-        MessageBox.Show("Failed to push subjects to remote bd");
+        MessageBox.Show($"Failed to push subjects to remote bd: {content}");
         return null;
     }
         

@@ -1,10 +1,10 @@
-﻿using RateMe.Api;
-using RateMe.Models.ClientModels;
+﻿using RateMe.Models.ClientModels;
 using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
 using RateMe.Api.Clients;
 using RateMe.Api.Services;
+using RateMe.Models.JsonModels;
 using RateMeShared.Dto;
 
 namespace RateMe.View.Windows
@@ -31,7 +31,7 @@ namespace RateMe.View.Windows
         private static readonly string[] AuTasks = ["Войти", "Sign up"];
         private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
 
-        public AuthWin()
+        public AuthWin(SubjectsService subjService)
         {
             InitializeComponent();
             WindowBarDockPanel bar = new(this);
@@ -51,23 +51,27 @@ namespace RateMe.View.Windows
             QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
             
             _userClient = new UserClient();
-            
-            SubjectsClient subjectsClient = new SubjectsClient();
-            _subjectsService = new SubjectsService(subjectsClient);
+            _subjectsService = subjService;
         }
 
-
+        /// <summary>
+        /// User with all the local subjects is added to remote bd
+        /// </summary>
         private async void OnSignUpClick(object sender, RoutedEventArgs e)
         {
             SignUpButton.IsEnabled = false;
             
-            UserDto userDto = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data};
+            UserDto userDto = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data };
             int? id = await _userClient.SignUpUserAsync(userDto);
             
             if (id != null)
             {
                 MessageBox.Show($"You've been signed up! Your id: {id}");
-                await _subjectsService.PushSubjectsByUserId((int)id);
+                await _subjectsService.PushAllSubjectsByUserId((int)id);
+                
+                User user = new User(userDto);
+                user.Id = (int)id;
+                JsonModelsHandler.SaveUser(user);
             }
             
             SignUpButton.IsEnabled = true;
@@ -77,11 +81,13 @@ namespace RateMe.View.Windows
         private async void OnLogInClick(object sender, RoutedEventArgs e)
         {
             AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
-            UserDto? user = await _userClient.AuthUserAsync(request);
+            UserDto? userDto = await _userClient.AuthUserAsync(request);
 
-            if (user != null)
+            if (userDto != null)
             {
+                User user = new User(userDto);
                 MessageBox.Show($"Hello, {user.Name} {user.Surname}");
+                JsonModelsHandler.SaveUser(user);
             }
         }
 

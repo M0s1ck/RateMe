@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
+using RateMe.Api.Clients;
+using RateMe.Api.Services;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
@@ -15,10 +17,12 @@ namespace RateMe.View.Windows
     /// </summary>
     public partial class GradesWin : Window
     {
-        private ObservableCollection<Subject> Subjects { get; } = [];
+        private ObservableCollection<Subject> _subjects = [];
+        private Dictionary<int, Subject> _subjectsToAdd = [];
         private SyllabusModel _syllabus;
-
-        private readonly SubjectsContext localDb = new SubjectsContext();
+        
+        private readonly SubjectsService _subjectsService;
+        private readonly SubjectsContext _localDb = new SubjectsContext();
 
         public GradesWin(SyllabusModel syllabus, List<Subject> subjects)
         {
@@ -30,7 +34,7 @@ namespace RateMe.View.Windows
 
             foreach (Subject subject in subjects)
             {
-                Subjects.Add(subject);
+                _subjects.Add(subject);
                 subject.LocalModel = new SubjectLocal { Name = subject.Name, Credits = subject.Credits, Elements = [] };
 
                 foreach (ControlElement elem in subject.FormulaObj)
@@ -38,17 +42,17 @@ namespace RateMe.View.Windows
                     subject.LocalModel.Elements.Add(elem.LocalModel);
                 }
 
-                localDb.Add(subject.LocalModel);
+                _localDb.Add(subject.LocalModel);
             }
-
+            
+            _subjectsService = new SubjectsService(new SubjectsClient());
+            grades.ItemsSource = _subjects;
             _syllabus = syllabus;
-            grades.ItemsSource = Subjects;
         }
 
         public GradesWin(SyllabusModel syllabus) : this(syllabus, []) 
         { }
-
-
+        
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
         {
             Keyboard.ClearFocus();
@@ -56,23 +60,25 @@ namespace RateMe.View.Windows
 
         private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
         {
-            foreach (Subject subject in Subjects)
+            foreach (Subject subject in _subjects)
             {
                 subject.UpdateLocalModel();
             }
 
-            await localDb.SaveChangesAsync();
+            await _localDb.SaveChangesAsync();
+            int userId = JsonModelsHandler.GetUserId();
+            await _subjectsService.PushSubjectsByUserId(userId, _subjectsToAdd);
             Close();
         }
 
         private void LoadSubjectsFromLocalDb()
         {
-            List <SubjectLocal> subjectLocals = localDb.Subjects.Include(s => s.Elements).ToList();
+            List <SubjectLocal> subjectLocals = _localDb.Subjects.Include(s => s.Elements).ToList();
             
             foreach (SubjectLocal subjLocal in subjectLocals)
             {
                 Subject subj = new(subjLocal);
-                Subjects.Add(subj);
+                _subjects.Add(subj);
             }
             
             // Log to config
@@ -84,8 +90,9 @@ namespace RateMe.View.Windows
         private void OnAddSubject(object sender, MouseButtonEventArgs e)
         {
             Subject subject = new();
-            Subjects.Add(subject);
-            localDb.Add(subject.LocalModel);
+            _subjects.Add(subject);
+            _localDb.Add(subject.LocalModel);
+            _subjectsToAdd[subject.LocalModel.SubjectId] = subject;
             
             SubjectEditWin subjWin = new SubjectEditWin(subject);
             subjWin.Show();
@@ -125,22 +132,23 @@ namespace RateMe.View.Windows
 
         private void RemoveSubject(Subject subject)
         {
-            Subjects.Remove(subject);
-            localDb.Remove(subject.LocalModel);
+            _subjects.Remove(subject);
+            _localDb.Remove(subject.LocalModel);
+            _subjectsToAdd.Remove(subject.LocalModel.SubjectId);
         }
 
 
         private async void OnAccountClick(object sender, RoutedEventArgs e)
         {
-            AuthWin authWin = new();
+            AuthWin authWin = new(_subjectsService);
             authWin.Show();
             
-            foreach (Subject subject in Subjects)
+            foreach (Subject subject in _subjects)
             {
                 subject.UpdateLocalModel();
             }
 
-            await localDb.SaveChangesAsync();
+            await _localDb.SaveChangesAsync();
         }
 
 
@@ -155,21 +163,21 @@ namespace RateMe.View.Windows
         {
             if (!withSave)
             {
-                foreach (Subject subject in Subjects)
+                foreach (Subject subject in _subjects)
                 {
-                    Subjects.Remove(subject);
-                    localDb.Remove(subject.LocalModel);
+                    _subjects.Remove(subject);
+                    _localDb.Remove(subject.LocalModel);
                 }
             }
             else
             {
-                foreach (Subject subject in Subjects)
+                foreach (Subject subject in _subjects)
                 {
                     subject.UpdateLocalModel();
                 }
             }
 
-            await localDb.SaveChangesAsync();
+            await _localDb.SaveChangesAsync();
             Close();
             DataCollection dataWin = new();
             dataWin.Show();

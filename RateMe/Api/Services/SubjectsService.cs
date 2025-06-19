@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RateMe.Api.Clients;
+using RateMe.Api.Mappers;
+using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
 using RateMeShared.Dto;
@@ -17,10 +19,10 @@ public class SubjectsService
     }
     
     /// <summary>
-    /// Pushes all local subjects to remote bd
+    /// Pushes ALL local subjects to remote bd
     /// </summary>
     /// <param name="userId"></param>
-    public async Task PushSubjectsByUserId(int userId)
+    public async Task PushAllSubjectsByUserId(int userId)
     {
         // Building up Dto
         SubjectsByUserId subjectsObj = new();
@@ -28,33 +30,37 @@ public class SubjectsService
 
         await using SubjectsContext context = new();
         
-        foreach (SubjectLocal subj in context.Subjects.Include(s => s.Elements))
+        foreach (SubjectLocal subj in context.Subjects.Include(s => s.Elements)) // Takes all of them!!
         {
-            SubjectDto subjDto = new()
-            {
-                LocalId = subj.SubjectId,
-                Name = subj.Name,
-                Credits = subj.Credits,
-            };
-
-            foreach (ControlElementLocal elem in subj.Elements)
-            {
-                ControlElementDto elemDto = new ControlElementDto()
-                {
-                    LocalId = elem.ElementId,
-                    Name = elem.Name,
-                    Grade = elem.Grade,
-                    Weight = elem.Weight
-                };
-                
-                subjDto.Elements.Add(elemDto);
-            }
-            
+            SubjectDto subjDto = SubjectMapper.GetSubjectDto(subj);    
             subjectsObj.Subjects.Add(subjDto);
         }
         
         // Pushing
-        List<SubjectId>? subjIds = await _subjClient.PushSubjects(subjectsObj);
+        List<SubjectId>? subjIds = await _subjClient.PushSubjectsByUserId(subjectsObj);
+        
+        // Updating remote keys if success
+        if (subjIds != null)
+        {
+            await _rep.UpdateRemoteKeys(subjIds);
+        }
+    }
+    
+    /// <summary>
+    /// Pushes new subjects (from SubjectsToAdd) to remote bd
+    /// </summary>
+    public async Task PushSubjectsByUserId(int userId, Dictionary<int, Subject> subjectsToAdd)
+    {
+        SubjectsByUserId subjectsObj = new();
+        subjectsObj.UserId = userId;
+
+        foreach ((int key, Subject subj) in subjectsToAdd)
+        {
+            SubjectDto subjDto = SubjectMapper.GetSubjectDto(subj.LocalModel);    
+            subjectsObj.Subjects.Add(subjDto);
+        }
+        
+        List<SubjectId>? subjIds = await _subjClient.PushSubjectsByUserId(subjectsObj);
         
         // Updating remote keys if success
         if (subjIds != null)

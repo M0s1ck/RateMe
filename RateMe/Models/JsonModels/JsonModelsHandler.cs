@@ -13,6 +13,7 @@ public class JsonModelsHandler
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
     private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
     private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
+    private static readonly string UserJsonPath = Path.Combine(DataDir, "user.json");
     private static readonly JsonSerializerOptions JsonOptions = new()
     { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic), };
     #endregion
@@ -46,6 +47,27 @@ public class JsonModelsHandler
     }
 
 
+    public static User GetUser()
+    {
+        string jsonContent = File.ReadAllText(UserJsonPath);
+        User? user = JsonSerializer.Deserialize<User>(jsonContent);
+
+        if (user == null)
+        {
+            throw new IOException("Couldn't deserialize Data\\user.json");
+        }
+
+        return user;
+    }
+    
+    
+    public static int GetUserId()
+    {
+        User us = GetUser();
+        return us.Id;
+    }
+    
+
     public static void SaveSyllabus(SyllabusModel syllabus)
     {
         string jsonString = JsonSerializer.Serialize(syllabus, JsonOptions);
@@ -56,6 +78,12 @@ public class JsonModelsHandler
     {
         string jsonString = JsonSerializer.Serialize(config, JsonOptions);
         File.WriteAllTextAsync(ConfigJsonPath, jsonString);
+    }
+
+    public static void SaveUser(User user)   // TODO: вынести в интерфейс ??? 3 функции
+    {
+        string jsonString = JsonSerializer.Serialize(user, JsonOptions);
+        File.WriteAllTextAsync(UserJsonPath, jsonString);
     }
 
 }
