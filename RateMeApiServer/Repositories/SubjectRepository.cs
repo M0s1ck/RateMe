@@ -30,4 +30,16 @@ public class SubjectRepository : ISubjectRepository
 
         return subjects;
     }
+
+    public async Task RemoveSubjectsByKeys(List<int> keys)
+    {
+        foreach (int key in keys)
+        {
+            Subject temp = new() { Id = key, Name = string.Empty };
+            _context.Subjects.Attach(temp);
+            _context.Subjects.Remove(temp);
+        }
+        
+        await _context.SaveChangesAsync(); // Nothing will be removed, if one key doesn't exist in bd!  
+    }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RateMeApiServer.Services;
 using RateMeShared.Dto;
 
@@ -33,6 +34,25 @@ public class SubjectsController : ControllerBase
         {
             return NotFound(e.Message);
         }
-        
+    }
+    
+    
+    /// <summary>
+    /// Removes subjects of the given keys.
+    /// </summary>
+    /// <response code="204">If removed.</response>
+    /// <response code="404">If some keys weren't found.</response>
+    [HttpDelete]
+    public async Task<IActionResult> RemoveSubjects(PlainKeys subjKeys)
+    {
+        try
+        {
+            await _service.RemoveSubjectsAsync(subjKeys);
+            return NoContent();
+        }
+        catch (DbUpdateConcurrencyException e)
+        {
+            return NotFound($"Some of the keys dont exist in bd: {e.Message}");
+        }
     }
 }

@@ -5,4 +5,5 @@ namespace RateMeApiServer.Services;
 public interface ISubjectService
 {
     public Task<SubjectsIds> AddSubjectsAsync(SubjectsByUserId subjects);
+    public Task RemoveSubjectsAsync(PlainKeys plainKeysObj);
 }
