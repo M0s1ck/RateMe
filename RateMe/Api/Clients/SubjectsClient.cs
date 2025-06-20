@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Windows;
 using RateMeShared.Dto;
@@ -19,21 +20,34 @@ public class SubjectsClient : BaseClient
         
         string content = await response.Content.ReadAsStringAsync();
         
-        if (response.StatusCode == HttpStatusCode.OK)
+        switch (response.StatusCode)
         {
-            SubjectsIds? subjIds = JsonSerializer.Deserialize<SubjectsIds>(content, options: CaseInsensitiveOptions);
-            return subjIds?.Subjects;
+            case HttpStatusCode.OK:
+            {
+                SubjectsIds? subjIds = JsonSerializer.Deserialize<SubjectsIds>(content, options: CaseInsensitiveOptions);
+                return subjIds?.Subjects;
+            }
+            case HttpStatusCode.NotFound:
+            {
+                MessageBox.Show(content);
+                return null;
+            }
+            default:
+            {
+                MessageBox.Show($"Failed to push subjects to remote bd: {content}");
+                return null;
+            }
         }
-        
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            MessageBox.Show(content);
-            return null;
-        }
-        
-        MessageBox.Show($"Failed to push subjects to remote bd: {content}");
-        return null;
     }
-        
-        
+
+    public async Task RemoveSubjectsByKeys(PlainKeys keysObj)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/users/0/subjects/delete", keysObj);
+        string content = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode is not (HttpStatusCode.NoContent or HttpStatusCode.OK))
+        {
+            MessageBox.Show($"Failed to remove remote data: {content}");
+        }
+    }  
 }

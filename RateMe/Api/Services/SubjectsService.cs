@@ -47,14 +47,14 @@ public class SubjectsService
     }
     
     /// <summary>
-    /// Pushes new subjects (from SubjectsToAdd) to remote bd
+    /// Pushes given subjects to remote bd
     /// </summary>
     public async Task PushSubjectsByUserId(int userId, Dictionary<int, Subject> subjectsToAdd)
     {
         SubjectsByUserId subjectsObj = new();
         subjectsObj.UserId = userId;
 
-        foreach ((int key, Subject subj) in subjectsToAdd)
+        foreach ((int _, Subject subj) in subjectsToAdd)
         {
             SubjectDto subjDto = SubjectMapper.GetSubjectDto(subj.LocalModel);    
             subjectsObj.Subjects.Add(subjDto);
@@ -67,5 +67,14 @@ public class SubjectsService
         {
             await _rep.UpdateRemoteKeys(subjIds);
         }
+    }
+
+    /// <summary>
+    /// Requests removal of subjects
+    /// </summary>
+    public async Task RemoveSubjectsByKeys(List<int> subjectsKeys)
+    {
+        PlainKeys keysObj = new() { Keys = subjectsKeys };
+        await _subjClient.RemoveSubjectsByKeys(keysObj);
     }
 }

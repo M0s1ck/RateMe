@@ -19,6 +19,7 @@ namespace RateMe.View.Windows
     {
         private ObservableCollection<Subject> _subjects = [];
         private Dictionary<int, Subject> _subjectsToAdd = [];
+        private List<int> _subjKeysToRemove = []; 
         private SyllabusModel _syllabus;
         
         private readonly SubjectsService _subjectsService;
@@ -68,6 +69,7 @@ namespace RateMe.View.Windows
             await _localDb.SaveChangesAsync();
             int userId = JsonModelsHandler.GetUserId();
             await _subjectsService.PushSubjectsByUserId(userId, _subjectsToAdd);
+            await _subjectsService.RemoveSubjectsByKeys(_subjKeysToRemove);
             Close();
         }
 
@@ -133,6 +135,12 @@ namespace RateMe.View.Windows
         private void RemoveSubject(Subject subject)
         {
             _subjects.Remove(subject);
+            
+            if (!_subjectsToAdd.ContainsKey(subject.LocalModel.SubjectId))
+            {
+                _subjKeysToRemove.Add(subject.LocalModel.RemoteId);
+            }
+            
             _localDb.Remove(subject.LocalModel);
             _subjectsToAdd.Remove(subject.LocalModel.SubjectId);
         }

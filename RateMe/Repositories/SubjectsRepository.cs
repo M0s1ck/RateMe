@@ -9,7 +9,7 @@ public class SubjectsRepository
     public async Task UpdateRemoteKeys(List<SubjectId> subjIds)
     {
         SubjectsContext context = new();
-        
+
         foreach (SubjectId subjId in subjIds)
         {
             SubjectLocal? subj = await context.Subjects.FindAsync(subjId.LocalId);
@@ -21,58 +21,49 @@ public class SubjectsRepository
             }
 
             subj.RemoteId = subjId.RemoteId;
+            UpdateElemsRemoteKeys(context, subj, subjId);
+        }
+        await context.SaveChangesAsync();
+    }
 
-            ControlElementLocal[] elems = context.Elements.Where(el => el.SubjectId == subj.SubjectId).
-                                        OrderBy(el => el.ElementId).ToArray();
+    
+    private void UpdateElemsRemoteKeys(SubjectsContext context, SubjectLocal subj, SubjectId subjId)
+    {
+        ControlElementLocal[] elems = context.Elements.Where(el => el.SubjectId == subj.SubjectId)
+            .OrderBy(el => el.ElementId).ToArray();
 
-            ControlElementId[] elemIds = subjId.Elements.OrderBy(el => el.LocalId).ToArray();
-            
-            // Updating keys if no data was lost
-            if (elems.Length == elemIds.Length)
+        ControlElementId[] elemIds = subjId.Elements.OrderBy(el => el.LocalId).ToArray();
+
+        // Updating keys if no data was lost
+        if (elems.Length == elemIds.Length)
+        {
+            for (int i = 0; i < elems.Length; ++i)
             {
-                for (int i = 0; i < elems.Length; ++i)
-                {
-                    elems[i].RemoteId = elemIds[i].RemoteId;
-                }
+                elems[i].RemoteId = elemIds[i].RemoteId;
             }
-            else if (elems.Length < elemIds.Length) // In case some data was lost 
+            return;
+        }
+        
+        // In case some data was lost 
+        int r = 0;
+        int l = 0;
+
+        while (r < elems.Length && l < elemIds.Length)
+        {
+            if (elems[r].ElementId == elemIds[l].LocalId)
             {
-                int cnt = 0;
+                elems[r++].RemoteId = elemIds[l++].RemoteId;
+                continue;
+            }
 
-                foreach (ControlElementId elemId in elemIds)
-                {
-                    if (elems[cnt].ElementId == elemId.LocalId)
-                    {
-                        elems[cnt].RemoteId = elemId.RemoteId;
-                        ++cnt;
-                    }
-
-                    if (cnt == elems.Length)
-                    {
-                        break;
-                    }
-                }
+            if (elems[r].ElementId > elemIds[l].LocalId)
+            {
+                ++l;
             }
             else
             {
-                int cnt = 0;
-            
-                foreach (ControlElementLocal elem in elems)
-                {
-                    if (elem.ElementId == elemIds[cnt].LocalId)
-                    {
-                        elem.RemoteId = elemIds[cnt].RemoteId;
-                        ++cnt;
-                    }
-
-                    if (cnt == elemIds.Length)
-                    {
-                        break;
-                    }
-                }
+                ++r;
             }
-
-            await context.SaveChangesAsync();
         }
-    }
+    } 
 }

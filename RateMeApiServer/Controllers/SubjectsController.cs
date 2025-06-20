@@ -42,7 +42,7 @@ public class SubjectsController : ControllerBase
     /// </summary>
     /// <response code="204">If removed.</response>
     /// <response code="404">If some keys weren't found.</response>
-    [HttpDelete]
+    [HttpPost("delete")]
     public async Task<IActionResult> RemoveSubjects(PlainKeys subjKeys)
     {
         try
