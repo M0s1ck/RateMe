@@ -11,10 +11,8 @@ namespace RateMe.View.Windows
     public partial class SubjectEditWin : Window
     {
         private Subject _theSubject;
-        public Subject UpdatedSubject { get; private set; }
-
+        private Subject _updatedSubject;
         private DataHintTextModel _subjectNameTextModel;
-
 
         public SubjectEditWin(Subject subject)
         {
@@ -23,36 +21,26 @@ namespace RateMe.View.Windows
             windowGrid.Children.Add(bar);
             Topmost = true;
             MinusButton.vertBar.Visibility = Visibility.Hidden;
-
-            _theSubject = subject;
-            UpdatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
-            UpdatedSubject.FormulaObj = [];
-            UpdatedSubject.LocalModel = subject.LocalModel;
             
-            foreach (ControlElement elem in subject.FormulaObj)
-            {
-                ControlElement newElem = new ControlElement(elem.Name, elem.Weight);
-                newElem.Grade = elem.Grade;
-                newElem.LocalModel = elem.LocalModel;
-                UpdatedSubject.FormulaObj.Add(newElem);
-            }
+            _theSubject = subject;
+            _updatedSubject = new Subject(subject);
 
-            DataContext = UpdatedSubject;
+            DataContext = _updatedSubject;
 
-            _subjectNameTextModel = new DataHintTextModel(UpdatedSubject.Name, "Название предмета", Visibility.Visible);
+            _subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета", Visibility.Visible);
             subjTetx2.DataContext = _subjectNameTextModel;
 
-            gradesTable.DataContext = UpdatedSubject;
+            gradesTable.DataContext = _updatedSubject;
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
         {
             _theSubject.Name = _subjectNameTextModel.Data;
-            _theSubject.Credits = UpdatedSubject.Credits;
+            _theSubject.Credits = _updatedSubject.Credits;
             _theSubject.FormulaObj.Clear();
             _theSubject.Score = 0;
 
-            foreach (ControlElement elem in UpdatedSubject.FormulaObj)
+            foreach (ControlElement elem in _updatedSubject.FormulaObj)
             {
                 elem.GradesUpdated += _theSubject.UpdateScore;
                 _theSubject.FormulaObj.Add(elem);
@@ -65,8 +53,8 @@ namespace RateMe.View.Windows
         private void OnAddClick(object sender, MouseButtonEventArgs e)
         {
             ControlElement newElem = new ControlElement();
-            UpdatedSubject.FormulaObj.Add(newElem);
-            UpdatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
+            _updatedSubject.FormulaObj.Add(newElem);
+            _updatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
         }
 
         private void OnRemoveClick(object sender, MouseButtonEventArgs e)
@@ -80,15 +68,20 @@ namespace RateMe.View.Windows
 
             if (elem != null)
             {
-                UpdatedSubject.FormulaObj.Remove(elem);
-                UpdatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
+                _updatedSubject.FormulaObj.Remove(elem);
+                _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
             }
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
+            OnCancel?.Invoke(_theSubject);
             Close();
         }
+
+        public event CancelHandler? OnCancel;
+        
+        public delegate void CancelHandler(Subject subj);
 
         private void OnWindowClick(object sender, MouseButtonEventArgs e)
         {

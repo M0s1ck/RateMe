@@ -7,12 +7,10 @@ using System.Windows.Shapes;
 using RateMe.Models.ClientModels;
 using RateMe.Models.InterfaceModels;
 using RateMe.Models.JsonModels;
-using RateMe.Models.LocalDbModels;
 using RateMe.Parser;
-using RateMe.Repositories;
 using RateMe.View.UserControls;
 
-namespace RateMe
+namespace RateMe.View.Windows
 {
     /// <summary>
     /// Логика взаимодействия для DataCollection.xaml
@@ -43,8 +41,6 @@ namespace RateMe
             {
                 InitializeComponent();
 
-                SubjectsContext aa = new SubjectsContext();
-
                 Curriculums curriculums = new Curriculums();
                 CurriculumsComboBox.ItemsSource = curriculums;
                 CurriculumsComboBox.SelectedItem = curriculums.First();
@@ -64,7 +60,6 @@ namespace RateMe
                 SettingsGear gear = new();
                 gear.Margin = new Thickness(0, 300, 200, 0);
                 MainGrid.Children.Add(gear);
-
             }
             catch (Exception e)
             {

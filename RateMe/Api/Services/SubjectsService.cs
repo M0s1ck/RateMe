@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
+using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
 using RateMeShared.Dto;
@@ -16,6 +17,20 @@ public class SubjectsService
     public SubjectsService(SubjectsClient subjClient)
     {
         _subjClient = subjClient;
+    }
+    
+    public async Task SubjectsOverallRemoteUpdate(Dictionary<int, Subject> subjectsToAdd, List<int> subjKeysToRemove)
+    {
+        if (subjectsToAdd.Count != 0)
+        {
+            int userId = JsonModelsHandler.GetUserId();
+            await PushSubjectsByUserId(userId, subjectsToAdd); //TODO: refactor for not working server
+        }
+
+        if (subjKeysToRemove.Count != 0)
+        {
+            await RemoveSubjectsByKeys(subjKeysToRemove);
+        }
     }
     
     /// <summary>

@@ -71,6 +71,15 @@ namespace RateMe.Models.ClientModels
             LocalModel = elemLocal;
         }
 
+        public ControlElement(ControlElement other)
+        {
+            _name = other.Name;
+            _name = other.Name;
+            _weight = other.Weight;
+            _grade = other.Grade;
+            LocalModel = other.LocalModel;
+        }
+
         public void UpdateLocalModel()
         {
             LocalModel.Name = Name;

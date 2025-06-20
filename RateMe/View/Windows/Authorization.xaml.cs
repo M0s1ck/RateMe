@@ -78,29 +78,13 @@ namespace RateMe.View.Windows
 
         private void EmailEntered(object sender, TextChangedEventArgs e)
         {
-            if (EmailTextBox.Text == string.Empty)
-            {
-                EmailHint.Text = "Email";
-            }
-            else
-            {
-                EmailHint.Text = string.Empty;
-            }
-
+            EmailHint.Text = EmailTextBox.Text == string.Empty ? "Email" : string.Empty;
             _email = EmailTextBox.Text;
         }
 
         private void PasswordEntered(object sender, TextChangedEventArgs e)
         {
-            if (PasswordTextBox.Text == string.Empty)
-            {
-                PasswordHint.Text = "Password";
-            }
-            else
-            {
-                PasswordHint.Text = string.Empty;
-            }
-
+            PasswordHint.Text = PasswordTextBox.Text == string.Empty ? "Password" : string.Empty;
             _password = PasswordTextBox.Text;
         }
     }

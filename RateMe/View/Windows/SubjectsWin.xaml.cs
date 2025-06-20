@@ -65,7 +65,6 @@ namespace RateMe
             GradesWin gradesWin = new(Syllabus, selectedSubjs);
             gradesWin.Show();
             Close();
-
         }
 
 
