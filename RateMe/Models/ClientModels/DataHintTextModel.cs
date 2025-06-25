@@ -41,7 +41,7 @@ namespace RateMe.Models.ClientModels
         private Visibility _hintVisibility = Visibility.Visible;
 
 
-        public DataHintTextModel(string data, string hint, Visibility hintVisibility)
+        public DataHintTextModel(string data, string hint, Visibility hintVisibility=Visibility.Visible)
         {
             Data = data;
             Hint = hint;

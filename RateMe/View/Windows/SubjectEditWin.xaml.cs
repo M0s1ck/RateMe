@@ -8,7 +8,7 @@ namespace RateMe.View.Windows
     /// <summary>
     /// Window for editing the picked subject.
     /// </summary>
-    public partial class SubjectEditWin : Window
+    public partial class SubjectEditWin : BaseFullWin
     {
         private Subject _theSubject;
         private Subject _updatedSubject;
@@ -17,20 +17,17 @@ namespace RateMe.View.Windows
         public SubjectEditWin(Subject subject)
         {
             InitializeComponent();
-            WindowBarDockPanel bar = new(this);
-            windowGrid.Children.Add(bar);
-            Topmost = true;
-            MinusButton.vertBar.Visibility = Visibility.Hidden;
             
             _theSubject = subject;
             _updatedSubject = new Subject(subject);
+            _subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета");
 
             DataContext = _updatedSubject;
-
-            _subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета", Visibility.Visible);
-            subjTetx2.DataContext = _subjectNameTextModel;
-
             gradesTable.DataContext = _updatedSubject;
+            subjTetx2.DataContext = _subjectNameTextModel;
+            
+            Loaded += (_, _) => OnLoaded();
+            Loaded += (_, _) => AddHeaderBar(windowGrid); 
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
@@ -73,6 +70,12 @@ namespace RateMe.View.Windows
             }
         }
 
+        private void OnLoaded()
+        {
+            Topmost = true;
+            MinusButton.vertBar.Visibility = Visibility.Hidden;
+        }
+
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
             OnCancel?.Invoke(_theSubject);
@@ -82,12 +85,6 @@ namespace RateMe.View.Windows
         public event CancelHandler? OnCancel;
         
         public delegate void CancelHandler(Subject subj);
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-            Topmost = false;
-        }
         
         private void OnMouseLeave(object sender, MouseEventArgs e) => Topmost = false;
 

@@ -1,5 +1,4 @@
-﻿using RateMe.View.UserControls;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,7 @@ namespace RateMe.View.Windows;
 /// <summary>
 /// Логика взаимодействия для Grades.xaml
 /// </summary>
-public partial class GradesWin : Window
+public partial class GradesWin : BaseFullWin
 {
     private ObservableCollection<Subject> _subjects = [];
     private Dictionary<int, Subject> _subjectsToAdd = [];
@@ -31,13 +30,12 @@ public partial class GradesWin : Window
     public GradesWin(SyllabusModel syllabus)
     {
         InitializeComponent();
-        WindowBarDockPanel bar = new(this);
-        windowGrid.Children.Add(bar);
             
         _subjectsService = new SubjectsService(new SubjectsClient());
         _syllabus = syllabus;
         grades.ItemsSource = _subjects;
-
+        
+        Loaded += (_, _) => AddHeaderBar(windowGrid); 
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
     }
         
@@ -103,8 +101,6 @@ public partial class GradesWin : Window
 
             _localDb.Add(subject.LocalModel);
         }
-            
-        grades.ItemsSource = _subjects;
     } 
         
     private async void OnAddSubject(object sender, MouseButtonEventArgs e)
@@ -220,10 +216,5 @@ public partial class GradesWin : Window
     {
         InfoWin infoWin = new();
         infoWin.Show();
-    }
-        
-    private void OnWindowClick(object sender, MouseButtonEventArgs e)
-    {
-        Keyboard.ClearFocus();
     }
 }

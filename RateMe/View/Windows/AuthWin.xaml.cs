@@ -1,7 +1,6 @@
 ﻿using RateMe.Models.ClientModels;
 using RateMe.View.UserControls;
 using System.Windows;
-using System.Windows.Input;
 using RateMe.Api.Clients;
 using RateMe.Api.Services;
 using RateMe.Models.JsonModels;
@@ -12,7 +11,7 @@ namespace RateMe.View.Windows
     /// <summary>
     /// Логика взаимодействия для AuthenticationWin.xaml
     /// </summary>
-    public partial class AuthWin : Window
+    public partial class AuthWin : BaseFullWin
     {
         public DataHintTextModel LogInEmailModel { get; }
         public DataHintTextModel LogInPassModel { get; }
@@ -26,7 +25,6 @@ namespace RateMe.View.Windows
         private readonly UserClient _userClient;
 
         private SubjectsService _subjectsService;
-        // private readonly SubjectsApi _subjectsApi;
 
         private static readonly string[] AuTasks = ["Войти", "Sign up"];
         private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
@@ -34,8 +32,6 @@ namespace RateMe.View.Windows
         public AuthWin(SubjectsService subjService)
         {
             InitializeComponent();
-            WindowBarDockPanel bar = new(this);
-            windowGrid.Children.Add(bar);
 
             DataContext = this;
             LogInEmailModel = new DataHintTextModel("Email");
@@ -52,6 +48,8 @@ namespace RateMe.View.Windows
             
             _userClient = new UserClient();
             _subjectsService = subjService;
+            
+            Loaded += (_, _) => AddHeaderBar(windowGrid);
         }
 
         /// <summary>
@@ -77,7 +75,6 @@ namespace RateMe.View.Windows
             SignUpButton.IsEnabled = true;
         }
 
-
         private async void OnLogInClick(object sender, RoutedEventArgs e)
         {
             AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
@@ -91,7 +88,6 @@ namespace RateMe.View.Windows
             }
         }
 
-
         private void OnFlipTaskClick(object sender, RoutedEventArgs e)
         {
             _isLogIn = !_isLogIn;
@@ -100,12 +96,6 @@ namespace RateMe.View.Windows
 
             LogInPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             SignUpPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-        }
-
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
         }
     }
 }

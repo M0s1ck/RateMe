@@ -10,7 +10,7 @@ namespace RateMe
     /// <summary>
     /// Логика взаимодействия для SubjectsWin.xaml
     /// </summary>
-    public partial class SubjectsWin : Window
+    public partial class SubjectsWin : BaseFullWin
     {
         internal ObservableCollection<Subject> SubjectsObs { get; private set; } = [];
 
@@ -18,36 +18,27 @@ namespace RateMe
         private bool _displayNis = true;
         private int _selectedSubjCount;
 
-        private readonly SyllabusModel Syllabus;
-        private readonly List<Subject> AllSubjects;
+        private readonly SyllabusModel _syllabus;
+        private readonly List<Subject> _allSubjects;
 
         internal SubjectsWin(SyllabusModel syllabus, List<Subject> subjects)
         {
             InitializeComponent();
-            WindowBarDockPanel bar = new(this);
-            WindowGrid.Children.Add(bar);
-
-
+            
             foreach (Subject subject in subjects)
             {
                 SubjectsObs.Add(subject);
             }
 
             subjOptions.ItemsSource = SubjectsObs;
-            Syllabus = syllabus;
-            AllSubjects = subjects;
+            _syllabus = syllabus;
+            _allSubjects = subjects;
 
             _selectedSubjCount = subjects.Count;
             selectedCountTextBlock.Text = $"Выбрано предметов: {_selectedSubjCount}";
-            thisModuleOnly.Content = $"Только указанный модуль ({Syllabus.Module})";
+            thisModuleOnly.Content = $"Только указанный модуль ({_syllabus.Module})";
+            Loaded += (_, _) => AddHeaderBar(WindowGrid);
         }
-
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-        }
-
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
@@ -57,12 +48,12 @@ namespace RateMe
             {
                 if (subject.IsSelected)
                 {
-                    subject.SetFormula(Syllabus.Module);
+                    subject.SetFormula(_syllabus.Module);
                     selectedSubjs.Add(subject);
                 }
             }
 
-            GradesWin gradesWin = new(Syllabus, selectedSubjs);
+            GradesWin gradesWin = new(_syllabus, selectedSubjs);
             gradesWin.Show();
             Close();
         }
@@ -84,9 +75,9 @@ namespace RateMe
 
         private void OnThisModuleOnlyChecked(object sender, RoutedEventArgs e)
         {
-            foreach (Subject subject in AllSubjects)
+            foreach (Subject subject in _allSubjects)
             {
-                if (!subject.Modules.Contains(Syllabus.Module))
+                if (!subject.Modules.Contains(_syllabus.Module))
                 {
                     subject.IsSelected = false;
                     SubjectsObs.Remove(subject);
@@ -105,11 +96,11 @@ namespace RateMe
 
             if (_displayNis)
             {
-                for (int i = 0; i < AllSubjects.Count; i++)
+                for (int i = 0; i < _allSubjects.Count; i++)
                 {
-                    if (!AllSubjects[i].Modules.Contains(Syllabus.Module))
+                    if (!_allSubjects[i].Modules.Contains(_syllabus.Module))
                     {
-                        SubjectsObs.Insert(i, AllSubjects[i]);
+                        SubjectsObs.Insert(i, _allSubjects[i]);
                     }
                 }
                 
@@ -118,9 +109,9 @@ namespace RateMe
 
             int cntNoNis = 0;
 
-            foreach (Subject subject in AllSubjects)
+            foreach (Subject subject in _allSubjects)
             {
-                if (!subject.IsNis && !subject.Modules.Contains(Syllabus.Module))
+                if (!subject.IsNis && !subject.Modules.Contains(_syllabus.Module))
                 {
                     SubjectsObs.Insert(cntNoNis, subject);
                 }
@@ -135,7 +126,7 @@ namespace RateMe
 
         private void OnRemoveNisChecked(object sender, RoutedEventArgs e)
         {
-            foreach (Subject subject in AllSubjects)
+            foreach (Subject subject in _allSubjects)
             {
                 if (subject.IsNis)
                 {
@@ -156,9 +147,9 @@ namespace RateMe
 
             if (!_isThisModule)
             {
-                for (int i = 0; i < AllSubjects.Count; i++)
+                for (int i = 0; i < _allSubjects.Count; i++)
                 {
-                    Subject subject = AllSubjects[i];
+                    Subject subject = _allSubjects[i];
 
                     if (subject.IsNis)
                     {
@@ -171,14 +162,14 @@ namespace RateMe
 
             int cntModule = 0;
 
-            foreach (Subject subject in AllSubjects)
+            foreach (Subject subject in _allSubjects)
             {
-                if (subject.IsNis && subject.Modules.Contains(Syllabus.Module))
+                if (subject.IsNis && subject.Modules.Contains(_syllabus.Module))
                 {
                     SubjectsObs.Insert(cntModule, subject);
                 }
 
-                if (subject.Modules.Contains(Syllabus.Module))
+                if (subject.Modules.Contains(_syllabus.Module))
                 {
                     cntModule++;
                 }

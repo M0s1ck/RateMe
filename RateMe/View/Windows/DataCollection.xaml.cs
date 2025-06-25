@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
@@ -15,7 +14,7 @@ namespace RateMe.View.Windows
     /// <summary>
     /// Логика взаимодействия для DataCollection.xaml
     /// </summary>
-    public partial class DataCollection : Window
+    public partial class DataCollection : BaseFullWin
     {
         private Storyboard _ballsStoryBoard = new Storyboard();
 
@@ -37,34 +36,11 @@ namespace RateMe.View.Windows
 
         public DataCollection()
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                Curriculums curriculums = new Curriculums();
-                CurriculumsComboBox.ItemsSource = curriculums;
-                CurriculumsComboBox.SelectedItem = curriculums.First();
-
-                CourseComboBox.ItemsSource = CourseNumbers;
-                CourseComboBox.SelectedItem = CourseNumbers.First();
-
-                GroupComboBox.ItemsSource = GroupNumbers;
-                GroupComboBox.SelectedItem = GroupNumbers.First();
-
-                TermComboBox.ItemsSource = Terms;
-                TermComboBox.SelectedItem = Terms.Last();
-
-                WindowBarDockPanel bar = new(this);
-                WindowGrid.Children.Add(bar);
-
-                SettingsGear gear = new();
-                gear.Margin = new Thickness(0, 300, 200, 0);
-                MainGrid.Children.Add(gear);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
+            Curriculums curriculums = new Curriculums();
+            Loaded += (_, _) => SetItemSources(curriculums);
+            Loaded += (_, _) => AddHeaderBar(WindowGrid); 
         }
 
 
@@ -112,12 +88,6 @@ namespace RateMe.View.Windows
             Close();            
         }
 
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-        }
-
         private SyllabusModel HandleSyllabus()
         {
             int groupNumber = int.Parse(GroupComboBox.SelectedItem.ToString() ?? "");
@@ -131,6 +101,21 @@ namespace RateMe.View.Windows
             JsonModelsHandler.SaveSyllabus(syllabus);
 
             return syllabus;
+        }
+
+        private void SetItemSources(Curriculums curriculums)
+        {
+            CurriculumsComboBox.ItemsSource = curriculums;
+            CurriculumsComboBox.SelectedItem = curriculums.First();
+
+            CourseComboBox.ItemsSource = CourseNumbers;
+            CourseComboBox.SelectedItem = CourseNumbers.First();
+
+            GroupComboBox.ItemsSource = GroupNumbers;
+            GroupComboBox.SelectedItem = GroupNumbers.First();
+
+            TermComboBox.ItemsSource = Terms;
+            TermComboBox.SelectedItem = Terms.Last();
         }
 
         private void LaunchLoadingBalls()

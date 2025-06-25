@@ -1,17 +1,18 @@
-﻿<Window x:Class="RateMe.View.Windows.AuthWin"
+﻿<windows:BaseFullWin x:Class="RateMe.View.Windows.AuthWin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
         xmlns:userControls="clr-namespace:RateMe.View.UserControls"
+        xmlns:windows="clr-namespace:RateMe.View.Windows"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Height="450" Width="400"
         Background="#10151b" MouseDown="OnWindowClick">
 
-    <Window.Resources>
+    <windows:BaseFullWin.Resources>
         
-    </Window.Resources>
+    </windows:BaseFullWin.Resources>
     
     
     <WindowChrome.WindowChrome>
@@ -47,4 +48,4 @@
         </Grid>
         
     </Grid>
-</Window>
+</windows:BaseFullWin>
