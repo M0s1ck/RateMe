@@ -24,10 +24,18 @@ public class SubjectsClient : BaseClient
         string content = await response.Content.ReadAsStringAsync();
         return ReflectOnPushSubjectsResponse(response, content);
     }
-
-    public async Task RemoveSubjectsByKeys(PlainKeys keysObj)
+    
+    public async Task UpdateSubjects(List<PlainSubject> dto)
     {
-        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/users/0/subjects/delete", keysObj);
+        using HttpResponseMessage response = await TheHttpClient.PutAsJsonAsync("api/subjects", dto);
+        string content = await response.Content.ReadAsStringAsync();
+        
+        // To be continued...
+    }
+
+    public async Task RemoveSubjectsByKeys(List<int> keysObj)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/subjects/delete", keysObj);
         string content = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode is not (HttpStatusCode.NoContent or HttpStatusCode.OK))

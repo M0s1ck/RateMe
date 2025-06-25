@@ -6,9 +6,25 @@ namespace RateMe.Repositories;
 
 public class SubjectsRepository
 {
+    internal async Task<Dictionary<int, SubjectLocal>> GetSubjectsNoRemote()
+    {
+        await using SubjectsContext context = new();
+        Dictionary<int, SubjectLocal> subs = [];
+
+        foreach (SubjectLocal sub in context.Subjects)
+        {
+            if (sub.RemoteId == 0)
+            {
+                subs[sub.SubjectId] = sub;
+            }
+        }
+
+        return subs;
+    }
+    
     public async Task UpdateRemoteKeys(List<SubjectId> subjIds)
     {
-        SubjectsContext context = new();
+        await using SubjectsContext context = new();
 
         foreach (SubjectId subjId in subjIds)
         {
@@ -65,5 +81,6 @@ public class SubjectsRepository
                 ++r;
             }
         }
-    } 
+    }
+    
 }

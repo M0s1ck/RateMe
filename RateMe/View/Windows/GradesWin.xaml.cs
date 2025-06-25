@@ -19,8 +19,6 @@ namespace RateMe.View.Windows;
 public partial class GradesWin : BaseFullWin
 {
     private ObservableCollection<Subject> _subjects = [];
-    private Dictionary<int, Subject> _subjectsToAdd = [];
-    private List<int> _subjKeysToRemove = []; 
     private SyllabusModel _syllabus;
         
     private readonly SubjectsService _subjectsService;
@@ -31,28 +29,32 @@ public partial class GradesWin : BaseFullWin
     {
         InitializeComponent();
             
-        _subjectsService = new SubjectsService(new SubjectsClient());
+        _subjectsService = new SubjectsService(_subjects, new SubjectsClient());
         _syllabus = syllabus;
         grades.ItemsSource = _subjects;
         
-        Loaded += (_, _) => AddHeaderBar(windowGrid); 
+        Loaded += (_, _) => AddHeaderBar(windowGrid);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
+        Loaded += async (_, _) => await _subjectsService.SetSubjectsNoRemoteToAdd();
     }
         
     // After pud subjects selection
     public GradesWin(SyllabusModel syllabus, List<Subject> subjectsFromPud) : this(syllabus)
     {
-        Loaded += (_, _) => LoadSubjectsFromPud(subjectsFromPud);
+        Loaded += (_, _) => LoadSubjectsFromPud(subjectsFromPud); // Add to _subjsToAdd ??
     }
 
     private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
     {
+        _subjectsService.RetainSubjectsToUpdate();
+        
         foreach (Subject subject in _subjects)
         {
             subject.UpdateLocalModel();
         }
-
+    
         await _localDb.SaveChangesAsync();
+        
         // Remote requests to add, update, delete etc. 
         await UpdateRemote();
         Close();
@@ -62,7 +64,7 @@ public partial class GradesWin : BaseFullWin
     {
         try
         {
-            await  _subjectsService.SubjectsOverallRemoteUpdate(_subjectsToAdd, _subjKeysToRemove);
+            await  _subjectsService.SubjectsOverallRemoteUpdate();
         }
         catch (HttpRequestException ex)
         {
@@ -109,7 +111,7 @@ public partial class GradesWin : BaseFullWin
         _subjects.Add(subject);
         _localDb.Add(subject.LocalModel);
         await _localDb.SaveChangesAsync();
-        _subjectsToAdd[subject.LocalModel.SubjectId] = subject;
+        _subjectsService.SubjectsToAdd[subject.LocalModel.SubjectId] = subject.LocalModel;
             
         SubjectEditWin subjWin = new SubjectEditWin(subject);
         subjWin.OnCancel += RemoveSubject;
@@ -119,7 +121,7 @@ public partial class GradesWin : BaseFullWin
 
     private void OnEditGearClick(object sender, MouseButtonEventArgs e)
     {
-        Subject? subject = ((FrameworkElement)sender)?.DataContext as Subject;
+        Subject? subject = ((FrameworkElement)sender).DataContext as Subject;
 
         if (subject == null)
         {
@@ -136,7 +138,7 @@ public partial class GradesWin : BaseFullWin
         
     private void OnTrashBinClick(object sender, RoutedEventArgs e)
     {
-        Subject? subject = ((FrameworkElement)sender)?.DataContext as Subject;
+        Subject? subject = ((FrameworkElement)sender).DataContext as Subject;
             
         if (subject == null)
         {
@@ -152,15 +154,14 @@ public partial class GradesWin : BaseFullWin
     {
         _subjects.Remove(subject);
             
-        if (!_subjectsToAdd.ContainsKey(subject.LocalModel.SubjectId))
+        if (!_subjectsService.SubjectsToAdd.ContainsKey(subject.LocalModel.SubjectId))
         {
-            _subjKeysToRemove.Add(subject.LocalModel.RemoteId);
+            _subjectsService.SubjKeysToRemove.Add(subject.LocalModel.RemoteId);
         }
             
         _localDb.Remove(subject.LocalModel);
-        _subjectsToAdd.Remove(subject.LocalModel.SubjectId);
+        _subjectsService.SubjectsToAdd.Remove(subject.LocalModel.SubjectId);
     }
-
 
     private async void OnAccountClick(object sender, RoutedEventArgs e)
     {
