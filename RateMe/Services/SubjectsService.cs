@@ -7,48 +7,51 @@ using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
 using RateMeShared.Dto;
 
-namespace RateMe.Api.Services;
+namespace RateMe.Services;
 
 public class SubjectsService
 {
-    public Dictionary<int, SubjectLocal> SubjectsToAdd { get; private set; } = [];
     public List<int> SubjKeysToRemove { get; } = [];
     
-    private IEnumerable<Subject> _allSubjects;
-    private List<Subject> _subjectsToUpdate = [];
+    private readonly IEnumerable<Subject> _allSubjects;
+    private List<SubjectLocal> _subjectsToUpdate = [];
+    private Dictionary<int, SubjectLocal> _subjectsToAdd = [];
     
-    private SubjectsClient _subjClient;
     private SubjectsRepository _rep = new();
+    private SubjectsClient _subjClient = new();
 
-    public SubjectsService(IEnumerable<Subject> allSubjects, SubjectsClient subjClient)
+    
+    public SubjectsService(IEnumerable<Subject> allSubjects)
     {
         _allSubjects = allSubjects;
-        _subjClient = subjClient;
     }
+    
     
     public async Task SubjectsOverallRemoteUpdate()
     {
-        if (SubjectsToAdd.Count != 0)
+        _subjectsToAdd = await _rep.GetSubjectsNoRemote();
+        
+        if (_subjectsToAdd.Count != 0)
         {
             int userId = JsonModelsHandler.GetUserId();
-            await PushSubjectsByUserId(userId, SubjectsToAdd);   // TODO: refactor for not working server
+            await PushSubjectsByUserId(userId, _subjectsToAdd);   // TODO: refactor for not working server
         }
         
         if (_subjectsToUpdate.Count != 0)
         {
-            await UpdateSubjects(_subjectsToUpdate);
+            await UpdateSubjectsRemote(_subjectsToUpdate);
         }
 
         if (SubjKeysToRemove.Count != 0)
         {
-            await RemoveSubjectsByKeys(SubjKeysToRemove);
+            await RemoveSubjectsByKeysRemote(SubjKeysToRemove);
         }
     }
+    
     
     /// <summary>
     /// Pushes ALL local subjects to remote bd
     /// </summary>
-    /// <param name="userId"></param>
     public async Task PushAllSubjectsByUserId(int userId)
     {
         // Building up Dto
@@ -73,6 +76,7 @@ public class SubjectsService
         }
     }
     
+    
     /// <summary>
     /// Pushes given subjects to remote bd
     /// </summary>
@@ -96,72 +100,97 @@ public class SubjectsService
         }
     }
 
-    private async Task UpdateSubjects(List<Subject> subjects)
+    
+    /// <summary>
+    /// Requests update of subjects
+    /// </summary>
+    private async Task UpdateSubjectsRemote(List<SubjectLocal> subjects)
     {
         List<PlainSubject> subjsDto = [];
         
-        foreach (Subject subj in subjects)
+        foreach (SubjectLocal subj in subjects)
         {
-            PlainSubject dto = new() { RemoteId = subj.LocalModel.RemoteId, Name = subj.Name, Credits = subj.Credits };
+            PlainSubject dto = new() { RemoteId = subj.RemoteId, Name = subj.Name, Credits = subj.Credits };
             subjsDto.Add(dto);
         }
 
         await _subjClient.UpdateSubjects(subjsDto);
     }
 
+    
     /// <summary>
     /// Requests removal of subjects
     /// </summary>
-    private async Task RemoveSubjectsByKeys(List<int> subjectsKeys)
+    private async Task RemoveSubjectsByKeysRemote(List<int> subjectsKeys)
     {
         await _subjClient.RemoveSubjectsByKeys(subjectsKeys);
     }
+
+    
+    internal async Task<List<SubjectLocal>> GetAllLocals()
+    {
+        return await _rep.GetAll();
+    }
+
+    
+    internal async Task UpdateAllLocals()
+    {
+        foreach (Subject subject in _allSubjects)
+        {
+            subject.UpdateLocalModel();
+        }
+
+        SubjectLocal[] locals = _allSubjects.Select(c => c.LocalModel).ToArray();
+        
+        await _rep.Update(locals);
+    }
+
+    
+    internal async Task AddLocals(List<Subject> subjs)
+    {
+        SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
+        await _rep.Add(locals);
+    }
+    
+    
+    internal async Task AddLocal(SubjectLocal subj)
+    {
+        await _rep.Add(subj);
+    }
+    
+    
+    internal async Task RemoveLocal(SubjectLocal subj)
+    {
+        if (subj.RemoteId != 0)
+        {
+            SubjKeysToRemove.Add(subj.RemoteId);
+        }
+
+        await _rep.Remove(subj);
+    }
+
+
+    internal async Task RemoveLocals(IEnumerable<Subject> subjs)
+    {
+        SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
+        await _rep.Remove(locals);
+    }
+    
     
     /// <summary>
-    /// Catches subjects to updates before they are saved to local bd
+    /// Catches subjects to be updated, before they are saved to local bd
     /// </summary>
     internal void RetainSubjectsToUpdate()
     {
         foreach (Subject subj in _allSubjects)
         {
             bool isDiff = subj.Name != subj.LocalModel.Name || subj.Credits != subj.LocalModel.Credits;
-            bool isToAdd = SubjectsToAdd.ContainsKey(subj.LocalModel.SubjectId);
+            bool isToAdd = _subjectsToAdd.ContainsKey(subj.LocalModel.SubjectId);
             
             if (isDiff && !isToAdd)
             {
-                _subjectsToUpdate.Add(subj);
+                _subjectsToUpdate.Add(subj.LocalModel);
             }
         }
-    }
-
-    internal async Task SetSubjectsNoRemoteToAdd()
-    {
-        SubjectsToAdd = await _rep.GetSubjectsNoRemote();
-    } 
-    
-    /// <summary>
-    /// Get elems that are not from new subs and have remote id = 0
-    /// </summary>
-    private List<ControlElementLocal> GetElemModelsToAdd()
-    {
-        List<ControlElementLocal> elems = [];
-        
-        foreach (Subject subj in _allSubjects)
-        {
-            if (SubjectsToAdd.ContainsKey(subj.LocalModel.SubjectId))
-            {
-                continue;
-            }
-
-            foreach (ControlElementLocal elemModel in subj.LocalModel.Elements)
-            {
-                if (elemModel.RemoteId == 0)
-                {
-                    elems.Add(elemModel);
-                }
-            }
-        }
-
-        return elems;
     }
 }

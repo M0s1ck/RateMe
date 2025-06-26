@@ -1,15 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.EntityFrameworkCore;
-using RateMe.Api.Clients;
-using RateMe.Api.Services;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
-using RateMe.Repositories;
 using System.Net.Http;
 using System.Net.Sockets;
+using RateMe.Services;
 
 namespace RateMe.View.Windows;
 
@@ -22,43 +19,46 @@ public partial class GradesWin : BaseFullWin
     private SyllabusModel _syllabus;
         
     private readonly SubjectsService _subjectsService;
-    private readonly SubjectsContext _localDb = new SubjectsContext();
-        
-    // Default
+    private readonly ElementsService _elementsService;
+    
+    
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public GradesWin(SyllabusModel syllabus)
     {
         InitializeComponent();
             
-        _subjectsService = new SubjectsService(_subjects, new SubjectsClient());
+        _subjectsService = new SubjectsService(_subjects);
+        _elementsService = new ElementsService(_subjects);
+        
         _syllabus = syllabus;
         grades.ItemsSource = _subjects;
         
         Loaded += (_, _) => AddHeaderBar(windowGrid);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
-        Loaded += async (_, _) => await _subjectsService.SetSubjectsNoRemoteToAdd();
     }
-        
-    // After pud subjects selection
+    
+    
+    /// <summary>
+    /// After pud subjects selection
+    /// </summary>
     public GradesWin(SyllabusModel syllabus, List<Subject> subjectsFromPud) : this(syllabus)
     {
-        Loaded += (_, _) => LoadSubjectsFromPud(subjectsFromPud); // Add to _subjsToAdd ??
+        Loaded += async (_, _) => await LoadSubjectsFromPud(subjectsFromPud);
     }
 
+    
     private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
     {
         _subjectsService.RetainSubjectsToUpdate();
-        
-        foreach (Subject subject in _subjects)
-        {
-            subject.UpdateLocalModel();
-        }
-    
-        await _localDb.SaveChangesAsync();
+        await _subjectsService.UpdateAllLocals();
         
         // Remote requests to add, update, delete etc. 
         await UpdateRemote();
         Close();
     }
+    
 
     private async Task UpdateRemote()
     {
@@ -72,10 +72,11 @@ public partial class GradesWin : BaseFullWin
             MessageBox.Show(exType == typeof(SocketException) ? "Похоже сервер не отвечает(" : ex.ToString());
         }
     }
+    
 
     private async Task LoadSubjectsFromLocalDb()
     {
-        List<SubjectLocal> subjectLocals = await _localDb.Subjects.Include(s => s.Elements).ToListAsync();
+        List<SubjectLocal> subjectLocals = await _subjectsService.GetAllLocals();
             
         foreach (SubjectLocal subjLocal in subjectLocals)
         {
@@ -88,30 +89,25 @@ public partial class GradesWin : BaseFullWin
         config.IsSubjectsLoaded = true;
         JsonModelsHandler.SaveConfig(config);
     }
+    
         
-    private void LoadSubjectsFromPud(List<Subject> subjectsFrommPud)
+    private async Task LoadSubjectsFromPud(List<Subject> subjectsFrommPud)
     {
         foreach (Subject subject in subjectsFrommPud)
         {
             _subjects.Add(subject);
-            subject.LocalModel = new SubjectLocal { Name = subject.Name, Credits = subject.Credits, Elements = [] };
-
-            foreach (ControlElement elem in subject.FormulaObj)
-            {
-                subject.LocalModel.Elements.Add(elem.LocalModel);
-            }
-
-            _localDb.Add(subject.LocalModel);
         }
+
+        await _subjectsService.AddLocals(subjectsFrommPud);
     } 
+    
         
     private async void OnAddSubject(object sender, MouseButtonEventArgs e)
     {
         Subject subject = new();
         _subjects.Add(subject);
-        _localDb.Add(subject.LocalModel);
-        await _localDb.SaveChangesAsync();
-        _subjectsService.SubjectsToAdd[subject.LocalModel.SubjectId] = subject.LocalModel;
+        
+        await _subjectsService.AddLocal(subject.LocalModel);
             
         SubjectEditWin subjWin = new SubjectEditWin(subject);
         subjWin.OnCancel += RemoveSubject;
@@ -119,6 +115,7 @@ public partial class GradesWin : BaseFullWin
         subjWin.Activate();
     }
 
+    
     private void OnEditGearClick(object sender, MouseButtonEventArgs e)
     {
         Subject? subject = ((FrameworkElement)sender).DataContext as Subject;
@@ -129,12 +126,12 @@ public partial class GradesWin : BaseFullWin
             return;
         }
 
-        // MessageBox.Show(subject.Name);
-            
         SubjectEditWin subjWin = new SubjectEditWin(subject);
+        subjWin.AddedElem += _elementsService.AddLocal;
         subjWin.Show();
         subjWin.Activate();
     }
+    
         
     private void OnTrashBinClick(object sender, RoutedEventArgs e)
     {
@@ -150,30 +147,20 @@ public partial class GradesWin : BaseFullWin
         win.Show();
     }
 
-    private void RemoveSubject(Subject subject)
+    
+    private async Task RemoveSubject(Subject subject)
     {
         _subjects.Remove(subject);
-            
-        if (!_subjectsService.SubjectsToAdd.ContainsKey(subject.LocalModel.SubjectId))
-        {
-            _subjectsService.SubjKeysToRemove.Add(subject.LocalModel.RemoteId);
-        }
-            
-        _localDb.Remove(subject.LocalModel);
-        _subjectsService.SubjectsToAdd.Remove(subject.LocalModel.SubjectId);
+        await _subjectsService.RemoveLocal(subject.LocalModel);
     }
 
+    
     private async void OnAccountClick(object sender, RoutedEventArgs e)
     {
         AuthWin authWin = new(_subjectsService);
         authWin.Show();
             
-        foreach (Subject subject in _subjects)
-        {
-            subject.UpdateLocalModel();
-        }
-
-        await _localDb.SaveChangesAsync();
+        await _subjectsService.UpdateAllLocals();
     }
 
 
@@ -184,25 +171,18 @@ public partial class GradesWin : BaseFullWin
         redo.Show();
     }
 
+    
     private async Task Redo(bool withSave)
     {
-        if (!withSave)
+        if (withSave)
         {
-            foreach (Subject subject in _subjects)
-            {
-                _subjects.Remove(subject);
-                _localDb.Remove(subject.LocalModel);
-            }
+            await _subjectsService.UpdateAllLocals();
         }
         else
         {
-            foreach (Subject subject in _subjects)
-            {
-                subject.UpdateLocalModel();
-            }
+            await _subjectsService.RemoveLocals(_subjects);
         }
-
-        await _localDb.SaveChangesAsync();
+        
         Close();
         DataCollection dataWin = new();
         dataWin.Show();

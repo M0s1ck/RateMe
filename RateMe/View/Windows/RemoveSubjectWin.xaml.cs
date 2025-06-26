@@ -21,7 +21,7 @@ public partial class RemoveSubjectWin : Window
         DataContext = subject;
     }
     
-    public delegate void OnRemovalAgreed(Subject subject);
+    public delegate Task OnRemovalAgreed(Subject subject);
 
     public event OnRemovalAgreed? RemovalAgreed;
     
@@ -40,6 +40,4 @@ public partial class RemoveSubjectWin : Window
     {
         Keyboard.ClearFocus();
     }
-
-    
 }

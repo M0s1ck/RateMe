@@ -33,9 +33,9 @@ public class SubjectsClient : BaseClient
         // To be continued...
     }
 
-    public async Task RemoveSubjectsByKeys(List<int> keysObj)
+    public async Task RemoveSubjectsByKeys(List<int> keys)
     {
-        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/subjects/delete", keysObj);
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/subjects/delete", keys);
         string content = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode is not (HttpStatusCode.NoContent or HttpStatusCode.OK))

@@ -15,4 +15,21 @@ internal static class ElementMapper
             Weight = elem.Weight
         };
     }
+
+    internal static Dictionary<int, List<ControlElementDto>> GetElemsBySubIds(List<ControlElementLocal> elems)
+    {
+        Dictionary<int, List<ControlElementDto>> dto = [];
+
+        foreach (ControlElementLocal elem in elems)
+        {
+            if (!dto.ContainsKey(elem.SubjectId))
+            {
+                dto[elem.SubjectId] = [];
+            }
+
+            dto[elem.SubjectId].Add(GetElementDto(elem));
+        }
+
+        return dto;
+    }
 }

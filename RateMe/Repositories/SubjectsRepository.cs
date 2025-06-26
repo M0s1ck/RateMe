@@ -1,4 +1,5 @@
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using RateMe.Models.LocalDbModels;
 using RateMeShared.Dto;
 
@@ -21,6 +22,67 @@ public class SubjectsRepository
 
         return subs;
     }
+
+    
+    internal async Task<List<SubjectLocal>> GetAll()
+    {
+        await using SubjectsContext context = new();
+        List<SubjectLocal> subjects = await context.Subjects.Include(s => s.Elements).ToListAsync();
+        return subjects;
+    }
+
+    
+    internal async Task Add(IEnumerable<SubjectLocal> subjs)
+    {
+        await using SubjectsContext context = new();
+        context.Subjects.AddRange(subjs);
+        await context.SaveChangesAsync();
+    }
+
+    
+    internal async Task Add(SubjectLocal subj)
+    {
+        await using SubjectsContext context = new();
+        context.Add(subj);
+        await context.SaveChangesAsync();
+    }
+    
+    
+    internal async Task Remove(IEnumerable<SubjectLocal> subjs)
+    {
+        await using SubjectsContext context = new();
+        context.Subjects.RemoveRange(subjs);
+        await context.SaveChangesAsync();
+    }
+    
+    
+    internal async Task Remove(SubjectLocal subj)
+    {
+        await using SubjectsContext context = new();
+        context.Subjects.Remove(subj);
+        await context.SaveChangesAsync();
+    }
+
+    
+    internal async Task Update(IEnumerable<SubjectLocal> subjects)
+    {
+        await using SubjectsContext context = new(); 
+        
+        foreach (SubjectLocal subj in subjects)
+        {
+            context.Subjects.Attach(subj);
+            context.Entry(subj).State = EntityState.Modified;
+
+            foreach (ControlElementLocal elem in subj.Elements)
+            {
+                context.Elements.Attach(elem);
+                context.Entry(elem).State = EntityState.Modified;
+            }
+        }
+        
+        await context.SaveChangesAsync();
+    }
+    
     
     public async Task UpdateRemoteKeys(List<SubjectId> subjIds)
     {
@@ -82,5 +144,4 @@ public class SubjectsRepository
             }
         }
     }
-    
 }

@@ -2,6 +2,7 @@
 using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
+using RateMe.Models.LocalDbModels;
 
 namespace RateMe.View.Windows
 {
@@ -47,11 +48,12 @@ namespace RateMe.View.Windows
             Close();
         }
 
-        private void OnAddClick(object sender, MouseButtonEventArgs e)
+        private async void OnAddClick(object sender, MouseButtonEventArgs e)
         {
             ControlElement newElem = new ControlElement();
             _updatedSubject.FormulaObj.Add(newElem);
             _updatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
+            await AddedElem?.Invoke(_updatedSubject.LocalModel.SubjectId, newElem.LocalModel)!;  // Wtf is '!' ???
         }
 
         private void OnRemoveClick(object sender, MouseButtonEventArgs e)
@@ -61,13 +63,13 @@ namespace RateMe.View.Windows
 
         private void OnRemovalClick(object sender, RoutedEventArgs e)
         {
-            ControlElement? elem = ((FrameworkElement)sender)?.DataContext as ControlElement;
-
-            if (elem != null)
+            if (((FrameworkElement)sender).DataContext is not ControlElement elem)
             {
-                _updatedSubject.FormulaObj.Remove(elem);
-                _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
+                return;
             }
+            
+            _updatedSubject.FormulaObj.Remove(elem);
+            _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel); // Same way as add wit .remove(...)
         }
 
         private void OnLoaded()
@@ -81,13 +83,14 @@ namespace RateMe.View.Windows
             OnCancel?.Invoke(_theSubject);
             Close();
         }
-
-        public event CancelHandler? OnCancel;
         
-        public delegate void CancelHandler(Subject subj);
+        public event CancelHandler? OnCancel;
+        public delegate Task CancelHandler(Subject subj);
+        
+        public event OnAddedElem? AddedElem;
+        public delegate Task OnAddedElem(int subId, ControlElementLocal elem);
         
         private void OnMouseLeave(object sender, MouseEventArgs e) => Topmost = false;
-
         private void OnMouseEnter(object sender, MouseEventArgs e) => Topmost = false;
     }
 }

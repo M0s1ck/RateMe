@@ -73,7 +73,7 @@ namespace RateMe.View.Windows
             // Subject eco = new Subject("Economics", 9, [1, 2, 3, 4], []);
             // eco.FormulaObj = new Formula("0.13 * Выполнение тестов онлайн-курса + 0.29 * Контрольная работа №1 (микроэкономика) + 0.29 * Контрольная работа №2 (макроэкономика) + 0.29 * Оценка за работу на семинарах");
 
-            // List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
+            //List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
                                   //new Subject("Алгебраnvsknksvnk4", 9, [1, 2, 3], []), new Subject("Матанsvmsmvlmslvmlsv5", 9, [3, 4], []), new Subject("Экономика6", 3, [3, 4], []),
                                   //new Subject("Алгебра7", 9, [1, 2, 3, 4], []), new Subject("Матан8", 9, [1, 2, 3, 4], []), new Subject("Экономика9", 3, [3, 4], []),
                                   //new Subject("Алгебра10", 9, [1, 2, 3, 4], []), new Subject("Матан,vs,v;s,;v,;s,v;,sv,s;v,sv;s,vvs;s,;,sv;s,v;s11", 9, [1, 2, 3], []), new Subject("Экономика12", 3, [3, 4], []),
