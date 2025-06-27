@@ -11,11 +11,11 @@ namespace RateMe.Services;
 
 public class SubjectsService
 {
-    public List<int> SubjKeysToRemove { get; } = [];
-    
     private readonly IEnumerable<Subject> _allSubjects;
+    
+    private Dictionary<int, SubjectLocal> _subjectsToAdd = []; 
     private List<SubjectLocal> _subjectsToUpdate = [];
-    private Dictionary<int, SubjectLocal> _subjectsToAdd = [];
+    private List<int> _subjKeysToRemove = [];
     
     private SubjectsRepository _rep = new();
     private SubjectsClient _subjClient = new();
@@ -42,9 +42,9 @@ public class SubjectsService
             await UpdateSubjectsRemote(_subjectsToUpdate);
         }
 
-        if (SubjKeysToRemove.Count != 0)
+        if (_subjKeysToRemove.Count != 0)
         {
-            await RemoveSubjectsByKeysRemote(SubjKeysToRemove);
+            await RemoveSubjectsByKeysRemote(_subjKeysToRemove);
         }
     }
     
@@ -163,7 +163,7 @@ public class SubjectsService
     {
         if (subj.RemoteId != 0)
         {
-            SubjKeysToRemove.Add(subj.RemoteId);
+            _subjKeysToRemove.Add(subj.RemoteId);
         }
 
         await _rep.Remove(subj);

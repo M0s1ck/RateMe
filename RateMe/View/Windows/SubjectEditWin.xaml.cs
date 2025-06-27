@@ -56,12 +56,7 @@ namespace RateMe.View.Windows
             await AddedElem?.Invoke(_updatedSubject.LocalModel.SubjectId, newElem.LocalModel)!;  // Wtf is '!' ???
         }
 
-        private void OnRemoveClick(object sender, MouseButtonEventArgs e)
-        {
-            removalButtonList.Visibility = removalButtonList.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        private void OnRemovalClick(object sender, RoutedEventArgs e)
+        private async void OnRemovalClick(object sender, RoutedEventArgs e)
         {
             if (((FrameworkElement)sender).DataContext is not ControlElement elem)
             {
@@ -69,7 +64,8 @@ namespace RateMe.View.Windows
             }
             
             _updatedSubject.FormulaObj.Remove(elem);
-            _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel); // Same way as add wit .remove(...)
+            _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
+            await RemovedElem?.Invoke(elem.LocalModel)!;
         }
 
         private void OnLoaded()
@@ -84,11 +80,19 @@ namespace RateMe.View.Windows
             Close();
         }
         
+        private void OnRemoveClick(object sender, MouseButtonEventArgs e)
+        {
+            removalButtonList.Visibility = removalButtonList.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+        }
+        
         public event CancelHandler? OnCancel;
         public delegate Task CancelHandler(Subject subj);
         
-        public event OnAddedElem? AddedElem;
-        public delegate Task OnAddedElem(int subId, ControlElementLocal elem);
+        public event AddedElemHandler? AddedElem;
+        public delegate Task AddedElemHandler(int subId, ControlElementLocal elem);
+
+        public event RemovedElemHandler? RemovedElem;
+        public delegate Task RemovedElemHandler(ControlElementLocal elem);
         
         private void OnMouseLeave(object sender, MouseEventArgs e) => Topmost = false;
         private void OnMouseEnter(object sender, MouseEventArgs e) => Topmost = false;

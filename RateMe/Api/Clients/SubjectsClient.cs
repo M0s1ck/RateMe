@@ -1,12 +1,8 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Documents;
-using RateMe.Models.ClientModels;
-using RateMe.Models.JsonModels;
 using RateMeShared.Dto;
 
 namespace RateMe.Api.Clients;

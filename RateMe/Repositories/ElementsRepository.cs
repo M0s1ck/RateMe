@@ -17,4 +17,11 @@ public class ElementsRepository
         subj.Elements.Add(elem);
         await context.SaveChangesAsync();
     }
+    
+    internal async Task Remove(ControlElementLocal elem)
+    {
+        await using SubjectsContext context = new();
+        context.Elements.Remove(elem);
+        await context.SaveChangesAsync();
+    }
 }

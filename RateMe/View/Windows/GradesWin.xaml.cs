@@ -52,6 +52,8 @@ public partial class GradesWin : BaseFullWin
     private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
     {
         _subjectsService.RetainSubjectsToUpdate();
+        _elementsService.RetainElemsToUpdate();
+        
         await _subjectsService.UpdateAllLocals();
         
         // Remote requests to add, update, delete etc. 
@@ -64,7 +66,8 @@ public partial class GradesWin : BaseFullWin
     {
         try
         {
-            await  _subjectsService.SubjectsOverallRemoteUpdate();
+            await _subjectsService.SubjectsOverallRemoteUpdate();
+            await _elementsService.ElementsOverallRemoteUpdate();
         }
         catch (HttpRequestException ex)
         {
@@ -111,6 +114,8 @@ public partial class GradesWin : BaseFullWin
             
         SubjectEditWin subjWin = new SubjectEditWin(subject);
         subjWin.OnCancel += RemoveSubject;
+        subjWin.AddedElem += _elementsService.AddLocal;
+        subjWin.RemovedElem += _elementsService.RemoveLocal;
         subjWin.Show();
         subjWin.Activate();
     }
@@ -128,6 +133,7 @@ public partial class GradesWin : BaseFullWin
 
         SubjectEditWin subjWin = new SubjectEditWin(subject);
         subjWin.AddedElem += _elementsService.AddLocal;
+        subjWin.RemovedElem += _elementsService.RemoveLocal;
         subjWin.Show();
         subjWin.Activate();
     }

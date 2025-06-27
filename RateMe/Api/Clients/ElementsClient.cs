@@ -13,4 +13,20 @@ internal class ElementsClient : BaseClient
         
         // To be continued...
     }
+    
+    public async Task UpdateElems(PlainElem[] dto)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PutAsJsonAsync("api/subjects/elements", dto);
+        string content = await response.Content.ReadAsStringAsync();
+        
+        // To be continued...
+    }
+    
+    public async Task RemoveElemsByKeys(List<int> keys)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/subjects/elements/delete", keys);
+        string content = await response.Content.ReadAsStringAsync();
+
+        // To be continued...
+    }
 }

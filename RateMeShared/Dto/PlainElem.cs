@@ -1,8 +1,9 @@
 namespace RateMeShared.Dto;
 
-public class PlainSubject
+public class PlainElem
 {
     public int RemoteId { get; set; }
     public required string Name { get; set; }
-    public int Credits { get; set; }
+    public decimal Weight { get; set; }
+    public decimal Grade { get; set; }
 }

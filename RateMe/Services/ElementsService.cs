@@ -9,9 +9,9 @@ namespace RateMe.Services;
 
 internal class ElementsService
 {
-    internal List<ControlElementLocal> ElemsToRemove { get; } = [];
-    
-    private IEnumerable<Subject> _allSubjects;
+    private readonly IEnumerable<Subject> _allSubjects;
+    private List<ControlElementLocal> _elemsToUpdate = [];
+    private List<int> _elemKeysToRemove = [];
 
     private ElementsRepository _rep = new();
     private ElementsClient _elemClient = new();
@@ -30,6 +30,16 @@ internal class ElementsService
         {
             await PushElemsBySubjectsIds(elemsToAdd);
         }
+
+        if (_elemsToUpdate.Count != 0)
+        {
+            await UpdateElemsRemote(_elemsToUpdate);
+        }
+
+        if (_elemKeysToRemove.Count != 0)
+        {
+            await RemoveElemsByKeysRemote(_elemKeysToRemove);
+        }
     }
     
     
@@ -39,10 +49,57 @@ internal class ElementsService
         await _elemClient.PushElemsBySubsIds(dto);
     }
 
+    
+    private async Task UpdateElemsRemote(IEnumerable<ControlElementLocal> elemsToUpdate)
+    {
+        PlainElem[] elems = elemsToUpdate.Select(ElementMapper.GetPlainElem).ToArray();
+        await _elemClient.UpdateElems(elems);
+    }
+    
+    private async Task RemoveElemsByKeysRemote(List<int> subjectsKeys)                         
+    {                                                                                             
+        await _elemClient.RemoveElemsByKeys(subjectsKeys);                                     
+    }                                                                                             
+
 
     internal async Task AddLocal(int subId, ControlElementLocal elem)
     {
         await _rep.Add(subId, elem);
+    }
+
+    internal async Task RemoveLocal(ControlElementLocal elem)
+    {
+        if (elem.RemoteId != 0)
+        {
+            _elemKeysToRemove.Add(elem.RemoteId);
+        }
+        
+        await _rep.Remove(elem);
+    }
+    
+    
+    internal void RetainElemsToUpdate()
+    {
+        _elemsToUpdate = [];
+        
+        foreach (Subject subj in _allSubjects)
+        {
+            if (subj.LocalModel.RemoteId == 0)
+            {
+                continue;
+            }
+
+            foreach (ControlElement elem in subj.FormulaObj)
+            {
+                bool isDiff = elem.LocalModel.Name != elem.Name || elem.LocalModel.Weight != elem.Weight ||
+                              elem.LocalModel.Grade != elem.Grade;
+                
+                if (elem.LocalModel.RemoteId != 0 && isDiff)
+                {
+                    _elemsToUpdate.Add(elem.LocalModel);
+                }
+            }
+        }
     }
     
     

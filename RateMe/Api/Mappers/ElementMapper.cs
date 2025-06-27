@@ -32,4 +32,15 @@ internal static class ElementMapper
 
         return dto;
     }
+
+    internal static PlainElem GetPlainElem(ControlElementLocal elem)
+    {
+        return new PlainElem()
+        {
+            RemoteId = elem.RemoteId,
+            Name = elem.Name,
+            Weight = elem.Weight,
+            Grade = elem.Grade
+        };
+    }
 }
