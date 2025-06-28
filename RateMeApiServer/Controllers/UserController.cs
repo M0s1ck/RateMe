@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RateMeApiServer.Common;
 using RateMeApiServer.Services;
 using RateMeShared.Dto;
 
@@ -15,18 +16,22 @@ namespace RateMeApiServer.Controllers
             _userService = userService;
         }
 
-
-        [HttpGet("{id}")]
+        
+        /// <summary>
+        /// Gets user by id.
+        /// </summary>
+        /// <response code="200">Returns user</response>
+        /// <response code="404">Such id doesn't exist</response>
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
+            DbInteractionResult<UserDto> interaction = await _userService.GetUserByIdAsync(id);
+
+            switch (interaction.Status)
             {
-                UserDto user = await _userService.GetUserByIdAsync(id);
-                return Ok(user);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
+                case DbInteractionStatus.Success: return Ok(interaction.Value);
+                case DbInteractionStatus.NotFound: return NotFound();
+                default: return StatusCode(500);
             }
         }
 
@@ -37,18 +42,18 @@ namespace RateMeApiServer.Controllers
         /// <response code="200">Returns the newly created user's id</response>
         /// <response code="409">If this email is already taken</response>
         [HttpPost("signup")]
-        public async Task<IActionResult> Add(UserDto userRequestDto)
+        public async Task<IActionResult> SignUp(UserDto userRequestDto)
         {
-            try
+            DbInteractionResult<int> interaction = await _userService.AddUserAsync(userRequestDto);
+
+            switch (interaction.Status)
             {
-                int addedId = await _userService.AddUserAsync(userRequestDto);
-                return Ok(addedId);
+                case DbInteractionStatus.Success: 
+                    return CreatedAtAction(nameof(GetById), new {id = interaction.Value}, new {id = interaction.Value});
+                
+                case DbInteractionStatus.Conflict: return Conflict("User with such email already exists");
+                default: return StatusCode(500);
             }
-            catch (InvalidDataException e)
-            {
-                return Conflict(e.Message);
-            }
-            
         }
 
         
@@ -59,20 +64,16 @@ namespace RateMeApiServer.Controllers
         /// <response code="404">If such email was not found</response>
         /// <response code="401">If password is wrong</response>
         [HttpPost("auth")]
-        public async Task<IActionResult> LogIn(AuthRequest authRequest)
+        public async Task<IActionResult> SignIn(AuthRequest authRequest)
         {
-            try
+            DbInteractionResult<int> interaction = await _userService.AuthUserAsync(authRequest);
+            
+            switch (interaction.Status)
             {
-                UserDto dto = await _userService.AuthUserAsync(authRequest);
-                return Ok(dto);
-            }
-            catch (InvalidOperationException e)
-            {
-                return NotFound("User with such email doesn't exist");
-            }
-            catch (InvalidDataException)
-            {
-                return Unauthorized("Wrong password");
+                case DbInteractionStatus.Success: return Ok(new {id = interaction.Value});
+                case DbInteractionStatus.NotFound: return NotFound("User with such email doesn't exist");
+                case DbInteractionStatus.WrongData: return Unauthorized("Wrong password");
+                default: return StatusCode(500);
             }
         }
     }

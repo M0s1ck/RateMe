@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using RateMeApiServer.Common;
 using RateMeApiServer.Data;
 using RateMeApiServer.Models.Entities;
 
@@ -12,13 +14,15 @@ public class SubjectRepository : ISubjectRepository
         _context = context;
     }
     
-    public async Task<List<Subject>> AddSubjectsAsync(int userId, List<Subject> subjects)
+    
+    public async Task<DbInteractionResult<IEnumerable<Subject>>> AddSubjectsAsync(int userId, IEnumerable<Subject> isubjects)
     {
+        Subject[] subjects = isubjects as Subject[] ?? isubjects.ToArray();
         User? user = await _context.Users.FindAsync(userId);
 
         if (user == null)
         {
-            throw new InvalidDataException($"User with such id={userId} was not found");
+            return new DbInteractionResult<IEnumerable<Subject>>(null, DbInteractionStatus.NotFound);
         }
 
         foreach (Subject subj in subjects)
@@ -27,19 +31,22 @@ public class SubjectRepository : ISubjectRepository
         }
 
         await _context.SaveChangesAsync();
-
-        return subjects;
+        return new DbInteractionResult<IEnumerable<Subject>>(subjects, DbInteractionStatus.Success);
     }
 
-    public async Task RemoveSubjectsByKeys(List<int> keys)
+    
+    public async Task<DbInteractionStatus> RemoveSubjectsByKeys(int userId, IEnumerable<int> ikeys)
     {
-        foreach (int key in keys)
+        HashSet<int> keys = ikeys as HashSet<int> ?? ikeys.ToHashSet();
+        User? user = await _context.Users.FindAsync(userId);
+
+        if (user == null)
         {
-            Subject temp = new() { Id = key, Name = string.Empty };
-            _context.Subjects.Attach(temp);
-            _context.Subjects.Remove(temp);
+            return DbInteractionStatus.NotFound;
         }
-        
-        await _context.SaveChangesAsync(); // Nothing will be removed, if one key doesn't exist in bd!  
+
+        await _context.Subjects.Where(s => keys.Contains(s.Id)).ExecuteDeleteAsync();
+        await _context.SaveChangesAsync();
+        return DbInteractionStatus.Success;
     }
 }

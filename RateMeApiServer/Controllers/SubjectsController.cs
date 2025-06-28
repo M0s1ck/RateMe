@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using RateMeApiServer.Common;
 using RateMeApiServer.Services;
 using RateMeShared.Dto;
 
 namespace RateMeApiServer.Controllers;
 
 [ApiController]
-[Route("api/users/{id}/subjects")]
+[Route("api/users/{userId:int}/subjects")]
 public class SubjectsController : ControllerBase
 {
     private ISubjectService _service;
@@ -18,21 +18,20 @@ public class SubjectsController : ControllerBase
     
     
     /// <summary>
-    /// Adds all user's subjects.
+    /// Adds user's subjects.
     /// </summary>
     /// <response code="200">Returns obj with created subjects' and elements' ids.</response>
     /// <response code="404">If user with such id doesn't exist.</response>
     [HttpPost]
-    public async Task<IActionResult> AddAllSubjects(SubjectsByUserId subjectsObj)
+    public async Task<IActionResult> AddSubjects(int userId, SubjectDto[] subjects)
     {
-        try
+        DbInteractionResult<SubjectsIds> interaction = await _service.AddSubjectsAsync(userId, subjects);
+        
+        switch (interaction.Status)
         {
-           SubjectsIds subjIds = await _service.AddSubjectsAsync(subjectsObj);
-           return Ok(subjIds);
-        }
-        catch (InvalidDataException e)
-        {
-            return NotFound(e.Message);
+            case DbInteractionStatus.Success: return Ok(interaction.Value);
+            case DbInteractionStatus.NotFound: return NotFound("User with such id was not found");
+            default: return StatusCode(500);
         }
     }
     
@@ -41,18 +40,17 @@ public class SubjectsController : ControllerBase
     /// Removes subjects of the given keys.
     /// </summary>
     /// <response code="204">If removed.</response>
-    /// <response code="404">If some keys weren't found.</response>
+    /// <response code="404">If user with such id doesn't exist.</response>
     [HttpPost("delete")]
-    public async Task<IActionResult> RemoveSubjects(PlainKeys subjKeys)
+    public async Task<IActionResult> RemoveSubjects(int userId, HashSet<int> keys)
     {
-        try
+        DbInteractionStatus status = await _service.RemoveSubjectsAsync(userId, keys);
+        
+        switch (status)
         {
-            await _service.RemoveSubjectsAsync(subjKeys);
-            return NoContent();
-        }
-        catch (DbUpdateConcurrencyException e)
-        {
-            return NotFound($"Some of the keys dont exist in bd: {e.Message}");
+            case DbInteractionStatus.Success: return NoContent();
+            case DbInteractionStatus.NotFound: return NotFound("User with such id was not found");
+            default: return StatusCode(500);
         }
     }
 }

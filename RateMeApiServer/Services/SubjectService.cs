@@ -1,3 +1,4 @@
+using RateMeApiServer.Common;
 using RateMeApiServer.Mappers;
 using RateMeApiServer.Models.Entities;
 using RateMeApiServer.Repositories;
@@ -14,36 +15,45 @@ public class SubjectService : ISubjectService
         _repository = rep;
     }
     
-    public async Task<SubjectsIds> AddSubjectsAsync(SubjectsByUserId subjectsImport)
+    public async Task<DbInteractionResult<SubjectsIds>> AddSubjectsAsync(int userId, IEnumerable<SubjectDto> subjects)
     {
+        SubjectDto[] subjectsImport = subjects as SubjectDto[] ?? subjects.ToArray();
+        
         List<Subject> subjectsToAdd = [];
 
-        foreach (SubjectDto subjDto in subjectsImport.Subjects)
+        foreach (SubjectDto subjDto in subjectsImport)
         {
             Subject subj = SubjectMapper.GetSubjectFromDto(subjDto);
             subjectsToAdd.Add(subj);
         }
         
         // Adding to bd 
-        List<Subject> added = await _repository.AddSubjectsAsync(subjectsImport.UserId, subjectsToAdd);
+        DbInteractionResult<IEnumerable<Subject>> interaction = await _repository.AddSubjectsAsync(userId, subjectsToAdd);
+        
+        if (interaction.Status != DbInteractionStatus.Success)
+        {
+            return new DbInteractionResult<SubjectsIds>(null, interaction.Status);
+        }
+        
+        Subject[] added = interaction.Value as Subject[] ?? interaction.Value!.ToArray();
         
         // Saving remote keys 
         SubjectsIds addedIds = new SubjectsIds();
         
-        for (int i = 0; i < added.Count; ++i)
+        for (int i = 0; i < added.Length; ++i)
         {
             Subject addedSubj = added[i];
-            SubjectDto importedSubj = subjectsImport.Subjects[i];
+            SubjectDto importedSubj = subjectsImport[i];
 
             SubjectId subjId = SubjectMapper.GetSubjectId(importedSubj, addedSubj);
             addedIds.Subjects.Add(subjId);
         }
 
-        return addedIds;
+        return new DbInteractionResult<SubjectsIds>(addedIds, DbInteractionStatus.Success);
     }
 
-    public async Task RemoveSubjectsAsync(PlainKeys keysObj)
+    public async Task<DbInteractionStatus> RemoveSubjectsAsync(int userId, IEnumerable<int> keys)
     {
-        await _repository.RemoveSubjectsByKeys(keysObj.Keys);
+        return await _repository.RemoveSubjectsByKeys(userId, keys);
     }
 }
