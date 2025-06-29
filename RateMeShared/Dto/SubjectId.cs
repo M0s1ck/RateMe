@@ -4,5 +4,5 @@ public class SubjectId
 {
     public int LocalId { get; set; }
     public int RemoteId { get; set; }
-    public List<ControlElementId> Elements { get; set; } = [];
+    public List<ElementId> Elements { get; set; } = [];
 }

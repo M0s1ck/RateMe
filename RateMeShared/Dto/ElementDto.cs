@@ -1,6 +1,6 @@
 namespace RateMeShared.Dto;
 
-public class ControlElementDto
+public class ElementDto
 {
     public int LocalId { get; set; }
     public required string Name { get; set; }

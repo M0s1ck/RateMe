@@ -28,7 +28,7 @@ public class SubjectService : ISubjectService
         }
         
         // Adding to bd 
-        DbInteractionResult<IEnumerable<Subject>> interaction = await _repository.AddSubjectsAsync(userId, subjectsToAdd);
+        DbInteractionResult<IEnumerable<Subject>> interaction = await _repository.AddSubjects(userId, subjectsToAdd);
         
         if (interaction.Status != DbInteractionStatus.Success)
         {
@@ -50,6 +50,11 @@ public class SubjectService : ISubjectService
         }
 
         return new DbInteractionResult<SubjectsIds>(addedIds, DbInteractionStatus.Success);
+    }
+
+    public async Task<DbInteractionStatus> UpdateSubjectsAsync(int userId, IEnumerable<PlainSubject> updated)
+    {
+        return await _repository.UpdateSubjects(userId, updated);
     }
 
     public async Task<DbInteractionStatus> RemoveSubjectsAsync(int userId, IEnumerable<int> keys)

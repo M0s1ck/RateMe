@@ -25,6 +25,8 @@ namespace RateMeApiServer
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
+            builder.Services.AddScoped<IElementsRepository, ElementsRepository>();
+            builder.Services.AddScoped<IElementService, ElementService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

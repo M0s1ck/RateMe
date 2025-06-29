@@ -13,9 +13,9 @@ internal static class SubjectMapper
             Credits = subjDto.Credits,
         };
 
-        foreach (ControlElementDto elemDto in subjDto.Elements)
+        foreach (ElementDto elemDto in subjDto.Elements)
         {
-            ControlElement elem = ElementMapper.GetElementFromDto(elemDto); 
+            Element elem = ElementMapper.GetElementFromDto(elemDto); 
             subj.Elements.Add(elem);
         }
 
@@ -32,7 +32,7 @@ internal static class SubjectMapper
 
         for (int j = 0; j < added.Elements.Count; ++j)
         {
-            ControlElementId elemId = ElementMapper.GetControlElementId(importedLocal.Elements[j], added.Elements[j]);
+            ElementId elemId = ElementMapper.GetControlElementId(importedLocal.Elements[j], added.Elements[j]);
             subjId.Elements.Add(elemId);
         }
 

@@ -14,5 +14,5 @@ public class Subject
     public int  UserId { get; set; }
     public User User { get; set; }
     
-    public List<ControlElement> Elements { get; set; } = [];
+    public List<Element> Elements { get; set; } = [];
 }

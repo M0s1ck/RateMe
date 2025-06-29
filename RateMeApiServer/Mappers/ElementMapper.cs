@@ -5,9 +5,9 @@ namespace RateMeApiServer.Mappers;
 
 internal static class ElementMapper
 {
-    internal static ControlElement GetElementFromDto(ControlElementDto elemDto)
+    internal static Element GetElementFromDto(ElementDto elemDto)
     {
-        return new ControlElement
+        return new Element
         {
             Name = elemDto.Name,
             Grade = elemDto.Grade,
@@ -15,12 +15,25 @@ internal static class ElementMapper
         };
     }
 
-    internal static ControlElementId GetControlElementId(ControlElementDto importedLocal, ControlElement added)
+    internal static ElementId GetControlElementId(ElementDto importedLocal, Element added)
     {
-        return new ControlElementId
+        return new ElementId
         {
             LocalId = importedLocal.LocalId,
             RemoteId = added.Id
         };
+    }
+
+    internal static Dictionary<int, Element[]> GetElemsBySubjKeys(Dictionary<int, IEnumerable<ElementDto>> elemDtosBySubjKeys)
+    {
+        Dictionary<int, Element[]> elemsBySubjKeys = [];
+
+        foreach ((int subjKey, IEnumerable<ElementDto> elemDtos) in elemDtosBySubjKeys)
+        {
+            IEnumerable<Element> elems = elemDtos.Select(GetElementFromDto);
+            elemsBySubjKeys[subjKey] = elems.ToArray();
+        }
+
+        return elemsBySubjKeys;
     }
 }

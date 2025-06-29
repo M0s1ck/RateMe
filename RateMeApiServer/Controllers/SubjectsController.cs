@@ -34,6 +34,25 @@ public class SubjectsController : ControllerBase
             default: return StatusCode(500);
         }
     }
+
+    
+    /// <summary>
+    /// Updates given subjects. Ignores non-existing subjects.
+    /// </summary>
+    /// <response code="204">If everything is ok.</response>
+    /// <response code="404">If user with such id doesn't exist.</response>
+    [HttpPut]
+    public async Task<IActionResult> UpdateSubjects(int userId, PlainSubject[] subjects)
+    {
+        DbInteractionStatus status = await _service.UpdateSubjectsAsync(userId, subjects);
+        
+        switch (status)
+        {
+            case DbInteractionStatus.Success: return NoContent();
+            case DbInteractionStatus.NotFound: return NotFound("User with such id was not found");
+            default: return StatusCode(500);
+        }
+    }  
     
     
     /// <summary>
