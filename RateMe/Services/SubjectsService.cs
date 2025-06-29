@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
@@ -13,12 +12,11 @@ public class SubjectsService
 {
     private readonly IEnumerable<Subject> _allSubjects;
     
-    private Dictionary<int, SubjectLocal> _subjectsToAdd = []; 
     private List<SubjectLocal> _subjectsToUpdate = [];
     private List<int> _subjKeysToRemove = [];
     
     private SubjectsRepository _rep = new();
-    private SubjectsClient _subjClient = new();
+    private SubjectsClient? _subjClient;
 
     
     public SubjectsService(IEnumerable<Subject> allSubjects)
@@ -29,12 +27,14 @@ public class SubjectsService
     
     public async Task SubjectsOverallRemoteUpdate()
     {
-        _subjectsToAdd = await _rep.GetSubjectsNoRemote();
+        int userId = JsonModelsHandler.GetUserId(); // TODO: what if no user??
+        _subjClient = new SubjectsClient(userId);
         
-        if (_subjectsToAdd.Count != 0)
+        SubjectLocal[] subjectsToAdd = await _rep.GetSubjectsNoRemote();
+        
+        if (subjectsToAdd.Length != 0)
         {
-            int userId = JsonModelsHandler.GetUserId();
-            await PushSubjectsByUserId(userId, _subjectsToAdd);   // TODO: refactor for not working server
+            await PushSubjects(subjectsToAdd);   // TODO: refactor for not working server
         }
         
         if (_subjectsToUpdate.Count != 0)
@@ -50,48 +50,13 @@ public class SubjectsService
     
     
     /// <summary>
-    /// Pushes ALL local subjects to remote bd
-    /// </summary>
-    public async Task PushAllSubjectsByUserId(int userId)
-    {
-        // Building up Dto
-        SubjectsByUserId subjectsObj = new();
-        subjectsObj.UserId = userId;
-
-        await using SubjectsContext context = new();
-        
-        foreach (SubjectLocal subj in context.Subjects.Include(s => s.Elements)) // Takes all of them!!
-        {
-            SubjectDto subjDto = SubjectMapper.GetSubjectDto(subj);    
-            subjectsObj.Subjects.Add(subjDto);
-        }
-        
-        // Pushing
-        List<SubjectId>? subjIds = await _subjClient.PushSubjectsByUserId(subjectsObj);
-        
-        // Updating remote keys if success
-        if (subjIds != null)
-        {
-            await _rep.UpdateRemoteKeys(subjIds);
-        }
-    }
-    
-    
-    /// <summary>
     /// Pushes given subjects to remote bd
     /// </summary>
-    private async Task PushSubjectsByUserId(int userId, Dictionary<int, SubjectLocal> subjectsToAdd)
+    private async Task PushSubjects(SubjectLocal[] subjectsToAdd)
     {
-        SubjectsByUserId subjectsObj = new();
-        subjectsObj.UserId = userId;
-
-        foreach ((int _, SubjectLocal subj) in subjectsToAdd)
-        {
-            SubjectDto subjDto = SubjectMapper.GetSubjectDto(subj);    
-            subjectsObj.Subjects.Add(subjDto);
-        }
+        SubjectDto[] subjDtos = subjectsToAdd.Select(SubjectMapper.GetSubjectDto).ToArray(); 
         
-        List<SubjectId>? subjIds = await _subjClient.PushSubjectsByUserId(subjectsObj);
+        List<SubjectId>? subjIds = await _subjClient!.PushSubjects(subjDtos);
         
         // Updating remote keys if success
         if (subjIds != null)
@@ -104,7 +69,7 @@ public class SubjectsService
     /// <summary>
     /// Requests update of subjects
     /// </summary>
-    private async Task UpdateSubjectsRemote(List<SubjectLocal> subjects)
+    private async Task UpdateSubjectsRemote(List<SubjectLocal> subjects) // TODO: если remote не работал, то update'a не будет, можно локально добавить колонку 'saved'  
     {
         List<PlainSubject> subjsDto = [];
         
@@ -114,7 +79,7 @@ public class SubjectsService
             subjsDto.Add(dto);
         }
 
-        await _subjClient.UpdateSubjects(subjsDto);
+        await _subjClient!.UpdateSubjects(subjsDto);
     }
 
     
@@ -123,9 +88,30 @@ public class SubjectsService
     /// </summary>
     private async Task RemoveSubjectsByKeysRemote(List<int> subjectsKeys)
     {
-        await _subjClient.RemoveSubjectsByKeys(subjectsKeys);
+        await _subjClient!.RemoveSubjectsByKeys(subjectsKeys);
+    }
+    
+    
+    /// <summary>
+    /// Catches subjects to be updated, before they are saved to local bd
+    /// </summary>
+    internal void RetainSubjectsToUpdate()
+    {
+        foreach (Subject subj in _allSubjects)
+        {
+            if (subj.LocalModel.RemoteId == 0)
+            {
+                continue;
+            }
+            
+            if (subj.Name != subj.LocalModel.Name || subj.Credits != subj.LocalModel.Credits)
+            {
+                _subjectsToUpdate.Add(subj.LocalModel);
+            }
+        }
     }
 
+    // Local Stuff
     
     internal async Task<List<SubjectLocal>> GetAllLocals()
     {
@@ -174,23 +160,5 @@ public class SubjectsService
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
         await _rep.Remove(locals);
-    }
-    
-    
-    /// <summary>
-    /// Catches subjects to be updated, before they are saved to local bd
-    /// </summary>
-    internal void RetainSubjectsToUpdate()
-    {
-        foreach (Subject subj in _allSubjects)
-        {
-            bool isDiff = subj.Name != subj.LocalModel.Name || subj.Credits != subj.LocalModel.Credits;
-            bool isToAdd = _subjectsToAdd.ContainsKey(subj.LocalModel.SubjectId);
-            
-            if (isDiff && !isToAdd)
-            {
-                _subjectsToUpdate.Add(subj.LocalModel);
-            }
-        }
     }
 }

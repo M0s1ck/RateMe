@@ -59,16 +59,16 @@ namespace RateMe.View.Windows
             SignUpButton.IsEnabled = false;
             
             UserDto userDto = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data };
-            int? id = await _userClient.SignUpUserAsync(userDto);
+            int? id = await _userClient.SignUpUserAsync(userDto);  // TODO: вынести в сервис! 
             
             if (id != null)
             {
-                MessageBox.Show($"You've been signed up! Your id: {id}");
-                await _subjectsService.PushAllSubjectsByUserId((int)id);
-                
                 User user = new User(userDto);
                 user.Id = (int)id;
                 JsonModelsHandler.SaveUser(user);
+                
+                MessageBox.Show($"You've been signed up! Your id: {id}");
+                await _subjectsService.SubjectsOverallRemoteUpdate();
             }
             
             SignUpButton.IsEnabled = true;

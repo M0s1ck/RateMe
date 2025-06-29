@@ -16,7 +16,7 @@ internal static class SubjectMapper
 
         foreach (ControlElementLocal elem in subj.Elements)
         {
-            ControlElementDto elemDto = ElementMapper.GetElementDto(elem);
+            ElementDto elemDto = ElementMapper.GetElementDto(elem);
             subjDto.Elements.Add(elemDto);
         }
 

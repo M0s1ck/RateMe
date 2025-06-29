@@ -5,9 +5,9 @@ namespace RateMe.Api.Mappers;
 
 internal static class ElementMapper
 {
-    internal static ControlElementDto GetElementDto(ControlElementLocal elem)
+    internal static ElementDto GetElementDto(ControlElementLocal elem)
     {
-        return new ControlElementDto()
+        return new ElementDto
         {
             LocalId = elem.ElementId,
             Name = elem.Name,
@@ -16,18 +16,18 @@ internal static class ElementMapper
         };
     }
 
-    internal static Dictionary<int, List<ControlElementDto>> GetElemsBySubIds(List<ControlElementLocal> elems)
+    internal static Dictionary<int, List<ElementDto>> GetElemsBySubIds(List<ControlElementLocal> elems)
     {
-        Dictionary<int, List<ControlElementDto>> dto = [];
+        Dictionary<int, List<ElementDto>> dto = [];
 
         foreach (ControlElementLocal elem in elems)
         {
-            if (!dto.ContainsKey(elem.SubjectId))
+            if (!dto.ContainsKey(elem.Subject.RemoteId))
             {
-                dto[elem.SubjectId] = [];
+                dto[elem.Subject.RemoteId] = [];
             }
 
-            dto[elem.SubjectId].Add(GetElementDto(elem));
+            dto[elem.Subject.RemoteId].Add(GetElementDto(elem));
         }
 
         return dto;

@@ -61,7 +61,7 @@ public class ElementsController : ControllerBase
     /// <response code="204">If removed.</response>
     /// <response code="404">If none of the given elems' ids exist.</response>
     [HttpPost("delete")]
-    public async Task<IActionResult> RemoveSubjects(int userId, HashSet<int> keys)
+    public async Task<IActionResult> RemoveElems(int userId, HashSet<int> keys)
     {
         DbInteractionStatus status = await _service.RemoveElemsByKeys(keys);
         

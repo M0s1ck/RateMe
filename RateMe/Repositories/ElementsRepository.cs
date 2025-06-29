@@ -24,4 +24,19 @@ public class ElementsRepository
         context.Elements.Remove(elem);
         await context.SaveChangesAsync();
     }
+
+    internal async Task UpdateRemoteKeys(Dictionary<int, int> localRemoteKeys)
+    {
+        await using SubjectsContext context = new();
+        
+        foreach (ControlElementLocal elem in context.Elements)
+        {
+            if (localRemoteKeys.ContainsKey(elem.ElementId))
+            {
+                elem.RemoteId = localRemoteKeys[elem.ElementId];
+            }
+        }
+
+        await context.SaveChangesAsync();
+    }
 }

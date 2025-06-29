@@ -9,13 +9,16 @@ namespace RateMe.Api.Clients;
 
 public class SubjectsClient : BaseClient
 {
-    public SubjectsClient() : base()
-    { }
-
-    public async Task<List<SubjectId>?> PushSubjectsByUserId(SubjectsByUserId subjects)
+    public SubjectsClient(int userId)
     {
-        string userIdStr = subjects.UserId.ToString();
-        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync($"api/users/{userIdStr}/subjects", subjects);
+        TheHttpClient = new HttpClient();
+        string relativePath = $"api/users/{userId}/subjects";
+        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
+    }
+
+    public async Task<List<SubjectId>?> PushSubjects(SubjectDto[] subjects)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync(string.Empty, subjects);
         
         string content = await response.Content.ReadAsStringAsync();
         return ReflectOnPushSubjectsResponse(response, content);
@@ -23,18 +26,21 @@ public class SubjectsClient : BaseClient
     
     public async Task UpdateSubjects(List<PlainSubject> dto)
     {
-        using HttpResponseMessage response = await TheHttpClient.PutAsJsonAsync("api/subjects", dto);
+        using HttpResponseMessage response = await TheHttpClient.PutAsJsonAsync(string.Empty, dto);
         string content = await response.Content.ReadAsStringAsync();
-        
-        // To be continued...
+
+        if (response.StatusCode != HttpStatusCode.NoContent)
+        {
+            MessageBox.Show(content);
+        }
     }
 
     public async Task RemoveSubjectsByKeys(List<int> keys)
     {
-        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("api/subjects/delete", keys);
+        using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("delete", keys);
         string content = await response.Content.ReadAsStringAsync();
 
-        if (response.StatusCode is not (HttpStatusCode.NoContent or HttpStatusCode.OK))
+        if (response.StatusCode != HttpStatusCode.NoContent)
         {
             MessageBox.Show($"Failed to remove remote data: {content}");
         }

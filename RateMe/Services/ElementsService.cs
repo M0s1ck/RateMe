@@ -1,6 +1,7 @@
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
+using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
 using RateMeShared.Dto;
@@ -14,7 +15,7 @@ internal class ElementsService
     private List<int> _elemKeysToRemove = [];
 
     private ElementsRepository _rep = new();
-    private ElementsClient _elemClient = new();
+    private ElementsClient? _elemClient;
     
     internal ElementsService(IEnumerable<Subject> allSubjects)
     {
@@ -24,6 +25,9 @@ internal class ElementsService
     
     internal async Task ElementsOverallRemoteUpdate()
     {
+        int userId = JsonModelsHandler.GetUserId();
+        _elemClient = new ElementsClient(userId);
+        
         List<ControlElementLocal> elemsToAdd = GetElemsToAdd();
         
         if (elemsToAdd.Count != 0)
@@ -45,20 +49,27 @@ internal class ElementsService
     
     private async Task PushElemsBySubjectsIds(List<ControlElementLocal> elems)
     {
-        Dictionary<int, List<ControlElementDto>> dto = ElementMapper.GetElemsBySubIds(elems);
-        await _elemClient.PushElemsBySubsIds(dto);
-    }
+        Dictionary<int, List<ElementDto>> dto = ElementMapper.GetElemsBySubIds(elems);
+        
+        // Pushing
+        Dictionary<int, int>? localRemoteKeys = await _elemClient!.PushElemsBySubsIds(dto);
 
+        // Updating remote keys
+        if (localRemoteKeys != null)
+        {
+            await _rep.UpdateRemoteKeys(localRemoteKeys);
+        }
+    }
     
     private async Task UpdateElemsRemote(IEnumerable<ControlElementLocal> elemsToUpdate)
     {
         PlainElem[] elems = elemsToUpdate.Select(ElementMapper.GetPlainElem).ToArray();
-        await _elemClient.UpdateElems(elems);
+        await _elemClient!.UpdateElems(elems);
     }
     
     private async Task RemoveElemsByKeysRemote(List<int> subjectsKeys)                         
     {                                                                                             
-        await _elemClient.RemoveElemsByKeys(subjectsKeys);                                     
+        await _elemClient!.RemoveElemsByKeys(subjectsKeys);                                     
     }                                                                                             
 
 
@@ -66,7 +77,7 @@ internal class ElementsService
     {
         await _rep.Add(subId, elem);
     }
-
+    
     internal async Task RemoveLocal(ControlElementLocal elem)
     {
         if (elem.RemoteId != 0)

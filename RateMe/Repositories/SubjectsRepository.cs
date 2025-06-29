@@ -7,20 +7,13 @@ namespace RateMe.Repositories;
 
 public class SubjectsRepository
 {
-    internal async Task<Dictionary<int, SubjectLocal>> GetSubjectsNoRemote()
+    internal async Task<SubjectLocal[]> GetSubjectsNoRemote()
     {
         await using SubjectsContext context = new();
-        Dictionary<int, SubjectLocal> subs = [];
+        SubjectLocal[] subsNoRemote = await context.Subjects.Include(s => s.Elements)
+                                                      .Where(s => s.RemoteId == 0).ToArrayAsync();
 
-        foreach (SubjectLocal sub in context.Subjects)
-        {
-            if (sub.RemoteId == 0)
-            {
-                subs[sub.SubjectId] = sub;
-            }
-        }
-
-        return subs;
+        return subsNoRemote;
     }
 
     
@@ -110,7 +103,7 @@ public class SubjectsRepository
         ControlElementLocal[] elems = context.Elements.Where(el => el.SubjectId == subj.SubjectId)
             .OrderBy(el => el.ElementId).ToArray();
 
-        ControlElementId[] elemIds = subjId.Elements.OrderBy(el => el.LocalId).ToArray();
+        ElementId[] elemIds = subjId.Elements.OrderBy(el => el.LocalId).ToArray();
 
         // Updating keys if no data was lost
         if (elems.Length == elemIds.Length)
