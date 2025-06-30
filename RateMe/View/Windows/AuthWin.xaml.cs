@@ -1,100 +1,69 @@
 ﻿using RateMe.Models.ClientModels;
 using System.Windows;
-using RateMe.Api.Clients;
-using RateMe.Models.JsonModels;
 using RateMe.Services;
-using RateMeShared.Dto;
 
-namespace RateMe.View.Windows
+namespace RateMe.View.Windows;
+
+/// <summary>
+/// Логика взаимодействия для AuthenticationWin.xaml
+/// </summary>
+public partial class AuthWin : BaseFullWin
 {
-    /// <summary>
-    /// Логика взаимодействия для AuthenticationWin.xaml
-    /// </summary>
-    public partial class AuthWin : BaseFullWin
-    {
-        public DataHintTextModel LogInEmailModel { get; }
-        public DataHintTextModel LogInPassModel { get; }
+    public DataHintTextModel LogInEmailModel { get; } = new("Email");
+    public DataHintTextModel LogInPassModel { get; } = new("Password");
 
-        public DataHintTextModel SignUpEmailModel { get; }
-        public DataHintTextModel SignUpPassModel { get; }
-        public DataHintTextModel NameModel { get; }
-        public DataHintTextModel SurnameModel { get; }
+    public DataHintTextModel SignUpEmailModel { get; } = new("Email");  // Поменять названия в xaml
+    public DataHintTextModel SignUpPassModel  { get; } = new("Password");
+    public DataHintTextModel NameModel  { get; } = new("Имя");
+    public DataHintTextModel SurnameModel { get; } = new("Фамилия");
         
-        private bool _isLogIn;
-        private readonly UserClient _userClient;
+    private bool _isLogIn;
+    private readonly UserService _userService;
 
-        private SubjectsService _subjectsService;
+    private static readonly string[] AuTasks = ["Войти", "Sign up"];
+    private static readonly string[] Questions = ["Уже есть аккаунт?", "Нет аккаунта?"];
 
-        private static readonly string[] AuTasks = ["Войти", "Sign up"];
-        private static readonly string[] Questions = ["Уже есть акаунт?", "Нет аккаунта?"];
-
-        public AuthWin(SubjectsService subjService)
-        {
-            InitializeComponent();
-
-            DataContext = this;
-            LogInEmailModel = new DataHintTextModel("Email");
-            LogInPassModel = new DataHintTextModel("Password");
-
-            SignUpEmailModel = new DataHintTextModel("Email");
-            SignUpPassModel = new DataHintTextModel("Password");
-            NameModel = new DataHintTextModel("Имя");
-            SurnameModel = new DataHintTextModel("Фамилия");
-
-            _isLogIn = false;
-            FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
-            QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
+    public AuthWin(UserService userService)
+    {
+        InitializeComponent();
+        DataContext = this;
+        _userService = userService;
             
-            _userClient = new UserClient();
-            _subjectsService = subjService;
+        _isLogIn = false;
+        FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
+        QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
             
-            Loaded += (_, _) => AddHeaderBar(windowGrid);
-        }
+        Loaded += (_, _) => AddHeaderBar(windowGrid);
+    }
 
-        /// <summary>
-        /// User with all the local subjects is added to remote bd
-        /// </summary>
-        private async void OnSignUpClick(object sender, RoutedEventArgs e)
-        {
-            SignUpButton.IsEnabled = false;
-            
-            UserDto userDto = new() { Email = SignUpEmailModel.Data, Password = SignUpPassModel.Data, Name = NameModel.Data, Surname = SurnameModel.Data };
-            int? id = await _userClient.SignUpUserAsync(userDto);  // TODO: вынести в сервис! 
-            
-            if (id != null)
-            {
-                User user = new User(userDto);
-                user.Id = (int)id;
-                JsonModelsHandler.SaveUser(user);
-                
-                MessageBox.Show($"You've been signed up! Your id: {id}");
-                await _subjectsService.SubjectsOverallRemoteUpdate();
-            }
-            
-            SignUpButton.IsEnabled = true;
-        }
+        
+    /// <summary>
+    /// User is added to remote bd.
+    /// If success, subjects are added too.
+    /// </summary>
+    private async void OnSignUpClick(object sender, RoutedEventArgs e)
+    {
+        SignUpButton.IsEnabled = false;
+        await _userService.SignUp(SignUpEmailModel.Data, SignUpPassModel.Data, NameModel.Data, SurnameModel.Data);
+        SignUpButton.IsEnabled = true;
+    }
+        
 
-        private async void OnLogInClick(object sender, RoutedEventArgs e)
-        {
-            AuthRequest request = new() { Email = LogInEmailModel.Data, Password = LogInPassModel.Data };
-            UserDto? userDto = await _userClient.AuthUserAsync(request);
+    private async void OnSignInClick(object sender, RoutedEventArgs e)
+    {
+        SignInButton.IsEnabled = false;
+        await _userService.SignIn(LogInEmailModel.Data, LogInPassModel.Data);
+        SignInButton.IsEnabled = true;
+    }
+        
 
-            if (userDto != null)
-            {
-                User user = new User(userDto);
-                MessageBox.Show($"Hello, {user.Name} {user.Surname}");
-                JsonModelsHandler.SaveUser(user);
-            }
-        }
+    private void OnFlipTaskClick(object sender, RoutedEventArgs e)
+    {
+        _isLogIn = !_isLogIn;
+        FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
+        QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
 
-        private void OnFlipTaskClick(object sender, RoutedEventArgs e)
-        {
-            _isLogIn = !_isLogIn;
-            FlipTaskButton.TheContent = _isLogIn ? AuTasks[0] : AuTasks[1];
-            QuestionText.Text = _isLogIn ? Questions[0] : Questions[1];
-
-            LogInPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            SignUpPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-        }
+        LogInPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        SignUpPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
     }
 }

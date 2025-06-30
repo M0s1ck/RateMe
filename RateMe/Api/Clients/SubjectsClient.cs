@@ -12,7 +12,7 @@ public class SubjectsClient : BaseClient
     public SubjectsClient(int userId)
     {
         TheHttpClient = new HttpClient();
-        string relativePath = $"api/users/{userId}/subjects";
+        string relativePath = $"api/users/{userId}/subjects/";
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
 

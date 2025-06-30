@@ -1,5 +1,4 @@
 ﻿using RateMe.Models.ClientModels;
-using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
 using RateMe.Models.LocalDbModels;

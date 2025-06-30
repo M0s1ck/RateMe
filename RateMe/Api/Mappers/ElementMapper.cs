@@ -35,7 +35,7 @@ internal static class ElementMapper
 
     internal static PlainElem GetPlainElem(ControlElementLocal elem)
     {
-        return new PlainElem()
+        return new PlainElem
         {
             RemoteId = elem.RemoteId,
             Name = elem.Name,

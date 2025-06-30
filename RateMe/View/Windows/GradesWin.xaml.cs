@@ -161,12 +161,14 @@ public partial class GradesWin : BaseFullWin
     }
 
     
-    private async void OnAccountClick(object sender, RoutedEventArgs e)
+    private void OnAccountClick(object sender, RoutedEventArgs e)
     {
-        AuthWin authWin = new(_subjectsService);
+        UserService userService = new UserService();
+        userService.SignUpSignInStart += _subjectsService.UpdateAllLocals;
+        userService.SignUpSuccess += _subjectsService.SubjectsOverallRemoteUpdate;
+        
+        AuthWin authWin = new(userService);
         authWin.Show();
-            
-        await _subjectsService.UpdateAllLocals();
     }
 
 

@@ -12,7 +12,7 @@ internal class ElementsService
 {
     private readonly IEnumerable<Subject> _allSubjects;
     private List<ControlElementLocal> _elemsToUpdate = [];
-    private List<int> _elemKeysToRemove = [];
+    private HashSet<int> _elemKeysToRemove = [];
 
     private ElementsRepository _rep = new();
     private ElementsClient? _elemClient;
@@ -67,7 +67,7 @@ internal class ElementsService
         await _elemClient!.UpdateElems(elems);
     }
     
-    private async Task RemoveElemsByKeysRemote(List<int> subjectsKeys)                         
+    private async Task RemoveElemsByKeysRemote(HashSet<int> subjectsKeys)                         
     {                                                                                             
         await _elemClient!.RemoveElemsByKeys(subjectsKeys);                                     
     }                                                                                             

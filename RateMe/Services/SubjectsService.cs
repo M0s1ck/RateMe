@@ -127,7 +127,6 @@ public class SubjectsService
         }
 
         SubjectLocal[] locals = _allSubjects.Select(c => c.LocalModel).ToArray();
-        
         await _rep.Update(locals);
     }
 

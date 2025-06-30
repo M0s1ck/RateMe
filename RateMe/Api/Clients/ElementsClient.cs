@@ -12,7 +12,7 @@ internal class ElementsClient : BaseClient
     internal ElementsClient(int userId)
     {
         TheHttpClient = new HttpClient();
-        string relativePath = $"api/users/{userId}/subjects/elements";
+        string relativePath = $"api/users/{userId}/subjects/elements/";
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
     
@@ -42,7 +42,7 @@ internal class ElementsClient : BaseClient
         }
     }
     
-    public async Task RemoveElemsByKeys(List<int> keys)
+    public async Task RemoveElemsByKeys(HashSet<int> keys)
     {
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("delete", keys);
         string content = await response.Content.ReadAsStringAsync();

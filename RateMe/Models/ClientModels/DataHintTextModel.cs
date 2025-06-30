@@ -1,61 +1,40 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace RateMe.Models.ClientModels
+namespace RateMe.Models.ClientModels;
+
+public class DataHintTextModel : INotifyPropertyChanged
 {
-    public class DataHintTextModel : INotifyPropertyChanged
+    public string Data
     {
-        public string Data
+        get => _data;
+        set
         {
-            get => _data;
-            set
-            {
-                //MessageBox.Show($"Being set with value={value}");
-                _data = value;
-
-                if (value == string.Empty)
-                {
-                    HintVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    HintVisibility = Visibility.Hidden;
-                }
-                NotifyPropertyChanged();
-            }
+            _data = value;
+            NotifyPropertyChanged(nameof(Data));
+            NotifyPropertyChanged(nameof(HintVisibility));
         }
-
-        public Visibility HintVisibility
-        {
-            get => _hintVisibility;
-            set
-            {
-                _hintVisibility = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string Hint { get; }
-
-        private string _data = string.Empty;
-        private Visibility _hintVisibility = Visibility.Visible;
-
-
-        public DataHintTextModel(string data, string hint, Visibility hintVisibility=Visibility.Visible)
-        {
-            Data = data;
-            Hint = hint;
-            HintVisibility = hintVisibility;
-        }
-
-        public DataHintTextModel(string hint) : this(string.Empty, hint, Visibility.Visible)
-        { }
+    }
         
-        public event PropertyChangedEventHandler? PropertyChanged;
+    public Visibility HintVisibility => string.IsNullOrEmpty(Data) ? Visibility.Visible : Visibility.Hidden;
 
-        private void NotifyPropertyChanged(string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    public string Hint { get; }
+
+    private string _data = string.Empty;
+
+    public DataHintTextModel(string data, string hint)
+    {
+        Data = data;
+        Hint = hint;
+    }
+
+    public DataHintTextModel(string hint) : this(string.Empty, hint)
+    { }
+        
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void NotifyPropertyChanged(string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

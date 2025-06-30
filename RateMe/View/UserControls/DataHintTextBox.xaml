@@ -41,7 +41,7 @@
                  Height="{Binding TextBoxHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  MinWidth="{Binding TextBoxMinWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  MaxWidth="{Binding TextBoxMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                 CaretIndex="10000" >
+                 CaretIndex="10000" ><!--TextChanged="OnUpdatedText" -->
 
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">
@@ -50,7 +50,7 @@
             </TextBox.Resources>
         </TextBox>
 
-        <TextBlock x:Name="hintTextBlock" Text="{ Binding Hint}" Visibility="{ Binding HintVisibility }"
+        <TextBlock x:Name="hintTextBlock" Text="{ Binding Hint}" Visibility="{ Binding HintVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }"
                    FontSize="{Binding TextBlockFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    HorizontalAlignment="Center" VerticalAlignment="Center"  Foreground="#FF989898"
                    Width="{Binding TextBlockWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
