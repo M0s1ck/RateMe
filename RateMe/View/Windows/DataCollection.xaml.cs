@@ -7,7 +7,6 @@ using RateMe.Models.ClientModels;
 using RateMe.Models.InterfaceModels;
 using RateMe.Models.JsonModels;
 using RateMe.Parser;
-using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows
 {

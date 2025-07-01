@@ -4,22 +4,46 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
 using RateMe.Models.JsonModels;
+using RateMe.Services.Interfaces;
 
 namespace RateMe.Services;
 
 public class UserService
 {
+    internal bool IsUserAvailable => _user != null;
+    
+    private ISubjectUpdater _subjectService;
+    private IElemUpdater _elemService;
+    
     private readonly UserClient _userClient;
-
-    internal UserService()
+    private User? _user;
+    
+    
+    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService)
     {
+        _subjectService = subjService;
+        _elemService = elemService;
+        
         _userClient = new UserClient();
+        _user = JsonModelsHandler.GetUserOrNull();
+
+        if (_user != null)
+        {
+            _subjectService.UpdateUserId(_user.Id);
+            _elemService.UpdateUserId(_user.Id);
+        }
     }
     
     
     internal async Task SignUp(string email, string pass, string name, string surname)
     {
-        await SignUpSignInStart?.Invoke()!;
+        if (IsUserAvailable)
+        {
+            MessageBox.Show("You are already signed in!");
+            return;
+        }
+
+        await _subjectService.UpdateAllLocals();
         
         UserDto userDto = new() { Email = email, Password = pass, Name = name, Surname = surname };
         int id = 0;
@@ -38,27 +62,33 @@ public class UserService
             return;
         }
         
-        User user = new(userDto);
-        user.Id = id;
-        JsonModelsHandler.SaveUser(user);
-        
-        await SignUpSuccess?.Invoke()!;
+        _user = new User(userDto);
+        _user.Id = id;
+        UpdateOnUser();
+
+        await _subjectService.SubjectsOverallRemoteUpdate();
+        // Пока что если sign up можно сделать только один раз то не нужен _elementsService.ElementsOverallRemoteUpdate()
         MessageBox.Show($"You've been signed up! Your id: {id}");
     }
-    
-    
-    public delegate Task AsyncHandler();
-    
-    public event AsyncHandler? SignUpSignInStart;
-    
-    public event AsyncHandler? SignUpSuccess;
-    
-    public event AsyncHandler? SignInSuccess;
     
 
     internal async Task SignIn(string email, string pass)
     {
-        await SignUpSignInStart?.Invoke()!;
+        if (!IsUserAvailable)
+        {
+            MessageBox.Show("You are not signed up! All local data will be lost. You better sign up first");
+            return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
+        }
+        else
+        {
+            _subjectService.RetainSubjectsToUpdate();
+            _elemService.RetainElemsToUpdate();
+            
+            await _subjectService.UpdateAllLocals();
+            
+            await _subjectService.SubjectsOverallRemoteUpdate();
+            await _elemService.ElementsOverallRemoteUpdate();
+        }
         
         AuthRequest request = new() { Email = email, Password = pass };
         UserDto? userDto = null; 
@@ -77,11 +107,19 @@ public class UserService
             return;
         }
         
-        User user = new User(userDto);
-        MessageBox.Show($"Hello, {user.Name} {user.Surname}");
-        JsonModelsHandler.SaveUser(user);
+        _user = new User(userDto);
+        UpdateOnUser();
+        MessageBox.Show($"Hello, {_user.Name} {_user.Surname}");
+
+         // Here we GetAllSubjects
     }
-    
+
+    private void UpdateOnUser()
+    {
+        JsonModelsHandler.SaveUser(_user!);
+        _subjectService.UpdateUserId(_user!.Id);
+        _elemService.UpdateUserId(_user!.Id);
+    }
     
     private void HandleHttpException(HttpRequestException ex)
     {

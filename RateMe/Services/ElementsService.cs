@@ -1,14 +1,14 @@
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
-using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
+using RateMe.Services.Interfaces;
 using RateMeShared.Dto;
 
 namespace RateMe.Services;
 
-internal class ElementsService
+internal class ElementsService : ILocalElemService, IElemUpdater
 {
     private readonly IEnumerable<Subject> _allSubjects;
     private List<ControlElementLocal> _elemsToUpdate = [];
@@ -23,11 +23,8 @@ internal class ElementsService
     }
 
     
-    internal async Task ElementsOverallRemoteUpdate()
+    public async Task ElementsOverallRemoteUpdate()
     {
-        int userId = JsonModelsHandler.GetUserId();
-        _elemClient = new ElementsClient(userId);
-        
         List<ControlElementLocal> elemsToAdd = GetElemsToAdd();
         
         if (elemsToAdd.Count != 0)
@@ -70,15 +67,26 @@ internal class ElementsService
     private async Task RemoveElemsByKeysRemote(HashSet<int> subjectsKeys)                         
     {                                                                                             
         await _elemClient!.RemoveElemsByKeys(subjectsKeys);                                     
-    }                                                                                             
+    }
 
-
-    internal async Task AddLocal(int subId, ControlElementLocal elem)
+    public void UpdateUserId(int newId)
+    {
+        if (_elemClient == null)
+        {
+            _elemClient = new ElementsClient(newId);
+            return;
+        }
+        
+        _elemClient.UpdateUserId(newId);
+    }
+    
+    
+    public async Task AddLocal(int subId, ControlElementLocal elem)
     {
         await _rep.Add(subId, elem);
     }
-    
-    internal async Task RemoveLocal(ControlElementLocal elem)
+
+    public async Task RemoveLocal(ControlElementLocal elem)
     {
         if (elem.RemoteId != 0)
         {
@@ -87,9 +95,19 @@ internal class ElementsService
         
         await _rep.Remove(elem);
     }
-    
-    
-    internal void RetainElemsToUpdate()
+
+    public async Task AddLocals(int subId, IEnumerable<ControlElementLocal> elems)
+    {
+        await _rep.Add(subId, elems);
+    }
+
+    public async Task RemoveLocals(IEnumerable<ControlElementLocal> elems)
+    {
+        await _rep.Remove(elems);
+    }
+
+
+    public void RetainElemsToUpdate()
     {
         _elemsToUpdate = [];
         
@@ -113,7 +131,7 @@ internal class ElementsService
         }
     }
     
-    
+
     /// <summary>
     /// Get elems that are not from new subs and have remote id = 0
     /// </summary>

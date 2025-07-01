@@ -1,14 +1,14 @@
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
-using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
+using RateMe.Services.Interfaces;
 using RateMeShared.Dto;
 
 namespace RateMe.Services;
 
-public class SubjectsService
+public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 {
     private readonly IEnumerable<Subject> _allSubjects;
     
@@ -27,9 +27,6 @@ public class SubjectsService
     
     public async Task SubjectsOverallRemoteUpdate()
     {
-        int userId = JsonModelsHandler.GetUserId(); // TODO: what if no user??
-        _subjClient = new SubjectsClient(userId);
-        
         SubjectLocal[] subjectsToAdd = await _rep.GetSubjectsNoRemote();
         
         if (subjectsToAdd.Length != 0)
@@ -90,12 +87,17 @@ public class SubjectsService
     {
         await _subjClient!.RemoveSubjectsByKeys(subjectsKeys);
     }
+
+    internal async Task GetAllUserSubjectsRemote()
+    {
+        
+    }
     
     
     /// <summary>
     /// Catches subjects to be updated, before they are saved to local bd
     /// </summary>
-    internal void RetainSubjectsToUpdate()
+    public void RetainSubjectsToUpdate()
     {
         foreach (Subject subj in _allSubjects)
         {
@@ -111,15 +113,26 @@ public class SubjectsService
         }
     }
 
+    public void UpdateUserId(int newId)
+    {
+        if (_subjClient == null)
+        {
+            _subjClient = new SubjectsClient(newId);
+            return;
+        }
+        
+        _subjClient.UpdateUserId(newId);
+    }
+
     // Local Stuff
-    
-    internal async Task<List<SubjectLocal>> GetAllLocals()
+
+    public async Task<List<SubjectLocal>> GetAllLocals()
     {
         return await _rep.GetAll();
     }
 
-    
-    internal async Task UpdateAllLocals()
+
+    public async Task UpdateAllLocals()
     {
         foreach (Subject subject in _allSubjects)
         {
@@ -130,21 +143,21 @@ public class SubjectsService
         await _rep.Update(locals);
     }
 
-    
-    internal async Task AddLocals(List<Subject> subjs)
+
+    public async Task AddLocals(IEnumerable<Subject> subjs)
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
         await _rep.Add(locals);
     }
-    
-    
-    internal async Task AddLocal(SubjectLocal subj)
+
+
+    public async Task AddLocal(SubjectLocal subj)
     {
         await _rep.Add(subj);
     }
-    
-    
-    internal async Task RemoveLocal(SubjectLocal subj)
+
+
+    public async Task RemoveLocal(SubjectLocal subj)
     {
         if (subj.RemoteId != 0)
         {
@@ -155,7 +168,7 @@ public class SubjectsService
     }
 
 
-    internal async Task RemoveLocals(IEnumerable<Subject> subjs)
+    public async Task RemoveLocals(IEnumerable<Subject> subjs)
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
         await _rep.Remove(locals);

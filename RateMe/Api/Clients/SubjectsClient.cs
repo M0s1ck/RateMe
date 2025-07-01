@@ -9,10 +9,12 @@ namespace RateMe.Api.Clients;
 
 public class SubjectsClient : BaseClient
 {
+    private const string UrlTemplate = "api/users/{0}/subjects/";
+
     public SubjectsClient(int userId)
     {
         TheHttpClient = new HttpClient();
-        string relativePath = $"api/users/{userId}/subjects/";
+        string relativePath = string.Format(UrlTemplate, userId);
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
 
@@ -44,6 +46,12 @@ public class SubjectsClient : BaseClient
         {
             MessageBox.Show($"Failed to remove remote data: {content}");
         }
+    }
+
+    public void UpdateUserId(int newId)
+    {
+        string relativePath = string.Format(UrlTemplate, newId);
+        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
     
     private static List<SubjectId>? ReflectOnPushSubjectsResponse(HttpResponseMessage response, string content)

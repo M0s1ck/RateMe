@@ -47,8 +47,13 @@ public class JsonModelsHandler
     }
 
 
-    public static User GetUser()
+    public static User? GetUserOrNull()
     {
+        if (!File.Exists(UserJsonPath))
+        {
+            return null;
+        }
+        
         string jsonContent = File.ReadAllText(UserJsonPath);
         User? user = JsonSerializer.Deserialize<User>(jsonContent);
 
@@ -58,13 +63,6 @@ public class JsonModelsHandler
         }
 
         return user;
-    }
-    
-    
-    public static int GetUserId()
-    {
-        User us = GetUser();
-        return us.Id;
     }
     
 

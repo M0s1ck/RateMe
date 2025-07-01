@@ -9,10 +9,12 @@ namespace RateMe.Api.Clients;
 
 internal class ElementsClient : BaseClient
 {
+    private const string UrlTemplate = "api/users/{0}/subjects/elements/";
+    
     internal ElementsClient(int userId)
     {
         TheHttpClient = new HttpClient();
-        string relativePath = $"api/users/{userId}/subjects/elements/";
+        string relativePath = string.Format(UrlTemplate, userId);
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
     
@@ -51,5 +53,11 @@ internal class ElementsClient : BaseClient
         {
             MessageBox.Show($"{response.StatusCode}:{content}");
         }
+    }
+    
+    public void UpdateUserId(int newId)
+    {
+        string relativePath = string.Format(UrlTemplate, newId);
+        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
 }

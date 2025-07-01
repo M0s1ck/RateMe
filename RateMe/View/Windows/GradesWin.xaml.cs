@@ -20,6 +20,7 @@ public partial class GradesWin : BaseFullWin
         
     private readonly SubjectsService _subjectsService;
     private readonly ElementsService _elementsService;
+    private readonly UserService _userService;
     
     
     /// <summary>
@@ -31,6 +32,7 @@ public partial class GradesWin : BaseFullWin
             
         _subjectsService = new SubjectsService(_subjects);
         _elementsService = new ElementsService(_subjects);
+        _userService = new UserService(_subjectsService, _elementsService);
         
         _syllabus = syllabus;
         grades.ItemsSource = _subjects;
@@ -51,14 +53,29 @@ public partial class GradesWin : BaseFullWin
     
     private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
     {
-        _subjectsService.RetainSubjectsToUpdate();
-        _elementsService.RetainElemsToUpdate();
+        await SaveData();
+        Close();
+    }
+
+    private async Task SaveData()
+    {
+        if (_userService.IsUserAvailable)
+        {
+            _subjectsService.RetainSubjectsToUpdate();
+            _elementsService.RetainElemsToUpdate();
+        }
         
         await _subjectsService.UpdateAllLocals();
-        
-        // Remote requests to add, update, delete etc. 
-        await UpdateRemote();
-        Close();
+
+        if (_userService.IsUserAvailable)
+        {
+            await UpdateRemote();
+        }
+
+        if (!_userService.IsUserAvailable)
+        {
+            MessageBox.Show("No remote save for ya because u are not signed up");
+        }
     }
     
 
@@ -112,10 +129,9 @@ public partial class GradesWin : BaseFullWin
         
         await _subjectsService.AddLocal(subject.LocalModel);
             
-        SubjectEditWin subjWin = new SubjectEditWin(subject);
+        SubjectEditWin subjWin = new(subject, _elementsService);
         subjWin.OnCancel += RemoveSubject;
-        subjWin.AddedElem += _elementsService.AddLocal;
-        subjWin.RemovedElem += _elementsService.RemoveLocal;
+        
         subjWin.Show();
         subjWin.Activate();
     }
@@ -131,9 +147,7 @@ public partial class GradesWin : BaseFullWin
             return;
         }
 
-        SubjectEditWin subjWin = new SubjectEditWin(subject);
-        subjWin.AddedElem += _elementsService.AddLocal;
-        subjWin.RemovedElem += _elementsService.RemoveLocal;
+        SubjectEditWin subjWin = new(subject, _elementsService);
         subjWin.Show();
         subjWin.Activate();
     }
@@ -163,11 +177,7 @@ public partial class GradesWin : BaseFullWin
     
     private void OnAccountClick(object sender, RoutedEventArgs e)
     {
-        UserService userService = new UserService();
-        userService.SignUpSignInStart += _subjectsService.UpdateAllLocals;
-        userService.SignUpSuccess += _subjectsService.SubjectsOverallRemoteUpdate;
-        
-        AuthWin authWin = new(userService);
+        AuthWin authWin = new(_userService);
         authWin.Show();
     }
 
@@ -184,14 +194,15 @@ public partial class GradesWin : BaseFullWin
     {
         if (withSave)
         {
-            await _subjectsService.UpdateAllLocals();
+            await SaveData();
         }
         else
         {
-            await _subjectsService.RemoveLocals(_subjects);
+            await _subjectsService.RemoveLocals(_subjects); // No remote remove for now
         }
         
         Close();
+        
         DataCollection dataWin = new();
         dataWin.Show();
             

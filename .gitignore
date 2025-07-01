@@ -12,6 +12,7 @@ obj/
 ToDo's.txt
 Temp.txt
 syllabus.json
+user.json
 
 RateMeApiServer/Controllers/WeatherForecastController.cs
 RateMeApiServer/WeatherForecast.cs
