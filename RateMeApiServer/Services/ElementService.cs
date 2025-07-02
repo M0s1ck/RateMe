@@ -62,7 +62,7 @@ public class ElementService : IElementService
 
             foreach ((Element elem, ElementDto dto) in elems.Zip(dtos))
             {
-                localRemoteKeys[dto.LocalId] = elem.Id;
+                localRemoteKeys[dto.Id] = elem.Id;
             }
         }
 

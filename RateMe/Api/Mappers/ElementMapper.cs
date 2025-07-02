@@ -9,7 +9,7 @@ internal static class ElementMapper
     {
         return new ElementDto
         {
-            LocalId = elem.ElementId,
+            Id = elem.ElementId,
             Name = elem.Name,
             Grade = elem.Grade,
             Weight = elem.Weight

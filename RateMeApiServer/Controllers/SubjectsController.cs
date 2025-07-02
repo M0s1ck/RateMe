@@ -18,6 +18,25 @@ public class SubjectsController : ControllerBase
     
     
     /// <summary>
+    /// Gets user's all subjects.
+    /// </summary>
+    /// <response code="200">Returns subjects.</response>
+    /// <response code="404">If user with such id doesn't exist.</response>
+    [HttpGet]
+    public async Task<IActionResult> GetAllSubjects(int userId)
+    {
+        DbInteractionResult<IEnumerable<SubjectDto>> interaction = await _service.GetAllSubjectsAsync(userId);
+        
+        switch (interaction.Status)
+        {
+            case DbInteractionStatus.Success: return Ok(interaction.Value);
+            case DbInteractionStatus.NotFound: return NotFound("User with such id was not found");
+            default: return StatusCode(500);
+        }
+    }
+    
+    
+    /// <summary>
     /// Adds user's subjects.
     /// </summary>
     /// <response code="200">Returns obj with created subjects' and elements' ids.</response>

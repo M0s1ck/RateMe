@@ -9,7 +9,7 @@ internal static class SubjectMapper
     {
         SubjectDto subjDto = new()
         {
-            LocalId = subj.SubjectId,
+            Id = subj.SubjectId,
             Name = subj.Name,
             Credits = subj.Credits,
         };

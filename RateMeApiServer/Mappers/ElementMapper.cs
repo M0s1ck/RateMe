@@ -15,11 +15,25 @@ internal static class ElementMapper
         };
     }
 
+    /// <summary>
+    /// Gets dto with remote id of entity
+    /// </summary>
+    internal static ElementDto GetDto(Element elem)
+    {
+        return new ElementDto
+        {
+            Id = elem.Id,
+            Name = elem.Name,
+            Grade = elem.Grade,
+            Weight = elem.Weight,
+        };
+    }
+
     internal static ElementId GetControlElementId(ElementDto importedLocal, Element added)
     {
         return new ElementId
         {
-            LocalId = importedLocal.LocalId,
+            LocalId = importedLocal.Id,
             RemoteId = added.Id
         };
     }

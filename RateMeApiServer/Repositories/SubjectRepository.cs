@@ -14,8 +14,21 @@ public class SubjectRepository : ISubjectRepository
     {
         _context = context;
     }
-    
-    
+
+
+    public async Task<DbInteractionResult<IEnumerable<Subject>>> GetAllSubjects(int userId)
+    {
+        User? user = await _context.Users.Include(u => u.Subjects).
+                           ThenInclude(s => s.Elements).FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return new DbInteractionResult<IEnumerable<Subject>>(null, DbInteractionStatus.NotFound);
+        }
+
+        return new DbInteractionResult<IEnumerable<Subject>>(user.Subjects, DbInteractionStatus.Success);
+    }
+
     public async Task<DbInteractionResult<IEnumerable<Subject>>> AddSubjects(int userId, IEnumerable<Subject> isubjects)
     {
         Subject[] subjects = isubjects as Subject[] ?? isubjects.ToArray();

@@ -1,3 +1,4 @@
+using System.Collections;
 using RateMeApiServer.Common;
 using RateMeApiServer.Mappers;
 using RateMeApiServer.Models.Entities;
@@ -14,6 +15,21 @@ public class SubjectService : ISubjectService
     {
         _repository = rep;
     }
+
+    
+    public async Task<DbInteractionResult<IEnumerable<SubjectDto>>> GetAllSubjectsAsync(int userId)
+    {
+        DbInteractionResult<IEnumerable<Subject>> interaction = await _repository.GetAllSubjects(userId);
+
+        if (interaction.Status != DbInteractionStatus.Success)
+        {
+            return new DbInteractionResult<IEnumerable<SubjectDto>>(null, interaction.Status);
+        }
+
+        IEnumerable<SubjectDto> subjDtos = interaction.Value!.Select(SubjectMapper.GetDto);
+        return new DbInteractionResult<IEnumerable<SubjectDto>>(subjDtos, DbInteractionStatus.Success);
+    }
+
     
     public async Task<DbInteractionResult<SubjectsIds>> AddSubjectsAsync(int userId, IEnumerable<SubjectDto> subjects)
     {
@@ -52,11 +68,13 @@ public class SubjectService : ISubjectService
         return new DbInteractionResult<SubjectsIds>(addedIds, DbInteractionStatus.Success);
     }
 
+    
     public async Task<DbInteractionStatus> UpdateSubjectsAsync(int userId, IEnumerable<PlainSubject> updated)
     {
         return await _repository.UpdateSubjects(userId, updated);
     }
 
+    
     public async Task<DbInteractionStatus> RemoveSubjectsAsync(int userId, IEnumerable<int> keys)
     {
         return await _repository.RemoveSubjectsByKeys(userId, keys);

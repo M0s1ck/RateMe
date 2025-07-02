@@ -6,6 +6,7 @@ namespace RateMeApiServer.Repositories;
 
 public interface ISubjectRepository
 {
+    public Task<DbInteractionResult<IEnumerable<Subject>>> GetAllSubjects(int userId);
     /// <summary>
     /// Adds subjects to user with userId
     /// </summary>

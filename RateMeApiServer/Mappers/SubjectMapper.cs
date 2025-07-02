@@ -26,7 +26,7 @@ internal static class SubjectMapper
     {
         SubjectId subjId = new()
         {
-            LocalId = importedLocal.LocalId,
+            LocalId = importedLocal.Id,
             RemoteId = added.Id
         };
 
@@ -37,5 +37,26 @@ internal static class SubjectMapper
         }
 
         return subjId;
+    }
+
+    /// <summary>
+    /// Gets dto with remote id of subject
+    /// </summary>
+    internal static SubjectDto GetDto(Subject subject)
+    {
+        SubjectDto dto = new()
+        {
+            Id = subject.Id,
+            Name = subject.Name,
+            Credits = subject.Credits,
+        };
+        
+        foreach (Element elem in subject.Elements)
+        {
+            ElementDto elemDto = ElementMapper.GetDto(elem); 
+            dto.Elements.Add(elemDto);
+        }
+
+        return dto;
     }
 }
