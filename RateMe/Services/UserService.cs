@@ -29,8 +29,8 @@ public class UserService
 
         if (_user != null)
         {
-            _subjectService.UpdateUserId(_user.Id);
-            _elemService.UpdateUserId(_user.Id);
+            _subjectService.SubjClient = new SubjectsClient(_user.Id);
+            _elemService.ElemClient = new ElementsClient(_user.Id);
         }
     }
     
@@ -111,15 +111,17 @@ public class UserService
         UpdateOnUser();
         MessageBox.Show($"Hello, {_user.Name} {_user.Surname}");
 
-        await _subjectService.LoadAllUserSubjectsFromRemote();
+        await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
     }
 
+    
     private void UpdateOnUser()
     {
         JsonModelsHandler.SaveUser(_user!);
-        _subjectService.UpdateUserId(_user!.Id);
-        _elemService.UpdateUserId(_user!.Id);
+        _subjectService.SubjClient = new SubjectsClient(_user!.Id);
+        _elemService.ElemClient = new ElementsClient(_user.Id);
     }
+    
     
     private void HandleHttpException(HttpRequestException ex)
     {

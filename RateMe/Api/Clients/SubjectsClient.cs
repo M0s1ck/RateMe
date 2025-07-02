@@ -24,7 +24,7 @@ public class SubjectsClient : BaseClient
         using HttpResponseMessage response = await TheHttpClient.GetAsync(string.Empty);
         string content = await response.Content.ReadAsStringAsync();
         
-        if (response.StatusCode != HttpStatusCode.NoContent)
+        if (response.StatusCode != HttpStatusCode.OK)
         {
             MessageBox.Show($"Failed to get subjects: {content}");
         }
@@ -64,13 +64,6 @@ public class SubjectsClient : BaseClient
         {
             MessageBox.Show($"Failed to remove remote data: {content}");
         }
-    }
-
-    
-    public void UpdateUserId(int newId)
-    {
-        string relativePath = string.Format(UrlTemplate, newId);
-        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
     
     

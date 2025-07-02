@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using RateMe.Api.Clients;
 using RateMe.Api.Mappers;
 using RateMe.Models.ClientModels;
@@ -10,16 +11,17 @@ namespace RateMe.Services;
 
 public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 {
-    private readonly IEnumerable<Subject> _allSubjects;
+    public SubjectsClient? SubjClient { get; set; }
+    
+    private readonly ObservableCollection<Subject> _allSubjects;
     
     private List<SubjectLocal> _subjectsToUpdate = [];
     private List<int> _subjKeysToRemove = [];
     
     private SubjectsRepository _rep = new();
-    private SubjectsClient? _subjClient;
 
     
-    public SubjectsService(IEnumerable<Subject> allSubjects)
+    public SubjectsService(ObservableCollection<Subject> allSubjects)
     {
         _allSubjects = allSubjects;
     }
@@ -53,7 +55,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     {
         SubjectDto[] subjDtos = subjectsToAdd.Select(SubjectMapper.GetSubjectDto).ToArray(); 
         
-        List<SubjectId>? subjIds = await _subjClient!.PushSubjects(subjDtos);
+        List<SubjectId>? subjIds = await SubjClient!.PushSubjects(subjDtos);
         
         // Updating remote keys if success
         if (subjIds != null)
@@ -76,7 +78,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
             subjsDto.Add(dto);
         }
 
-        await _subjClient!.UpdateSubjects(subjsDto);
+        await SubjClient!.UpdateSubjects(subjsDto);
     }
 
     
@@ -85,23 +87,28 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     /// </summary>
     private async Task RemoveSubjectsByKeysRemote(List<int> subjectsKeys)
     {
-        await _subjClient!.RemoveSubjectsByKeys(subjectsKeys);
+        await SubjClient!.RemoveSubjectsByKeys(subjectsKeys);
     }
 
     /// <summary>
     /// Gets all user's subjects from remote and saves locally 
     /// </summary>
-    public async Task LoadAllUserSubjectsFromRemote()
+    public async Task LoadUpdateAllUserSubjectsFromRemote()
     {
-        SubjectDto[]? subjDtos = await _subjClient!.GetAllSubjects();
+        SubjectDto[]? subjDtos = await SubjClient!.GetAllSubjects();
 
         if (subjDtos == null)
         {
             return;
         }
 
-        IEnumerable<SubjectLocal> subjects = subjDtos.Select(SubjectMapper.GetLocalFromDto);
-        await _rep.Add(subjects);
+        SubjectLocal[] subjectsToAdd = subjDtos.Select(SubjectMapper.GetLocalFromDto).ToArray();
+        await _rep.Add(subjectsToAdd);
+        
+        IEnumerable<SubjectLocal> oldSubjects = _allSubjects.Select(s => s.LocalModel);
+        await _rep.Remove(oldSubjects);
+        
+        UpdateObservable(subjectsToAdd);
     }
     
     
@@ -122,17 +129,6 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
                 _subjectsToUpdate.Add(subj.LocalModel);
             }
         }
-    }
-
-    public void UpdateUserId(int newId)
-    {
-        if (_subjClient == null)
-        {
-            _subjClient = new SubjectsClient(newId);
-            return;
-        }
-        
-        _subjClient.UpdateUserId(newId);
     }
 
     // Local Stuff
@@ -183,5 +179,16 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
         await _rep.Remove(locals);
+    }
+
+    private void UpdateObservable(IEnumerable<SubjectLocal> newSubs)
+    {
+        _allSubjects.Clear();
+
+        foreach (SubjectLocal subLocal in newSubs)
+        {
+            Subject subj = new(subLocal);
+            _allSubjects.Add(subj);
+        }
     }
 }

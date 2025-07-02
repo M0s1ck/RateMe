@@ -10,6 +10,8 @@ namespace RateMe.Services;
 
 internal class ElementsService : ILocalElemService, IElemUpdater
 {
+    public ElementsClient ElemClient { get; set; }
+    
     private readonly IEnumerable<Subject> _allSubjects;
     private List<ElementLocal> _elemsToUpdate = [];
     private HashSet<int> _elemKeysToRemove = [];
@@ -22,7 +24,6 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         _allSubjects = allSubjects;
     }
 
-    
     public async Task ElementsOverallRemoteUpdate()
     {
         List<ElementLocal> elemsToAdd = GetElemsToAdd();
@@ -49,7 +50,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         Dictionary<int, List<ElementDto>> dto = ElementMapper.GetElemsBySubIds(elems);
         
         // Pushing
-        Dictionary<int, int>? localRemoteKeys = await _elemClient!.PushElemsBySubsIds(dto);
+        Dictionary<int, int>? localRemoteKeys = await ElemClient!.PushElemsBySubsIds(dto);
 
         // Updating remote keys
         if (localRemoteKeys != null)
@@ -61,25 +62,15 @@ internal class ElementsService : ILocalElemService, IElemUpdater
     private async Task UpdateElemsRemote(IEnumerable<ElementLocal> elemsToUpdate)
     {
         PlainElem[] elems = elemsToUpdate.Select(ElementMapper.GetPlainElem).ToArray();
-        await _elemClient!.UpdateElems(elems);
+        await ElemClient!.UpdateElems(elems);
     }
     
     private async Task RemoveElemsByKeysRemote(HashSet<int> subjectsKeys)                         
     {                                                                                             
-        await _elemClient!.RemoveElemsByKeys(subjectsKeys);                                     
-    }
-
-    public void UpdateUserId(int newId)
-    {
-        if (_elemClient == null)
-        {
-            _elemClient = new ElementsClient(newId);
-            return;
-        }
-        
-        _elemClient.UpdateUserId(newId);
+        await ElemClient!.RemoveElemsByKeys(subjectsKeys);                                     
     }
     
+    // Local stuff
     
     public async Task AddLocal(int subId, ElementLocal elem)
     {

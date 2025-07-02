@@ -81,7 +81,9 @@ namespace RateMe.Models.ClientModels
             LocalModel = new() { Name = Name };
         }
 
-        // From hse site. 
+        /// <summary>
+        /// From hse site
+        /// </summary>
         public Subject(string name, int credits, int[] modules, Dictionary<string, string> assFormulas)
         {
             Name = name;
@@ -96,7 +98,9 @@ namespace RateMe.Models.ClientModels
             LocalModel = new SubjectLocal { Name = Name, Credits = Credits, Elements = [] };
         }
 
-        // From local db. 
+        /// <summary>
+        /// From local model
+        /// </summary>
         public Subject(SubjectLocal localSubj)
         {
             Name = localSubj.Name;
