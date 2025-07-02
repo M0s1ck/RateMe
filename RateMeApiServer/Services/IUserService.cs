@@ -7,6 +7,6 @@ namespace RateMeApiServer.Services
     {
         Task<DbInteractionResult<UserDto>> GetUserByIdAsync(int id);
         Task<DbInteractionResult<int>> AddUserAsync(UserDto userDto);
-        Task<DbInteractionResult<int>> AuthUserAsync(AuthRequest authRequestDto);
+        Task<DbInteractionResult<UserDto>> AuthUserAsync(AuthRequest authRequestDto);
     }
 }

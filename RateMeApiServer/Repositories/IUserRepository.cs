@@ -7,6 +7,6 @@ namespace RateMeApiServer.Repositories
     {
         Task<DbInteractionResult<User>> GetByIdAsync(int id);
         Task<DbInteractionResult<int>> AddAsync(User user);
-        Task<DbInteractionResult<int>> AuthAsync(string email, string password);
+        Task<DbInteractionResult<User>> AuthAsync(string email, string password);
     }
 }

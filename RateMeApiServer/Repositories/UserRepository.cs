@@ -43,7 +43,7 @@ namespace RateMeApiServer.Repositories
         }
         
         
-        public async Task<DbInteractionResult<int>> AuthAsync(string email, string password)
+        public async Task<DbInteractionResult<User>> AuthAsync(string email, string password)
         {
             try
             {
@@ -51,14 +51,14 @@ namespace RateMeApiServer.Repositories
                 
                 if (user.Password != password)
                 {
-                    return new DbInteractionResult<int>(default, DbInteractionStatus.WrongData);
+                    return new DbInteractionResult<User>(null, DbInteractionStatus.WrongData);
                 }
                 
-                return new DbInteractionResult<int>(user.Id, DbInteractionStatus.Success);
+                return new DbInteractionResult<User>(user, DbInteractionStatus.Success);
             }
             catch (InvalidOperationException)
             {
-                return new DbInteractionResult<int>(default, DbInteractionStatus.NotFound);
+                return new DbInteractionResult<User>(null, DbInteractionStatus.NotFound);
             }
         }
     }

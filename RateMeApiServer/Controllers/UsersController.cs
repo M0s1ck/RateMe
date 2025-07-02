@@ -66,11 +66,11 @@ namespace RateMeApiServer.Controllers
         [HttpPost("auth")]
         public async Task<IActionResult> SignIn(AuthRequest authRequest)
         {
-            DbInteractionResult<int> interaction = await _userService.AuthUserAsync(authRequest);
+            DbInteractionResult<UserDto> interaction = await _userService.AuthUserAsync(authRequest);
             
             switch (interaction.Status)
             {
-                case DbInteractionStatus.Success: return Ok(new {id = interaction.Value});
+                case DbInteractionStatus.Success: return Ok(interaction.Value);
                 case DbInteractionStatus.NotFound: return NotFound("User with such email doesn't exist");
                 case DbInteractionStatus.WrongData: return Unauthorized("Wrong password");
                 default: return StatusCode(500);
