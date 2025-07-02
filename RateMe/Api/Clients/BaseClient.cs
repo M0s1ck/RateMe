@@ -1,6 +1,6 @@
 using System.Net.Http;
 using System.Text.Json;
-using RateMe.Models.JsonModels;
+using RateMe.Models.JsonFileModels;
 
 namespace RateMe.Api.Clients;
 
@@ -13,5 +13,5 @@ public abstract class BaseClient
         PropertyNameCaseInsensitive = true
     };
 
-    protected static Uri BaseUri = new Uri(JsonModelsHandler.GetConfig().ApiUrl);
+    protected static Uri BaseUri = new Uri(JsonFileModelsHelper.GetConfig().ApiUrl);
 }

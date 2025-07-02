@@ -6,7 +6,8 @@ public interface ISubjectUpdater
 {
     SubjectsClient SubjClient { get; set; }
     Task SubjectsOverallRemoteUpdate();
-    Task UpdateAllLocals();
     Task LoadUpdateAllUserSubjectsFromRemote();
+    Task UpdateAllLocals();
+    Task ClearLocal();
     void RetainSubjectsToUpdate();
 }

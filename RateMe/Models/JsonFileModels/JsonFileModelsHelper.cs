@@ -5,9 +5,9 @@ using System.Text.Unicode;
 using System.Windows;
 using RateMe.Models.ClientModels;
 
-namespace RateMe.Models.JsonModels;
+namespace RateMe.Models.JsonFileModels;
 
-public class JsonModelsHandler
+public static class JsonFileModelsHelper
 {
     #region static consts
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
@@ -35,6 +35,11 @@ public class JsonModelsHandler
 
     public static Config GetConfig()
     {
+        if (!File.Exists(ConfigJsonPath))  // TODO: крч подумать че ставить, apiurl кста нало тоже обдумать 
+        {
+            return null;
+        }
+        
         string jsonContent = File.ReadAllText(ConfigJsonPath);
         Config? config = JsonSerializer.Deserialize<Config>(jsonContent);
 
@@ -84,4 +89,8 @@ public class JsonModelsHandler
         File.WriteAllTextAsync(UserJsonPath, jsonString);
     }
 
+    public static void RemoveUser()
+    {
+        File.Delete(UserJsonPath);
+    }
 }

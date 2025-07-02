@@ -2,7 +2,7 @@
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using RateMe.Models.ClientModels;
-using RateMe.Models.JsonModels;
+using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;
 using RateMe.View.Windows;
 
@@ -22,7 +22,7 @@ public partial class App : Application
         using SubjectsContext db = new();
         db.Database.Migrate();
             
-        Config config = JsonModelsHandler.GetConfig();
+        Config config = JsonFileModelsHelper.GetConfig();
         OpenNextWin(config);
     }
         
@@ -35,7 +35,7 @@ public partial class App : Application
             return;
         }
 
-        SyllabusModel syllabus = JsonModelsHandler.GetSyllabus();
+        SyllabusModel syllabus = JsonFileModelsHelper.GetSyllabus();
         GradesWin gradesWin = new(syllabus);
         gradesWin.Show();
     }

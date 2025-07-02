@@ -21,7 +21,7 @@ internal class UserClient : BaseClient
     {
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("signup", userDto);
             
-        if (response.StatusCode == HttpStatusCode.OK)
+        if (response.StatusCode == HttpStatusCode.Created)
         {
             using JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
             int userId = json.RootElement.GetProperty("id").GetInt32();

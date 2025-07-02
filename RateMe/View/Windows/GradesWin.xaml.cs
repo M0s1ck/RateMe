@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Input;
 using RateMe.Models.ClientModels;
-using RateMe.Models.JsonModels;
 using RateMe.Models.LocalDbModels;
 using System.Net.Http;
 using System.Net.Sockets;
+using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 
 namespace RateMe.View.Windows;
@@ -105,9 +105,9 @@ public partial class GradesWin : BaseFullWin
         }
             
         // Log to config
-        Config config = JsonModelsHandler.GetConfig();
+        Config config = JsonFileModelsHelper.GetConfig();
         config.IsSubjectsLoaded = true;
-        JsonModelsHandler.SaveConfig(config);
+        JsonFileModelsHelper.SaveConfig(config);
     }
     
         
@@ -198,7 +198,7 @@ public partial class GradesWin : BaseFullWin
         }
         else
         {
-            await _subjectsService.RemoveLocals(_subjects); // No remote remove for now
+            await _subjectsService.ClearLocal(); // No remote remove for now
         }
         
         Close();
@@ -207,14 +207,15 @@ public partial class GradesWin : BaseFullWin
         dataWin.Show();
             
         // Log to config
-        Config config = JsonModelsHandler.GetConfig();
+        Config config = JsonFileModelsHelper.GetConfig();
         config.IsSubjectsLoaded = false;
-        JsonModelsHandler.SaveConfig(config);
+        JsonFileModelsHelper.SaveConfig(config);
     }
 
-    private void OnInfoClick(object sender,RoutedEventArgs e)
+    private async void OnInfoClick(object sender,RoutedEventArgs e)
     {
         InfoWin infoWin = new();
-        infoWin.Show();
+        // infoWin.Show();
+        await _userService.SignOut();
     }
 }

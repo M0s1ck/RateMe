@@ -163,7 +163,17 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
         await _rep.Add(subj);
     }
 
+    
+    /// <summary>
+    /// Removes all subjects locally
+    /// </summary>
+    public async Task ClearLocal() // No remote support so far
+    {
+        await RemoveLocals(_allSubjects);
+        _allSubjects.Clear();
+    }
 
+    
     public async Task RemoveLocal(SubjectLocal subj)
     {
         if (subj.RemoteId != 0)
@@ -173,8 +183,8 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 
         await _rep.Remove(subj);
     }
-
-
+    
+    
     public async Task RemoveLocals(IEnumerable<Subject> subjs)
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();

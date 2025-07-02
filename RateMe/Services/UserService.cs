@@ -3,7 +3,7 @@ using RateMeShared.Dto;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
-using RateMe.Models.JsonModels;
+using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
 
 namespace RateMe.Services;
@@ -25,7 +25,7 @@ public class UserService
         _elemService = elemService;
         
         _userClient = new UserClient();
-        _user = JsonModelsHandler.GetUserOrNull();
+        _user = JsonFileModelsHelper.GetUserOrNull();
 
         if (_user != null)
         {
@@ -78,17 +78,11 @@ public class UserService
         {
             MessageBox.Show("You are not signed up! All local data will be lost. You better sign up first");
             return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
-        }
-        else
-        {
-            _subjectService.RetainSubjectsToUpdate();
-            _elemService.RetainElemsToUpdate();
-            
-            await _subjectService.UpdateAllLocals();
-            
-            await _subjectService.SubjectsOverallRemoteUpdate();
-            await _elemService.ElementsOverallRemoteUpdate();
-        }
+        }           // If still yes, we just remove all locals and continue
+                    // How to make so that we really sign up after "yes" - maybe just add safe bool flag param that's by
+                    // default is true and call func 
+        
+        await OverallSaveUpdate();
         
         AuthRequest request = new() { Email = email, Password = pass };
         UserDto? userDto = null; 
@@ -114,10 +108,47 @@ public class UserService
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
     }
 
+
+    // Should be available only if userIsAvailable
+    internal async Task SignOut()
+    {
+        if (!IsUserAvailable)
+        {
+            return;
+        }
+
+        try
+        {
+            await OverallSaveUpdate();
+        }
+        catch (HttpRequestException ex)
+        {
+            HandleHttpException(ex);
+            return;
+        }
+        
+        JsonFileModelsHelper.RemoveUser();
+        _user = null;
+
+        await _subjectService.ClearLocal();
+    }
+
+
+    private async Task OverallSaveUpdate()
+    {
+        _subjectService.RetainSubjectsToUpdate();
+        _elemService.RetainElemsToUpdate();
+            
+        await _subjectService.UpdateAllLocals();
+            
+        await _subjectService.SubjectsOverallRemoteUpdate();
+        await _elemService.ElementsOverallRemoteUpdate();
+    }
+    
     
     private void UpdateOnUser()
     {
-        JsonModelsHandler.SaveUser(_user!);
+        JsonFileModelsHelper.SaveUser(_user!);
         _subjectService.SubjClient = new SubjectsClient(_user!.Id);
         _elemService.ElemClient = new ElementsClient(_user.Id);
     }

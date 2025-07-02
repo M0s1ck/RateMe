@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-using RateMe.Models.JsonModels;
+using RateMe.Models.JsonFileModels;
 
 namespace RateMe.Models.InterfaceModels
 {

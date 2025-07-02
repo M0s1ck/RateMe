@@ -1,6 +1,6 @@
 using RateMeShared.Dto;
 
-namespace RateMe.Models.JsonModels;
+namespace RateMe.Models.JsonFileModels;
 
 public class User
 {
