@@ -17,7 +17,23 @@ public class SubjectsClient : BaseClient
         string relativePath = string.Format(UrlTemplate, userId);
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
+    
+    
+    public async Task<SubjectDto[]?> GetAllSubjects()
+    {
+        using HttpResponseMessage response = await TheHttpClient.GetAsync(string.Empty);
+        string content = await response.Content.ReadAsStringAsync();
+        
+        if (response.StatusCode != HttpStatusCode.NoContent)
+        {
+            MessageBox.Show($"Failed to get subjects: {content}");
+        }
+        
+        SubjectDto[]? subjDtos = JsonSerializer.Deserialize<SubjectDto[]>(content, options: CaseInsensitiveOptions);
+        return subjDtos;
+    }
 
+    
     public async Task<List<SubjectId>?> PushSubjects(SubjectDto[] subjects)
     {
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync(string.Empty, subjects);
@@ -25,6 +41,7 @@ public class SubjectsClient : BaseClient
         string content = await response.Content.ReadAsStringAsync();
         return ReflectOnPushSubjectsResponse(response, content);
     }
+    
     
     public async Task UpdateSubjects(List<PlainSubject> dto)
     {
@@ -37,6 +54,7 @@ public class SubjectsClient : BaseClient
         }
     }
 
+    
     public async Task RemoveSubjectsByKeys(List<int> keys)
     {
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("delete", keys);
@@ -48,11 +66,13 @@ public class SubjectsClient : BaseClient
         }
     }
 
+    
     public void UpdateUserId(int newId)
     {
         string relativePath = string.Format(UrlTemplate, newId);
         TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
     }
+    
     
     private static List<SubjectId>? ReflectOnPushSubjectsResponse(HttpResponseMessage response, string content)
     {

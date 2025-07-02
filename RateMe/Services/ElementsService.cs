@@ -11,7 +11,7 @@ namespace RateMe.Services;
 internal class ElementsService : ILocalElemService, IElemUpdater
 {
     private readonly IEnumerable<Subject> _allSubjects;
-    private List<ControlElementLocal> _elemsToUpdate = [];
+    private List<ElementLocal> _elemsToUpdate = [];
     private HashSet<int> _elemKeysToRemove = [];
 
     private ElementsRepository _rep = new();
@@ -25,7 +25,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
     
     public async Task ElementsOverallRemoteUpdate()
     {
-        List<ControlElementLocal> elemsToAdd = GetElemsToAdd();
+        List<ElementLocal> elemsToAdd = GetElemsToAdd();
         
         if (elemsToAdd.Count != 0)
         {
@@ -44,7 +44,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
     }
     
     
-    private async Task PushElemsBySubjectsIds(List<ControlElementLocal> elems)
+    private async Task PushElemsBySubjectsIds(List<ElementLocal> elems)
     {
         Dictionary<int, List<ElementDto>> dto = ElementMapper.GetElemsBySubIds(elems);
         
@@ -58,7 +58,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         }
     }
     
-    private async Task UpdateElemsRemote(IEnumerable<ControlElementLocal> elemsToUpdate)
+    private async Task UpdateElemsRemote(IEnumerable<ElementLocal> elemsToUpdate)
     {
         PlainElem[] elems = elemsToUpdate.Select(ElementMapper.GetPlainElem).ToArray();
         await _elemClient!.UpdateElems(elems);
@@ -81,12 +81,12 @@ internal class ElementsService : ILocalElemService, IElemUpdater
     }
     
     
-    public async Task AddLocal(int subId, ControlElementLocal elem)
+    public async Task AddLocal(int subId, ElementLocal elem)
     {
         await _rep.Add(subId, elem);
     }
 
-    public async Task RemoveLocal(ControlElementLocal elem)
+    public async Task RemoveLocal(ElementLocal elem)
     {
         if (elem.RemoteId != 0)
         {
@@ -96,12 +96,12 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         await _rep.Remove(elem);
     }
 
-    public async Task AddLocals(int subId, IEnumerable<ControlElementLocal> elems)
+    public async Task AddLocals(int subId, IEnumerable<ElementLocal> elems)
     {
         await _rep.Add(subId, elems);
     }
 
-    public async Task RemoveLocals(IEnumerable<ControlElementLocal> elems)
+    public async Task RemoveLocals(IEnumerable<ElementLocal> elems)
     {
         await _rep.Remove(elems);
     }
@@ -135,9 +135,9 @@ internal class ElementsService : ILocalElemService, IElemUpdater
     /// <summary>
     /// Get elems that are not from new subs and have remote id = 0
     /// </summary>
-    private List<ControlElementLocal> GetElemsToAdd()
+    private List<ElementLocal> GetElemsToAdd()
     {
-        List<ControlElementLocal> elems = [];
+        List<ElementLocal> elems = [];
         
         foreach (Subject subj in _allSubjects)
         {
@@ -146,7 +146,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
                 continue;
             }
 
-            foreach (ControlElementLocal elemModel in subj.LocalModel.Elements)
+            foreach (ElementLocal elemModel in subj.LocalModel.Elements)
             {
                 if (elemModel.RemoteId == 0)
                 {

@@ -2,7 +2,7 @@
 
 namespace RateMe.Models.LocalDbModels
 {
-    public class ControlElementLocal
+    public class ElementLocal
     {
         [Key]
         public int ElementId { get; set; }
@@ -16,12 +16,12 @@ namespace RateMe.Models.LocalDbModels
         
         public int RemoteId { get; set; }
 
-        public ControlElementLocal()
+        public ElementLocal()
         {
             Name = "NotInit";
         }
 
-        public ControlElementLocal(SubjectLocal subj)
+        public ElementLocal(SubjectLocal subj)
         {
             Subject = subj;
             Name = "NotInit";

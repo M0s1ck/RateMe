@@ -1,11 +1,12 @@
 using RateMe.Models.LocalDbModels;
 using RateMeShared.Dto;
 
+
 namespace RateMe.Api.Mappers;
 
 internal static class ElementMapper
 {
-    internal static ElementDto GetElementDto(ControlElementLocal elem)
+    internal static ElementDto GetElementDto(ElementLocal elem)
     {
         return new ElementDto
         {
@@ -16,11 +17,22 @@ internal static class ElementMapper
         };
     }
 
-    internal static Dictionary<int, List<ElementDto>> GetElemsBySubIds(List<ControlElementLocal> elems)
+    internal static ElementLocal GetLocalFromDto(ElementDto dto)
+    {
+        return new ElementLocal
+        {
+            RemoteId = dto.Id,
+            Name = dto.Name,
+            Grade = dto.Grade,
+            Weight = dto.Weight
+        };
+    }
+
+    internal static Dictionary<int, List<ElementDto>> GetElemsBySubIds(List<ElementLocal> elems)
     {
         Dictionary<int, List<ElementDto>> dto = [];
 
-        foreach (ControlElementLocal elem in elems)
+        foreach (ElementLocal elem in elems)
         {
             if (!dto.ContainsKey(elem.Subject.RemoteId))
             {
@@ -33,7 +45,7 @@ internal static class ElementMapper
         return dto;
     }
 
-    internal static PlainElem GetPlainElem(ControlElementLocal elem)
+    internal static PlainElem GetPlainElem(ElementLocal elem)
     {
         return new PlainElem
         {

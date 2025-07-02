@@ -88,9 +88,20 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
         await _subjClient!.RemoveSubjectsByKeys(subjectsKeys);
     }
 
-    internal async Task GetAllUserSubjectsRemote()
+    /// <summary>
+    /// Gets all user's subjects from remote and saves locally 
+    /// </summary>
+    public async Task LoadAllUserSubjectsFromRemote()
     {
-        
+        SubjectDto[]? subjDtos = await _subjClient!.GetAllSubjects();
+
+        if (subjDtos == null)
+        {
+            return;
+        }
+
+        IEnumerable<SubjectLocal> subjects = subjDtos.Select(SubjectMapper.GetLocalFromDto);
+        await _rep.Add(subjects);
     }
     
     

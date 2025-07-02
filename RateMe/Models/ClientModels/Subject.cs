@@ -103,7 +103,7 @@ namespace RateMe.Models.ClientModels
             Credits = localSubj.Credits;
             FormulaObj = [];
 
-            foreach (ControlElementLocal elemLocal in localSubj.Elements)
+            foreach (ElementLocal elemLocal in localSubj.Elements)
             {
                 ControlElement elem = new ControlElement(elemLocal);
                 FormulaObj.Add(elem);

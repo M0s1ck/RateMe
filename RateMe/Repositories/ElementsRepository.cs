@@ -4,7 +4,7 @@ namespace RateMe.Repositories;
 
 public class ElementsRepository
 {
-    internal async Task Add(int subId, ControlElementLocal elem)
+    internal async Task Add(int subId, ElementLocal elem)
     {
         await using SubjectsContext context = new();
         SubjectLocal? subj = await context.Subjects.FindAsync(subId);
@@ -18,7 +18,7 @@ public class ElementsRepository
         await context.SaveChangesAsync();
     }
     
-    internal async Task Add(int subId, IEnumerable<ControlElementLocal> elems)
+    internal async Task Add(int subId, IEnumerable<ElementLocal> elems)
     {
         await using SubjectsContext context = new();
         SubjectLocal? subject = await context.Subjects.FindAsync(subId);
@@ -28,7 +28,7 @@ public class ElementsRepository
             return;
         }
 
-        foreach (ControlElementLocal elem in elems)
+        foreach (ElementLocal elem in elems)
         {
             elem.ElementId = 0;
             subject.Elements.Add(elem);
@@ -37,14 +37,14 @@ public class ElementsRepository
         await context.SaveChangesAsync();
     }
     
-    internal async Task Remove(ControlElementLocal elem)
+    internal async Task Remove(ElementLocal elem)
     {
         await using SubjectsContext context = new();
         context.Elements.Remove(elem);
         await context.SaveChangesAsync();
     }
 
-    internal async Task Remove(IEnumerable<ControlElementLocal> elems)
+    internal async Task Remove(IEnumerable<ElementLocal> elems)
     {
         await using SubjectsContext context = new();
         context.Elements.RemoveRange(elems);
@@ -55,7 +55,7 @@ public class ElementsRepository
     {
         await using SubjectsContext context = new();
         
-        foreach (ControlElementLocal elem in context.Elements)
+        foreach (ElementLocal elem in context.Elements)
         {
             if (localRemoteKeys.ContainsKey(elem.ElementId))
             {

@@ -66,7 +66,7 @@ public class SubjectsRepository
             context.Subjects.Attach(subj);
             context.Entry(subj).State = EntityState.Modified;
 
-            foreach (ControlElementLocal elem in subj.Elements)
+            foreach (ElementLocal elem in subj.Elements)
             {
                 context.Elements.Attach(elem);
                 context.Entry(elem).State = EntityState.Modified;
@@ -100,7 +100,7 @@ public class SubjectsRepository
     
     private void UpdateElemsRemoteKeys(SubjectsContext context, SubjectLocal subj, SubjectId subjId)
     {
-        ControlElementLocal[] elems = context.Elements.Where(el => el.SubjectId == subj.SubjectId)
+        ElementLocal[] elems = context.Elements.Where(el => el.SubjectId == subj.SubjectId)
             .OrderBy(el => el.ElementId).ToArray();
 
         ElementId[] elemIds = subjId.Elements.OrderBy(el => el.LocalId).ToArray();

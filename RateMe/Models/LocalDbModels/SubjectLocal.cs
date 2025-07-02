@@ -11,6 +11,6 @@ namespace RateMe.Models.LocalDbModels
         public int Credits { get; set; }
         
         public int RemoteId { get; set; }
-        public List<ControlElementLocal> Elements { get; set; } = [];
+        public List<ElementLocal> Elements { get; set; } = [];
     }
 }

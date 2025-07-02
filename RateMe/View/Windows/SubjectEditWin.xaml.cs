@@ -18,8 +18,8 @@ public partial class SubjectEditWin : BaseFullWin
     private DataHintTextModel _subjectNameTextModel;
     private int SubId => _updatedSubject.LocalModel.SubjectId;
     
-    private HashSet<ControlElementLocal> _addedElems = [];
-    private HashSet<ControlElementLocal> _removedElems = [];
+    private HashSet<ElementLocal> _addedElems = [];
+    private HashSet<ElementLocal> _removedElems = [];
     
     public event CancelAsyncHandler? OnCancel;
     public delegate Task CancelAsyncHandler(Subject subj);
@@ -92,7 +92,7 @@ public partial class SubjectEditWin : BaseFullWin
 
     private async void OnCancelClick(object sender, RoutedEventArgs e)
     {
-        foreach (ControlElementLocal elem in _addedElems)
+        foreach (ElementLocal elem in _addedElems)
         {
             _theSubject.LocalModel.Elements.Remove(elem);
         }

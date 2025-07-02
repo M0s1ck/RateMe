@@ -6,7 +6,7 @@ namespace RateMe.Models.ClientModels
 {
     public class ControlElement : INotifyPropertyChanged
     {
-        public ControlElementLocal LocalModel { get; set; }
+        public ElementLocal LocalModel { get; set; }
 
         public string Name
         {
@@ -52,7 +52,7 @@ namespace RateMe.Models.ClientModels
             _name = "Элемент контроля";
             _weight = 0;
             _grade = 0;
-            LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
+            LocalModel = new ElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
         public ControlElement(string name, decimal weight)
@@ -60,10 +60,10 @@ namespace RateMe.Models.ClientModels
             _name = name;
             _weight = weight;
             _grade = 0;
-            LocalModel = new ControlElementLocal { Name = _name, Weight = _weight, Grade = _grade };
+            LocalModel = new ElementLocal { Name = _name, Weight = _weight, Grade = _grade };
         }
 
-        public ControlElement(ControlElementLocal elemLocal)
+        public ControlElement(ElementLocal elemLocal)
         {
             _name = elemLocal.Name;
             _weight = elemLocal.Weight;

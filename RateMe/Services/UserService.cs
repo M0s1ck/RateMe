@@ -111,7 +111,7 @@ public class UserService
         UpdateOnUser();
         MessageBox.Show($"Hello, {_user.Name} {_user.Surname}");
 
-         // Here we GetAllSubjects
+        await _subjectService.LoadAllUserSubjectsFromRemote();
     }
 
     private void UpdateOnUser()
