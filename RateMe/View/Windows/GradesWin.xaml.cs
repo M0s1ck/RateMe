@@ -164,8 +164,9 @@ public partial class GradesWin : BaseFullWin
             return; 
         }
 
-        RemoveSubjectWin win = new(subject);
-        win.RemovalAgreed += RemoveSubject;
+        string question = $"Удалить предмет {subject.Name}?";
+        YesNoWin win = new(question);
+        win.YesButton.Click += async (o, args) => { await RemoveSubject(subject); };
         win.Show();
     }
 

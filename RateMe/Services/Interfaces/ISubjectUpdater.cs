@@ -4,7 +4,8 @@ namespace RateMe.Services.Interfaces;
 
 public interface ISubjectUpdater
 {
-    SubjectsClient SubjClient { get; set; }
+    bool IsAnyData { get; }
+    SubjectsClient SubjClient { set; }
     Task SubjectsOverallRemoteUpdate();
     Task LoadUpdateAllUserSubjectsFromRemote();
     Task UpdateAllLocals();

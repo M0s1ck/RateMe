@@ -12,6 +12,7 @@ namespace RateMe.Services;
 public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 {
     public SubjectsClient? SubjClient { get; set; }
+    public bool IsAnyData => _allSubjects.Count != 0;
     
     private readonly ObservableCollection<Subject> _allSubjects;
     

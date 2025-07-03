@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Windows;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
+using RateMe.View.Windows;
 
 namespace RateMe.Services;
 
@@ -67,17 +68,16 @@ public class UserService
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
-        // Пока что если sign up можно сделать только один раз то не нужен _elementsService.ElementsOverallRemoteUpdate()
+        // In theory не нужен _elementsService.ElementsOverallRemoteUpdate()
         MessageBox.Show($"You've been signed up! Your id: {id}");
     }
     
 
     internal async Task SignIn(string email, string pass, bool safe=true)
     {
-        if (!IsUserAvailable && safe)
+        if (!IsUserAvailable && safe && _subjectService.IsAnyData)
         {
-            MessageBox.Show("You are not signed up! All local data will be lost. You better sign up first");
-            await WannaSignIn(email, pass);
+            WannaSignInNoSignUp(email, pass);
             return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
         }           // If still yes, we just remove all locals and continue
                     // How to make so that we really sign up after "yes" - maybe just add safe bool flag param that's by
@@ -165,17 +165,18 @@ public class UserService
     }
 
     // Temporary
-    private async Task WannaSignIn(string email, string pass)
+    private void WannaSignInNoSignUp(string email, string pass)
     {
-        MessageBox.Show("Wanna continue?");
-        Thread.Sleep(3000);
-        Random random = new Random();
-        double r = random.NextDouble();
-        if (r > 0.5)
+        string question = "You are not signed up! All local data will be lost. Continue?";
+        YesNoWin win = new(question);
+        
+        win.YesButton.Click += async (o, args) =>
         {
-            await SignIn(email, pass, safe: false);
-            MessageBox.Show("Signing in...");
-        }
+            await _subjectService.ClearLocal();
+            await SignIn(email, pass, safe: false); 
+        };
+        
+        win.Show();
     }
     
     private void HandleHttpException(HttpRequestException ex)
