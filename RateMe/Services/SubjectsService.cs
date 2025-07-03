@@ -15,7 +15,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     
     private readonly ObservableCollection<Subject> _allSubjects;
     
-    private List<SubjectLocal> _subjectsToUpdate = [];
+    private HashSet<SubjectLocal> _subjectsToUpdate = [];
     private List<int> _subjKeysToRemove = [];
     
     private SubjectsRepository _rep = new();
@@ -45,6 +45,13 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
         {
             await RemoveSubjectsByKeysRemote(_subjKeysToRemove);
         }
+
+        bool serverVisited = subjectsToAdd.Length != 0 || _subjectsToUpdate.Count != 0 || _subjKeysToRemove.Count != 0;
+        
+        if (serverVisited) // If server visited no exceptions, everything is up to date
+        {
+            await MarkAllUpToDate(); 
+        }
     }
     
     
@@ -68,7 +75,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     /// <summary>
     /// Requests update of subjects
     /// </summary>
-    private async Task UpdateSubjectsRemote(List<SubjectLocal> subjects) // TODO: если remote не работал, то update'a не будет, можно локально добавить колонку 'saved'  
+    private async Task UpdateSubjectsRemote(IEnumerable<SubjectLocal> subjects) // TODO: если remote не работал, то update'a не будет, можно локально добавить колонку 'saved'  
     {
         List<PlainSubject> subjsDto = [];
         
@@ -123,8 +130,10 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
             {
                 continue;
             }
+
+            bool isToUpdate = subj.LocalModel.RemoteStatus == RemoteStatus.ToUpdate;
             
-            if (subj.Name != subj.LocalModel.Name || subj.Credits != subj.LocalModel.Credits)
+            if (isToUpdate || subj.Name != subj.LocalModel.Name || subj.Credits != subj.LocalModel.Credits)
             {
                 _subjectsToUpdate.Add(subj.LocalModel);
             }
@@ -132,6 +141,17 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     }
 
     // Local Stuff
+
+    /// <summary>
+    /// In case of not working server, marks changes so that next time they were pushed to server.
+    /// Rn marks only ToUpdate, ToAdd implemented earlier via RemoteId == 0, ToRemove - I'm lazy to implement ;) 
+    /// </summary>
+    public async Task MarkRemoteStates()
+    {
+        HashSet<int> idsToUpdate = _subjectsToUpdate.Select(s => s.SubjectId).ToHashSet();
+        await _rep.MarkToUpdate(idsToUpdate);
+    }
+    
 
     public async Task<List<SubjectLocal>> GetAllLocals()
     {
@@ -165,9 +185,9 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 
     
     /// <summary>
-    /// Removes all subjects locally
+    /// Removes all subjects locally. Only locally
     /// </summary>
-    public async Task ClearLocal() // No remote support so far
+    public async Task ClearLocal()
     {
         await RemoveLocals(_allSubjects);
         _allSubjects.Clear();
@@ -200,5 +220,10 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
             Subject subj = new(subLocal);
             _allSubjects.Add(subj);
         }
+    }
+    
+    private async Task MarkAllUpToDate()
+    {
+        await _rep.MarkUpToDate();
     }
 }

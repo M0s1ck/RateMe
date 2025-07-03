@@ -75,6 +75,24 @@ public class SubjectsRepository
         
         await context.SaveChangesAsync();
     }
+
+    
+    public async Task MarkToUpdate(HashSet<int> ids)
+    {
+        await using SubjectsContext context = new();
+        var subs = context.Subjects.Where(sub => ids.Contains(sub.SubjectId));
+        
+        await subs.ExecuteUpdateAsync(
+            sub => sub.SetProperty(s => s.RemoteStatus, s => RemoteStatus.ToUpdate));
+    }
+
+    public async Task MarkUpToDate()
+    {
+        await using SubjectsContext context = new();
+        
+        await context.Subjects.ExecuteUpdateAsync(sub => sub.SetProperty
+                     (subLocal => subLocal.RemoteStatus, subLocal => RemoteStatus.UpToDate));
+    }
     
     
     public async Task UpdateRemoteKeys(List<SubjectId> subjIds)

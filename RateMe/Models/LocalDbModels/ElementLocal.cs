@@ -1,30 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using RateMe.Repositories;
 
-namespace RateMe.Models.LocalDbModels
+namespace RateMe.Models.LocalDbModels;
+
+public class ElementLocal
 {
-    public class ElementLocal
-    {
-        [Key]
-        public int ElementId { get; set; }
-        [MaxLength(200)]
-        public string Name { get; set; }
-        public decimal Weight { get; set; }
-        public decimal Grade { get; set; }
+    [Key]
+    public int ElementId { get; set; }
+    [MaxLength(200)]
+    public required string Name { get; set; }
+    public decimal Weight { get; set; }
+    public decimal Grade { get; set; }
 
-        public int SubjectId { get; set; }
-        public SubjectLocal Subject { get; set; }
+    public int SubjectId { get; set; }
+    public SubjectLocal Subject { get; set; }
         
-        public int RemoteId { get; set; }
-
-        public ElementLocal()
-        {
-            Name = "NotInit";
-        }
-
-        public ElementLocal(SubjectLocal subj)
-        {
-            Subject = subj;
-            Name = "NotInit";
-        }
-    }
+    public int RemoteId { get; set; }
+    public RemoteStatus RemoteStatus { get; set; }
 }

@@ -72,17 +72,28 @@ public class UserService
     }
     
 
-    internal async Task SignIn(string email, string pass)
+    internal async Task SignIn(string email, string pass, bool safe=true)
     {
-        if (!IsUserAvailable)
+        if (!IsUserAvailable && safe)
         {
             MessageBox.Show("You are not signed up! All local data will be lost. You better sign up first");
+            await WannaSignIn(email, pass);
             return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
         }           // If still yes, we just remove all locals and continue
                     // How to make so that we really sign up after "yes" - maybe just add safe bool flag param that's by
                     // default is true and call func 
-        
-        await OverallSaveUpdate();
+
+        try
+        {
+            await OverallSaveUpdate();
+        }
+        catch (HttpRequestException ex)
+        {
+            HandleHttpException(ex);
+            await _subjectService.MarkRemoteStates();
+            await _elemService.MarkRemoteStates();
+            return;
+        }
         
         AuthRequest request = new() { Email = email, Password = pass };
         UserDto? userDto = null; 
@@ -152,7 +163,20 @@ public class UserService
         _subjectService.SubjClient = new SubjectsClient(_user!.Id);
         _elemService.ElemClient = new ElementsClient(_user.Id);
     }
-    
+
+    // Temporary
+    private async Task WannaSignIn(string email, string pass)
+    {
+        MessageBox.Show("Wanna continue?");
+        Thread.Sleep(3000);
+        Random random = new Random();
+        double r = random.NextDouble();
+        if (r > 0.5)
+        {
+            await SignIn(email, pass, safe: false);
+            MessageBox.Show("Signing in...");
+        }
+    }
     
     private void HandleHttpException(HttpRequestException ex)
     {

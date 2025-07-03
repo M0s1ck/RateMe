@@ -90,6 +90,8 @@ public partial class GradesWin : BaseFullWin
         {
             Type? exType = ex.InnerException?.GetType(); // TODO: make more appealing?
             MessageBox.Show(exType == typeof(SocketException) ? "Похоже сервер не отвечает(" : ex.ToString());
+            await _subjectsService.MarkRemoteStates();
+            await _elementsService.MarkRemoteStates();
         }
     }
     

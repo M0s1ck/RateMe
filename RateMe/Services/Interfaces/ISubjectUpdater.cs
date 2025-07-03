@@ -9,5 +9,6 @@ public interface ISubjectUpdater
     Task LoadUpdateAllUserSubjectsFromRemote();
     Task UpdateAllLocals();
     Task ClearLocal();
+    Task MarkRemoteStates();
     void RetainSubjectsToUpdate();
 }
