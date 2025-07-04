@@ -47,10 +47,21 @@ public class ElementsRepository
         await context.SaveChangesAsync();
     }
 
-    internal async Task Remove(IEnumerable<ElementLocal> elems)
+    internal async Task Remove(int subId, IEnumerable<ElementLocal> elems)
     {
         await using SubjectsContext context = new();
-        context.Elements.RemoveRange(elems);
+        SubjectLocal? subject = await context.Subjects.FindAsync(subId);
+
+        if (subject == null)
+        {
+            return;
+        }
+        
+        foreach (ElementLocal elem in elems)
+        {
+            subject.Elements.Remove(elem);
+        }
+        
         await context.SaveChangesAsync();
     }
 

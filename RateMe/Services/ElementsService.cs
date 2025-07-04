@@ -108,9 +108,9 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         await _rep.Add(subId, elems);
     }
 
-    public async Task RemoveLocals(IEnumerable<ElementLocal> elems)
+    public async Task RemoveLocals(int subId, IEnumerable<ElementLocal> elems)
     {
-        await _rep.Remove(elems);
+        await _rep.Remove(subId, elems);
     }
 
 
@@ -125,7 +125,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
                 continue;
             }
 
-            foreach (ControlElement elem in subj.FormulaObj)
+            foreach (Element elem in subj.FormulaObj)
             {
                 bool isToUpdate = elem.LocalModel.RemoteStatus == RemoteStatus.ToUpdate;
                 bool isDiff = elem.LocalModel.Name != elem.Name || elem.LocalModel.Weight != elem.Weight ||

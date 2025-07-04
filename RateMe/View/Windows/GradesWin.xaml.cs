@@ -5,8 +5,12 @@ using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
+using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;
 
@@ -21,7 +25,8 @@ public partial class GradesWin : BaseFullWin
     private readonly SubjectsService _subjectsService;
     private readonly ElementsService _elementsService;
     private readonly UserService _userService;
-    
+
+    private UIElementCollection? _uiRows;
     
     /// <summary>
     /// Default constructor
@@ -35,10 +40,11 @@ public partial class GradesWin : BaseFullWin
         _userService = new UserService(_subjectsService, _elementsService);
         
         _syllabus = syllabus;
-        grades.ItemsSource = _subjects;
+        GradesDataGrid.ItemsSource = _subjects;
         
         Loaded += (_, _) => AddHeaderBar(windowGrid);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
+        Loaded += (_, _) => _uiRows = GetUiRows();
     }
     
     
@@ -166,7 +172,7 @@ public partial class GradesWin : BaseFullWin
 
         string question = $"Удалить предмет {subject.Name}?";
         YesNoWin win = new(question);
-        win.YesButton.Click += async (o, args) => { await RemoveSubject(subject); };
+        win.YesButton.Click += async (_, _) => { await RemoveSubject(subject); };
         win.Show();
     }
 
@@ -215,10 +221,87 @@ public partial class GradesWin : BaseFullWin
         JsonFileModelsHelper.SaveConfig(config);
     }
 
-    private async void OnInfoClick(object sender,RoutedEventArgs e)
+    private async void OnInfoClick(object sender, RoutedEventArgs e)
     {
         InfoWin infoWin = new();
         // infoWin.Show();
         await _userService.SignOut();
+    }
+
+    private void ArrowEscapeHandler(object sender, ArrowEscapeEventArgs e)
+    {
+        ElementsTable table = (ElementsTable)sender;
+        Subject sub = (Subject)table.DataContext;
+        decimal rel = (decimal)e.BoxIndex / e.TotalBoxCount; // Or sub.__.Count
+        int row = _subjects.IndexOf(sub);
+
+        if (e.Key == Key.Down && row != _subjects.Count - 1)
+        {
+            SetFocusLower(row, rel);
+        }
+    }
+
+    private void SetFocusLower(int row, decimal rel)
+    {
+        DependencyObject cell = GetGridCell(row + 1, 1);
+        DependencyObject unGri = GetUnGrid(cell);
+        int newId = GetNewPanelId(unGri, rel);
+        DependencyObject panel = GetPanel(unGri, newId);
+        TextBox nameBox = (TextBox)VisualTreeHelper.GetChild(panel, 0);
+        nameBox.Focus();
+    }
+    
+    private UIElementCollection GetUiRows()
+    {
+        DependencyObject borderChild = VisualTreeHelper.GetChild(GradesDataGrid, 0);
+        DependencyObject scViewer = VisualTreeHelper.GetChild(borderChild, 0);
+        DependencyObject gridChild = VisualTreeHelper.GetChild(scViewer, 0);
+        DependencyObject scpr = VisualTreeHelper.GetChild(gridChild, 2);
+        DependencyObject itp = VisualTreeHelper.GetChild(scpr, 0);
+        DataGridRowsPresenter dgrp = (DataGridRowsPresenter)VisualTreeHelper.GetChild(itp, 0);
+        return dgrp.Children;
+    }
+
+    private DependencyObject GetGridCell(int row, int cell)
+    {
+        UIElement myRow = _uiRows![row];
+        DependencyObject cBorder = VisualTreeHelper.GetChild(myRow, 0);
+        DependencyObject csGrid = VisualTreeHelper.GetChild(cBorder, 0);
+        DependencyObject cCellsPres = VisualTreeHelper.GetChild(csGrid, 0);
+        DependencyObject ciPres = VisualTreeHelper.GetChild(cCellsPres, 0);
+        DependencyObject cpanel = VisualTreeHelper.GetChild(ciPres, 0);
+        DependencyObject cGridCell = VisualTreeHelper.GetChild(cpanel, cell);
+        return cGridCell;
+    }
+
+    private DependencyObject GetUnGrid(DependencyObject gridCell)
+    {
+        DependencyObject cBord = VisualTreeHelper.GetChild(gridCell, 0);
+        DependencyObject ccPres = VisualTreeHelper.GetChild(cBord, 0);
+        DependencyObject cccPres = VisualTreeHelper.GetChild(ccPres, 0);
+        ElementsTable myHomie = (ElementsTable)VisualTreeHelper.GetChild(cccPres, 0);
+        DependencyObject bord = VisualTreeHelper.GetChild(myHomie, 0);
+        DependencyObject aaa = VisualTreeHelper.GetChild(bord, 0);
+        DependencyObject grid = VisualTreeHelper.GetChild(aaa, 0);
+        DependencyObject itemC = VisualTreeHelper.GetChild(grid, 0);
+        DependencyObject cBord2 = VisualTreeHelper.GetChild(itemC, 0);
+        DependencyObject pres = VisualTreeHelper.GetChild(cBord2, 0);
+        DependencyObject unGrid = VisualTreeHelper.GetChild(pres, 0);
+        return unGrid;
+    }
+
+    private int GetNewPanelId(DependencyObject unGrid, decimal rel)
+    {
+        int panelsCnt = VisualTreeHelper.GetChildrenCount(unGrid);
+        int newInd = (int)Math.Round(rel * panelsCnt) - 1;         // TODO: fix this -1 stuff i have no braincells left
+        return newInd;
+    }
+
+    private DependencyObject GetPanel(DependencyObject unGrid, int newInd)
+    {
+        DependencyObject p = VisualTreeHelper.GetChild(unGrid, newInd);
+        DependencyObject ccb = VisualTreeHelper.GetChild(p, 0);
+        DependencyObject panel = VisualTreeHelper.GetChild(ccb, 0);
+        return panel;
     }
 }

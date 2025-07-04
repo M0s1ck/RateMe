@@ -41,7 +41,7 @@
                  Height="{Binding TextBoxHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  MinWidth="{Binding TextBoxMinWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  MaxWidth="{Binding TextBoxMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                 CaretIndex="10000" ><!--TextChanged="OnUpdatedText" -->
+                 CaretIndex="10000" >
 
             <TextBox.Resources>
                 <Style TargetType="{x:Type Border}">

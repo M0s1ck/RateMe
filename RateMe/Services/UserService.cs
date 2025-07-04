@@ -164,7 +164,7 @@ public class UserService
         _elemService.ElemClient = new ElementsClient(_user.Id);
     }
 
-    // Temporary
+
     private void WannaSignInNoSignUp(string email, string pass)
     {
         string question = "You are not signed up! All local data will be lost. Continue?";

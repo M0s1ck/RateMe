@@ -51,7 +51,7 @@ public partial class SubjectEditWin : BaseFullWin
         _theSubject.FormulaObj.Clear();
         _theSubject.Score = 0;
 
-        foreach (ControlElement elem in _updatedSubject.FormulaObj)
+        foreach (Element elem in _updatedSubject.FormulaObj)
         {
             elem.GradesUpdated += _theSubject.UpdateScore;
             _theSubject.FormulaObj.Add(elem);
@@ -64,7 +64,7 @@ public partial class SubjectEditWin : BaseFullWin
     
     private async void OnAddClick(object sender, MouseButtonEventArgs e)
     {
-        ControlElement newElem = new ControlElement();
+        Element newElem = new Element();
         _updatedSubject.FormulaObj.Add(newElem);
         _updatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
         
@@ -76,7 +76,7 @@ public partial class SubjectEditWin : BaseFullWin
     
     private async void OnRemovalClick(object sender, RoutedEventArgs e)
     {
-        if (((FrameworkElement)sender).DataContext is not ControlElement elem)
+        if (((FrameworkElement)sender).DataContext is not Element elem)
         {
             return;
         }
@@ -92,12 +92,7 @@ public partial class SubjectEditWin : BaseFullWin
 
     private async void OnCancelClick(object sender, RoutedEventArgs e)
     {
-        foreach (ElementLocal elem in _addedElems)
-        {
-            _theSubject.LocalModel.Elements.Remove(elem);
-        }
-        
-        await _elemService.RemoveLocals(_addedElems);
+        await _elemService.RemoveLocals(SubId, _addedElems);
         await _elemService.AddLocals(SubId, _removedElems);
         
         if (OnCancel != null)

@@ -92,7 +92,7 @@
             </Grid>
 
             <Grid Grid.Row="1" Margin="50,0,50,0">
-                <userControls:ControlElementsTable x:Name="gradesTable"/>
+                <userControls:ElementsTable x:Name="gradesTable"/>
             </Grid>
 
             <Grid Grid.Row="2">

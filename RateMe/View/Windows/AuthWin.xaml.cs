@@ -12,7 +12,7 @@ public partial class AuthWin : BaseFullWin
     public DataHintTextModel LogInEmailModel { get; } = new("Email");
     public DataHintTextModel LogInPassModel { get; } = new("Password");
 
-    public DataHintTextModel SignUpEmailModel { get; } = new("Email");  // Поменять названия в xaml
+    public DataHintTextModel SignUpEmailModel { get; } = new("Email");
     public DataHintTextModel SignUpPassModel  { get; } = new("Password");
     public DataHintTextModel NameModel  { get; } = new("Имя");
     public DataHintTextModel SurnameModel { get; } = new("Фамилия");

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RateMe.Models.ClientModels
 {
-    public class Formula : ObservableCollection<ControlElement>
+    public class Formula : ObservableCollection<Element>
     {
         private static Regex regex = new(@"((0[.,]\d+)\s*[*∗∙]\s*(.+?))\s*([\+\n]|(\. )|$)");
 
@@ -27,7 +27,7 @@ namespace RateMe.Models.ClientModels
                 w = w.Replace(',', '.');
                 decimal.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal weight);
 
-                ControlElement elem = new ControlElement(name, weight);
+                Element elem = new Element(name, weight);
                 Add(elem);
             }
 
