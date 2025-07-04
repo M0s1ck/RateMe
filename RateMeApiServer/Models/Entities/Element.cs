@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RateMeApiServer.Models.Entities;
 
-public class ControlElement
+public class Element
 {
     [Key]
     public int Id { get; set; }

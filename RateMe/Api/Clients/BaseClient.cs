@@ -1,22 +1,17 @@
 using System.Net.Http;
 using System.Text.Json;
-using RateMe.Models.JsonModels;
+using RateMe.Models.JsonFileModels;
 
 namespace RateMe.Api.Clients;
 
 public abstract class BaseClient
 {
-    protected readonly HttpClient TheHttpClient;
-    
+    protected HttpClient TheHttpClient { get; init; } = null!;
+
     protected static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
-    
-    protected BaseClient()
-    {
-        Config config = JsonModelsHandler.GetConfig();
-        TheHttpClient = new HttpClient();
-        TheHttpClient.BaseAddress = new Uri(config.ApiUrl);
-    }
+
+    protected static Uri BaseUri = new Uri(JsonFileModelsHelper.GetConfig().ApiUrl);
 }

@@ -9,6 +9,6 @@ namespace RateMeApiServer.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Subject> Subjects { get; set; }
-        public DbSet<ControlElement> Elements { get; set; }
+        public DbSet<Element> Elements { get; set; }
     }
 }

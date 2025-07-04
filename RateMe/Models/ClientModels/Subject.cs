@@ -81,7 +81,9 @@ namespace RateMe.Models.ClientModels
             LocalModel = new() { Name = Name };
         }
 
-        // From hse site. 
+        /// <summary>
+        /// From hse site
+        /// </summary>
         public Subject(string name, int credits, int[] modules, Dictionary<string, string> assFormulas)
         {
             Name = name;
@@ -96,14 +98,16 @@ namespace RateMe.Models.ClientModels
             LocalModel = new SubjectLocal { Name = Name, Credits = Credits, Elements = [] };
         }
 
-        // From local db. 
+        /// <summary>
+        /// From local model
+        /// </summary>
         public Subject(SubjectLocal localSubj)
         {
             Name = localSubj.Name;
             Credits = localSubj.Credits;
             FormulaObj = [];
 
-            foreach (ControlElementLocal elemLocal in localSubj.Elements)
+            foreach (ElementLocal elemLocal in localSubj.Elements)
             {
                 ControlElement elem = new ControlElement(elemLocal);
                 FormulaObj.Add(elem);
@@ -112,6 +116,23 @@ namespace RateMe.Models.ClientModels
 
             UpdateScore();
             LocalModel = localSubj;
+        }
+
+        public Subject(Subject other)
+        {
+            Name = other.Name;
+            Credits = other.Credits;
+            FormulaObj = [];
+            
+            foreach (ControlElement otherElem in other.FormulaObj)
+            {
+                ControlElement elem = new ControlElement(otherElem);
+                FormulaObj.Add(elem);
+                elem.GradesUpdated += UpdateScore;
+            }
+            
+            UpdateScore();
+            LocalModel = other.LocalModel;
         }
 
         public void UpdateLocalModel()
@@ -149,8 +170,7 @@ namespace RateMe.Models.ClientModels
             _ = SetFormulaForModule(module) || SetFormulaForModule(module + 1) || SetFormulaForModule(module + 2) || SetFormulaForModule(module + 3)
                 || SetFormulaForModule(module - 1) || SetFormulaForModule(module - 2) || SetFormulaForModule(module - 3);
         }
-
-
+        
         private bool SetFormulaForModule(int module)
         {
             foreach ((string name, string val) in _assFormulas)

@@ -1,4 +1,4 @@
-﻿<Window x:Class="RateMe.View.Windows.SubjectEditWin"
+﻿<local:BaseFullWin x:Class="RateMe.View.Windows.SubjectEditWin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:userControls="clr-namespace:RateMe.View.UserControls" 
         Background="#10151b">
 
-    <Window.Resources>
+    <local:BaseFullWin.Resources>
 
         <Style x:Key="AddDeleteBorder" TargetType="{x:Type Border}">
             <Setter Property="Width" Value="50"/>
@@ -65,7 +65,7 @@
 
 
 
-    </Window.Resources>
+    </local:BaseFullWin.Resources>
     
     <WindowChrome.WindowChrome>
         <WindowChrome />
@@ -175,4 +175,4 @@
 
         </Grid>
     </Grid>
-</Window>
+</local:BaseFullWin>

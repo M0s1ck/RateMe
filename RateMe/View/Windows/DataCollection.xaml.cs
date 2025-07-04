@@ -1,22 +1,19 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using RateMe.Models.ClientModels;
 using RateMe.Models.InterfaceModels;
-using RateMe.Models.JsonModels;
-using RateMe.Models.LocalDbModels;
+using RateMe.Models.JsonFileModels;
 using RateMe.Parser;
-using RateMe.View.UserControls;
 
-namespace RateMe
+namespace RateMe.View.Windows
 {
     /// <summary>
     /// Логика взаимодействия для DataCollection.xaml
     /// </summary>
-    public partial class DataCollection : Window
+    public partial class DataCollection : BaseFullWin
     {
         private Storyboard _ballsStoryBoard = new Storyboard();
 
@@ -38,37 +35,11 @@ namespace RateMe
 
         public DataCollection()
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                SubjectsContext aa = new SubjectsContext();
-
-                Curriculums curriculums = new Curriculums();
-                CurriculumsComboBox.ItemsSource = curriculums;
-                CurriculumsComboBox.SelectedItem = curriculums.First();
-
-                CourseComboBox.ItemsSource = CourseNumbers;
-                CourseComboBox.SelectedItem = CourseNumbers.First();
-
-                GroupComboBox.ItemsSource = GroupNumbers;
-                GroupComboBox.SelectedItem = GroupNumbers.First();
-
-                TermComboBox.ItemsSource = Terms;
-                TermComboBox.SelectedItem = Terms.Last();
-
-                WindowBarDockPanel bar = new(this);
-                WindowGrid.Children.Add(bar);
-
-                SettingsGear gear = new();
-                gear.Margin = new Thickness(0, 300, 200, 0);
-                MainGrid.Children.Add(gear);
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
+            Curriculums curriculums = new Curriculums();
+            Loaded += (_, _) => SetItemSources(curriculums);
+            Loaded += (_, _) => AddHeaderBar(WindowGrid); 
         }
 
 
@@ -101,7 +72,7 @@ namespace RateMe
             // Subject eco = new Subject("Economics", 9, [1, 2, 3, 4], []);
             // eco.FormulaObj = new Formula("0.13 * Выполнение тестов онлайн-курса + 0.29 * Контрольная работа №1 (микроэкономика) + 0.29 * Контрольная работа №2 (макроэкономика) + 0.29 * Оценка за работу на семинарах");
 
-            // List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
+            //List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
                                   //new Subject("Алгебраnvsknksvnk4", 9, [1, 2, 3], []), new Subject("Матанsvmsmvlmslvmlsv5", 9, [3, 4], []), new Subject("Экономика6", 3, [3, 4], []),
                                   //new Subject("Алгебра7", 9, [1, 2, 3, 4], []), new Subject("Матан8", 9, [1, 2, 3, 4], []), new Subject("Экономика9", 3, [3, 4], []),
                                   //new Subject("Алгебра10", 9, [1, 2, 3, 4], []), new Subject("Матан,vs,v;s,;v,;s,v;,sv,s;v,sv;s,vvs;s,;,sv;s,v;s11", 9, [1, 2, 3], []), new Subject("Экономика12", 3, [3, 4], []),
@@ -116,12 +87,6 @@ namespace RateMe
             Close();            
         }
 
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-        }
-
         private SyllabusModel HandleSyllabus()
         {
             int groupNumber = int.Parse(GroupComboBox.SelectedItem.ToString() ?? "");
@@ -132,9 +97,24 @@ namespace RateMe
             int term = int.Parse(TermComboBox.SelectedItem.ToString() ?? "");
 
             SyllabusModel syllabus = new(student, curriculum, course, term);
-            JsonModelsHandler.SaveSyllabus(syllabus);
+            JsonFileModelsHelper.SaveSyllabus(syllabus);
 
             return syllabus;
+        }
+
+        private void SetItemSources(Curriculums curriculums)
+        {
+            CurriculumsComboBox.ItemsSource = curriculums;
+            CurriculumsComboBox.SelectedItem = curriculums.First();
+
+            CourseComboBox.ItemsSource = CourseNumbers;
+            CourseComboBox.SelectedItem = CourseNumbers.First();
+
+            GroupComboBox.ItemsSource = GroupNumbers;
+            GroupComboBox.SelectedItem = GroupNumbers.First();
+
+            TermComboBox.ItemsSource = Terms;
+            TermComboBox.SelectedItem = Terms.Last();
         }
 
         private void LaunchLoadingBalls()

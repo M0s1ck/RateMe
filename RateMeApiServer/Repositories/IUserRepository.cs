@@ -1,11 +1,12 @@
-﻿using RateMeApiServer.Models.Entities;
+﻿using RateMeApiServer.Common;
+using RateMeApiServer.Models.Entities;
 
 namespace RateMeApiServer.Repositories
 {
     public interface IUserRepository
     {
-        Task<User?> GetByIdAsync(int id);
-        Task<int> AddAsync(User user);
-        Task<User> AuthAsync(string email, string password);
+        Task<DbInteractionResult<User>> GetByIdAsync(int id);
+        Task<DbInteractionResult<int>> AddAsync(User user);
+        Task<DbInteractionResult<User>> AuthAsync(string email, string password);
     }
 }

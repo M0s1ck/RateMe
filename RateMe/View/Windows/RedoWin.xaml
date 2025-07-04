@@ -48,17 +48,17 @@
     </WindowChrome.WindowChrome>
     
     <Grid x:Name="WindowGrid">
-        <Grid x:Name="MainGrid" Margin="0,40,0,0" HorizontalAlignment="Center">
+        <Grid x:Name="MainGrid" Margin="0,45,0,0" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Вы будете перенаправлены на изначальное окно." FontSize="17" Foreground="White" FontFamily="Bahnschrift SemiCondensed" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             <TextBlock Grid.Row="1" Text="Сохранить текущие и предметы и оценки?" FontSize="17" Foreground="White" FontFamily="Bahnschrift SemiCondensed" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
-            <Grid Grid.Row="2" Width="300">
+            <Grid Grid.Row="2" Width="300" HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>

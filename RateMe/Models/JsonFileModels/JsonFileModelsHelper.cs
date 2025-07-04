@@ -5,14 +5,15 @@ using System.Text.Unicode;
 using System.Windows;
 using RateMe.Models.ClientModels;
 
-namespace RateMe.Models.JsonModels;
+namespace RateMe.Models.JsonFileModels;
 
-public class JsonModelsHandler
+public static class JsonFileModelsHelper
 {
     #region static consts
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
     private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
     private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
+    private static readonly string UserJsonPath = Path.Combine(DataDir, "user.json");
     private static readonly JsonSerializerOptions JsonOptions = new()
     { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic), };
     #endregion
@@ -34,6 +35,11 @@ public class JsonModelsHandler
 
     public static Config GetConfig()
     {
+        if (!File.Exists(ConfigJsonPath))  // TODO: крч подумать че ставить, apiurl кста нало тоже обдумать 
+        {
+            return null;
+        }
+        
         string jsonContent = File.ReadAllText(ConfigJsonPath);
         Config? config = JsonSerializer.Deserialize<Config>(jsonContent);
 
@@ -45,6 +51,25 @@ public class JsonModelsHandler
         return config;
     }
 
+
+    public static User? GetUserOrNull()
+    {
+        if (!File.Exists(UserJsonPath))
+        {
+            return null;
+        }
+        
+        string jsonContent = File.ReadAllText(UserJsonPath);
+        User? user = JsonSerializer.Deserialize<User>(jsonContent);
+
+        if (user == null)
+        {
+            throw new IOException("Couldn't deserialize Data\\user.json");
+        }
+
+        return user;
+    }
+    
 
     public static void SaveSyllabus(SyllabusModel syllabus)
     {
@@ -58,4 +83,14 @@ public class JsonModelsHandler
         File.WriteAllTextAsync(ConfigJsonPath, jsonString);
     }
 
+    public static void SaveUser(User user)   // TODO: вынести в интерфейс ??? 3 функции
+    {
+        string jsonString = JsonSerializer.Serialize(user, JsonOptions);
+        File.WriteAllTextAsync(UserJsonPath, jsonString);
+    }
+
+    public static void RemoveUser()
+    {
+        File.Delete(UserJsonPath);
+    }
 }

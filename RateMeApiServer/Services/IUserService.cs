@@ -1,11 +1,12 @@
-﻿using RateMeShared.Dto;
+﻿using RateMeApiServer.Common;
+using RateMeShared.Dto;
 
 namespace RateMeApiServer.Services
 {
     public interface IUserService
     {
-        Task<UserDto> GetUserByIdAsync(int id);
-        Task<int> AddUserAsync(UserDto userDto);
-        Task<UserDto> AuthUserAsync(AuthRequest authRequestDto);
+        Task<DbInteractionResult<UserDto>> GetUserByIdAsync(int id);
+        Task<DbInteractionResult<int>> AddUserAsync(UserDto userDto);
+        Task<DbInteractionResult<UserDto>> AuthUserAsync(AuthRequest authRequestDto);
     }
 }

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.IO;
+﻿using System.IO;
+using Microsoft.EntityFrameworkCore;
+using RateMe.Models.LocalDbModels;
 
-namespace RateMe.Models.LocalDbModels
+namespace RateMe.Repositories
 {
     /// <summary>
     /// Context for local SqlLite db.
@@ -10,7 +11,7 @@ namespace RateMe.Models.LocalDbModels
     internal class SubjectsContext : DbContext
     {
         public DbSet<SubjectLocal> Subjects { get; set; }
-        public DbSet<ControlElementLocal> Elements { get; set; }
+        public DbSet<ElementLocal> Elements { get; set; }
 
         public string DbPath { get; }
 

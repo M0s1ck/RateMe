@@ -1,33 +1,27 @@
 using System.Windows;
 using System.Windows.Input;
-using RateMe.Models.ClientModels;
 using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;
 
-public partial class RemoveSubjectWin : Window
+public partial class YesNoWin : Window
 {
-    private Subject _subject;
+    public string Question { get; }
     
-    public RemoveSubjectWin(Subject subject)
+    public YesNoWin(string question)
     {
         InitializeComponent();
-        WindowBarDockPanel bar = new(this);
+        WindowBarDockPanel bar = new(this);   // Add to abstract SmolWin (i e virtual AddHeader)
         WindowGrid.Children.Add(bar);
         bar.expandButton.Visibility = Visibility.Collapsed;
         bar.wrapButton.Visibility = Visibility.Collapsed;
 
-        _subject = subject;
-        DataContext = subject;
+        Question = question;
+        DataContext = this;
     }
-    
-    public delegate void OnRemovalAgreed(Subject subject);
-
-    public event OnRemovalAgreed? RemovalAgreed;
     
     private void YesClick(object sender, RoutedEventArgs e)
     {
-        RemovalAgreed?.Invoke(_subject);
         Close();
     }
     
@@ -40,6 +34,4 @@ public partial class RemoveSubjectWin : Window
     {
         Keyboard.ClearFocus();
     }
-
-    
 }

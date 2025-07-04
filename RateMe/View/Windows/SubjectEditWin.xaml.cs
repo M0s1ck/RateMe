@@ -1,103 +1,124 @@
 ﻿using RateMe.Models.ClientModels;
-using RateMe.View.UserControls;
 using System.Windows;
 using System.Windows.Input;
+using RateMe.Models.LocalDbModels;
+using RateMe.Services.Interfaces;
 
-namespace RateMe.View.Windows
+namespace RateMe.View.Windows;
+
+/// <summary>
+/// Window for editing the picked subject.
+/// </summary>
+public partial class SubjectEditWin : BaseFullWin
 {
-    /// <summary>
-    /// Window for editing the picked subject.
-    /// </summary>
-    public partial class SubjectEditWin : Window
+    private Subject _theSubject;
+    private readonly ILocalElemService _elemService;
+    
+    private Subject _updatedSubject;
+    private DataHintTextModel _subjectNameTextModel;
+    private int SubId => _updatedSubject.LocalModel.SubjectId;
+    
+    private HashSet<ElementLocal> _addedElems = [];
+    private HashSet<ElementLocal> _removedElems = [];
+    
+    public event CancelAsyncHandler? OnCancel;
+    public delegate Task CancelAsyncHandler(Subject subj);
+
+    
+    public SubjectEditWin(Subject subject, ILocalElemService elemService)
     {
-        private Subject _theSubject;
-        public Subject UpdatedSubject { get; private set; }
-
-        private DataHintTextModel _subjectNameTextModel;
-
-
-        public SubjectEditWin(Subject subject)
-        {
-            InitializeComponent();
-            WindowBarDockPanel bar = new(this);
-            windowGrid.Children.Add(bar);
-            Topmost = true;
-            MinusButton.vertBar.Visibility = Visibility.Hidden;
-
-            _theSubject = subject;
-            UpdatedSubject = new Subject(subject.Name, subject.Credits, subject.Modules, []);
-            UpdatedSubject.FormulaObj = [];
-            UpdatedSubject.LocalModel = subject.LocalModel;
+        InitializeComponent();
             
-            foreach (ControlElement elem in subject.FormulaObj)
-            {
-                ControlElement newElem = new ControlElement(elem.Name, elem.Weight);
-                newElem.Grade = elem.Grade;
-                newElem.LocalModel = elem.LocalModel;
-                UpdatedSubject.FormulaObj.Add(newElem);
-            }
+        _theSubject = subject;
+        _elemService = elemService;
+            
+        _updatedSubject = new Subject(subject);
+        _subjectNameTextModel = new DataHintTextModel(_updatedSubject.Name, "Название предмета");
 
-            DataContext = UpdatedSubject;
+        DataContext = _updatedSubject;
+        gradesTable.DataContext = _updatedSubject;
+        subjTetx2.DataContext = _subjectNameTextModel;
+            
+        Loaded += (_, _) => OnLoaded();
+        Loaded += (_, _) => AddHeaderBar(windowGrid); 
+    }
 
-            _subjectNameTextModel = new DataHintTextModel(UpdatedSubject.Name, "Название предмета", Visibility.Visible);
-            subjTetx2.DataContext = _subjectNameTextModel;
+    
+    private void OnSaveClick(object sender, RoutedEventArgs e)
+    {
+        _theSubject.Name = _subjectNameTextModel.Data;
+        _theSubject.Credits = _updatedSubject.Credits;
+        _theSubject.FormulaObj.Clear();
+        _theSubject.Score = 0;
 
-            gradesTable.DataContext = UpdatedSubject;
+        foreach (ControlElement elem in _updatedSubject.FormulaObj)
+        {
+            elem.GradesUpdated += _theSubject.UpdateScore;
+            _theSubject.FormulaObj.Add(elem);
+            _theSubject.Score += elem.Weight * elem.Grade;
         }
 
-        private void OnSaveClick(object sender, RoutedEventArgs e)
+        Close();
+    }
+
+    
+    private async void OnAddClick(object sender, MouseButtonEventArgs e)
+    {
+        ControlElement newElem = new ControlElement();
+        _updatedSubject.FormulaObj.Add(newElem);
+        _updatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
+        
+        await _elemService.AddLocal(SubId, newElem.LocalModel);
+        
+        _addedElems.Add(newElem.LocalModel);
+        _removedElems.Remove(newElem.LocalModel);
+    }
+    
+    private async void OnRemovalClick(object sender, RoutedEventArgs e)
+    {
+        if (((FrameworkElement)sender).DataContext is not ControlElement elem)
         {
-            _theSubject.Name = _subjectNameTextModel.Data;
-            _theSubject.Credits = UpdatedSubject.Credits;
-            _theSubject.FormulaObj.Clear();
-            _theSubject.Score = 0;
-
-            foreach (ControlElement elem in UpdatedSubject.FormulaObj)
-            {
-                elem.GradesUpdated += _theSubject.UpdateScore;
-                _theSubject.FormulaObj.Add(elem);
-                _theSubject.Score += elem.Weight * elem.Grade;
-            }
-
-            Close();
+            return;
         }
+            
+        _updatedSubject.FormulaObj.Remove(elem);
+        _updatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
+        
+        await _elemService.RemoveLocal(elem.LocalModel);
+        
+        _addedElems.Remove(elem.LocalModel);
+        _removedElems.Add(elem.LocalModel);
+    }
 
-        private void OnAddClick(object sender, MouseButtonEventArgs e)
+    private async void OnCancelClick(object sender, RoutedEventArgs e)
+    {
+        foreach (ElementLocal elem in _addedElems)
         {
-            ControlElement newElem = new ControlElement();
-            UpdatedSubject.FormulaObj.Add(newElem);
-            UpdatedSubject.LocalModel.Elements.Add(newElem.LocalModel);
-        }
-
-        private void OnRemoveClick(object sender, MouseButtonEventArgs e)
-        {
-            removalButtonList.Visibility = removalButtonList.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        private void OnRemovalClick(object sender, RoutedEventArgs e)
-        {
-            ControlElement? elem = ((FrameworkElement)sender)?.DataContext as ControlElement;
-
-            if (elem != null)
-            {
-                UpdatedSubject.FormulaObj.Remove(elem);
-                UpdatedSubject.LocalModel.Elements.Remove(elem.LocalModel);
-            }
-        }
-
-        private void OnCancelClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus();
-            Topmost = false;
+            _theSubject.LocalModel.Elements.Remove(elem);
         }
         
-        private void OnMouseLeave(object sender, MouseEventArgs e) => Topmost = false;
-
-        private void OnMouseEnter(object sender, MouseEventArgs e) => Topmost = false;
+        await _elemService.RemoveLocals(_addedElems);
+        await _elemService.AddLocals(SubId, _removedElems);
+        
+        if (OnCancel != null)
+        {
+            await OnCancel.Invoke(_theSubject);
+        }
+        
+        Close();
     }
+        
+    private void OnRemoveClick(object sender, MouseButtonEventArgs e)
+    {
+        removalButtonList.Visibility = removalButtonList.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+    }
+    
+    private void OnLoaded()
+    {
+        Topmost = true;
+        MinusButton.vertBar.Visibility = Visibility.Hidden;
+    }
+        
+    private void OnMouseLeave(object sender, MouseEventArgs e) => Topmost = false;
+    private void OnMouseEnter(object sender, MouseEventArgs e) => Topmost = false;
 }
