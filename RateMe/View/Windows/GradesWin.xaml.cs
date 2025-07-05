@@ -27,6 +27,9 @@ public partial class GradesWin : BaseFullWin
     private readonly UserService _userService;
 
     private UIElementCollection? _uiRows;
+    private static readonly int NameColId = 0; 
+    private static readonly int ElemsColId = 1; 
+    private static readonly int CreditsColId = 2; 
     
     /// <summary>
     /// Default constructor
@@ -151,7 +154,6 @@ public partial class GradesWin : BaseFullWin
 
         if (subject == null)
         {
-            MessageBox.Show("Null Subject");
             return;
         }
 
@@ -228,27 +230,51 @@ public partial class GradesWin : BaseFullWin
         await _userService.SignOut();
     }
 
+    
+    // Arrow navigation management
+    
     private void ArrowEscapeHandler(object sender, ArrowEscapeEventArgs e)
     {
         ElementsTable table = (ElementsTable)sender;
         Subject sub = (Subject)table.DataContext;
-        decimal rel = (decimal)e.BoxIndex / e.TotalBoxCount; // Or sub.__.Count
         int row = _subjects.IndexOf(sub);
 
-        if (e.Key == Key.Down && row != _subjects.Count - 1)
+        if (e.Key is Key.Left or Key.Right)
         {
-            SetFocusLower(row, rel);
+            SetFocusToSide(e.Key, row);
+            return;
+        }
+        
+        decimal rel = (decimal)e.PanelIndex / e.TotalPanelCount + 0.5m / e.TotalPanelCount;
+
+        if (e.Key == Key.Down && row != _subjects.Count - 1 && _subjects[row+1].FormulaObj.Count != 0)
+        {
+            SetFocusNextLevel(row + 1, rel, ElementsTable.NameBoxId);
+        }
+        else if (e.Key == Key.Up && row != 0 && _subjects[row-1].FormulaObj.Count != 0)
+        {
+            SetFocusNextLevel(row - 1, rel, ElementsTable.GradeBoxId);
         }
     }
 
-    private void SetFocusLower(int row, decimal rel)
+    private void SetFocusNextLevel(int row, decimal rel, int boxId)
     {
-        DependencyObject cell = GetGridCell(row + 1, 1);
-        DependencyObject unGri = GetUnGrid(cell);
-        int newId = GetNewPanelId(unGri, rel);
-        DependencyObject panel = GetPanel(unGri, newId);
-        TextBox nameBox = (TextBox)VisualTreeHelper.GetChild(panel, 0);
+        DependencyObject cell = GetGridCell(row, ElemsColId);
+        DependencyObject unGrid = GetUnGrid(cell);
+        int newId = GetNewPanelId(unGrid, rel);
+        StackPanel panel = GetPanel(unGrid, newId);
+        TextBox nameBox = (TextBox)panel.Children[boxId];
         nameBox.Focus();
+    }
+
+    private void SetFocusToSide(Key key, int row)
+    {
+        switch (key)
+        {
+            case Key.Left: SetFocusToDataGridTextBox(row, NameColId); return;
+            case Key.Right: SetFocusToDataGridTextBox(row, CreditsColId);; return;
+            default: return;
+        }
     }
     
     private UIElementCollection GetUiRows()
@@ -262,7 +288,7 @@ public partial class GradesWin : BaseFullWin
         return dgrp.Children;
     }
 
-    private DependencyObject GetGridCell(int row, int cell)
+    private DependencyObject GetGridCell(int row, int col)
     {
         UIElement myRow = _uiRows![row];
         DependencyObject cBorder = VisualTreeHelper.GetChild(myRow, 0);
@@ -270,7 +296,7 @@ public partial class GradesWin : BaseFullWin
         DependencyObject cCellsPres = VisualTreeHelper.GetChild(csGrid, 0);
         DependencyObject ciPres = VisualTreeHelper.GetChild(cCellsPres, 0);
         DependencyObject cpanel = VisualTreeHelper.GetChild(ciPres, 0);
-        DependencyObject cGridCell = VisualTreeHelper.GetChild(cpanel, cell);
+        DependencyObject cGridCell = VisualTreeHelper.GetChild(cpanel, col);
         return cGridCell;
     }
 
@@ -293,15 +319,94 @@ public partial class GradesWin : BaseFullWin
     private int GetNewPanelId(DependencyObject unGrid, decimal rel)
     {
         int panelsCnt = VisualTreeHelper.GetChildrenCount(unGrid);
-        int newInd = (int)Math.Round(rel * panelsCnt) - 1;         // TODO: fix this -1 stuff i have no braincells left
-        return newInd;
+        int newInd = (int)Math.Floor(rel * panelsCnt);
+        return newInd >= 0 ? newInd : 0;
     }
 
-    private DependencyObject GetPanel(DependencyObject unGrid, int newInd)
+    private StackPanel GetPanel(DependencyObject unGrid, int newInd)
     {
         DependencyObject p = VisualTreeHelper.GetChild(unGrid, newInd);
         DependencyObject ccb = VisualTreeHelper.GetChild(p, 0);
         DependencyObject panel = VisualTreeHelper.GetChild(ccb, 0);
-        return panel;
+        return (StackPanel)panel;
+    }
+
+    private void SetFocusToDataGridTextBox(int row, int col)
+    {
+        GradesDataGrid.SelectedIndex = row;
+        GradesDataGrid.CurrentCell = new DataGridCellInfo(GradesDataGrid.Items[row], GradesDataGrid.Columns[col]);
+        GradesDataGrid.BeginEdit();
+
+        DependencyObject cell = GetGridCell(row, col);
+        
+        GradesDataGrid.Dispatcher.InvokeAsync(() =>
+        {
+            DependencyObject bord = VisualTreeHelper.GetChild(cell, 0);
+            DependencyObject cp = VisualTreeHelper.GetChild(bord, 0);
+            TextBox textBox = (TextBox)VisualTreeHelper.GetChild(cp, 0);
+            textBox.Focus();
+            textBox.CaretIndex = textBox.Text.Length;
+
+            //textBox.PreviewKeyDown += (sender, e) => SideBoxKeyPressed(sender, e.Key, row, col);
+        });
+    }
+
+    private void SideBoxKeyDown(object sender, KeyEventArgs e)
+    {
+        TextBox box = (TextBox)sender;
+        Subject subj = (Subject)box.DataContext;
+        int row = _subjects.IndexOf(subj);
+        int col = -1;
+
+        switch (box.Tag.ToString())
+        {
+            case "NameColumn": col = NameColId; break;
+            case "CreditsColumn": col = CreditsColId; break;
+        }
+
+        if (col != -1)
+        {
+            SideBoxKeyPressed(box, e.Key, row, col);
+        }
+    }
+
+    private void SideBoxKeyPressed(TextBox box, Key key, int row, int col)
+    {
+        if (key == Key.Down && row != _subjects.Count - 1)
+        {
+            SetFocusToDataGridTextBox(row + 1, col);
+            return;
+        }
+        
+        if (key == Key.Up && row != 0)
+        {
+            SetFocusToDataGridTextBox(row - 1, col);
+            return;
+        }
+        
+        Subject subj = (Subject)box.DataContext;
+
+        if (subj.FormulaObj.Count == 0)
+        {
+            return;
+        }
+
+        bool isEscapingNameCol = col == NameColId && key == Key.Right && box.CaretIndex == box.Text.Length;
+        bool isEscapingCreditsCol = col == CreditsColId && key == Key.Left && box.CaretIndex == 0;
+        
+        if (isEscapingNameCol || isEscapingCreditsCol)
+        {
+            SetFocusOnElemsFromSide(row, col);
+        }
+    }
+    
+    private void SetFocusOnElemsFromSide(int row, int col)
+    {
+        DependencyObject cell = GetGridCell(row, ElemsColId);
+        UniformGrid unGrid = (UniformGrid)GetUnGrid(cell);
+        int panelId = col == NameColId ? 0 : unGrid.Children.Count - 1;
+        StackPanel panel = GetPanel(unGrid, panelId);
+        TextBox weightBox = (TextBox)panel.Children[1];
+        weightBox.Focus();
     }
 }

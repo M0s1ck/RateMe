@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using RateMe.Models.ClientModels;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,8 +14,15 @@ namespace RateMe.View.UserControls;
 public partial class ElementsTable : UserControl
 {
     public event EventHandler<ArrowEscapeEventArgs>? ArrowEscape;
+    
+    private int ElemsCnt => Elems.Items.Count;
+    private ObservableCollection<Element>? _elems;
 
     #region StaticConsts
+    public static int NameBoxId { get; } = 0;
+    public static int WeightBoxId { get; } = 1;
+    public static int GradeBoxId { get; } = 2;
+    
     private static readonly string NameBoxName = "NameBox";
     private static readonly string WeightBoxName = "WeightBox";
     private static readonly string GradeBoxName = "GradeBox";
@@ -35,6 +43,7 @@ public partial class ElementsTable : UserControl
     public ElementsTable()
     {
         InitializeComponent();
+        Loaded += (_, _) => _elems = (ObservableCollection<Element>)Elems.ItemsSource;
     }
 
     private void OnNameChanged(object sender, TextChangedEventArgs e)
@@ -65,7 +74,7 @@ public partial class ElementsTable : UserControl
         if (good && element != null)
         {
             element.Grade = grade;
-            ((TextBox)sender).Text = grade == 0 ? "0" : grade.ToString();
+            ((TextBox)sender).Text = grade == 0 ? "0" : grade.ToString(CultureInfo.InvariantCulture);
         }
     }
         
@@ -75,12 +84,11 @@ public partial class ElementsTable : UserControl
         Key key = e.Key;
         TextBox box = (TextBox)sender;
         StackPanel panel = (StackPanel)box.Parent;
+        int panelId = GetPanelId(panel);
 
-        if (IsArrowEscaping(key, box.Name))
+        if (IsArrowEscaping(key, box, panelId))
         {
-            int boxIndex = panel.Children.IndexOf(box);
-            int totalCount = panel.Children.Count;
-            ArrowEscapeEventArgs ae = new(key, boxIndex, totalCount);
+            ArrowEscapeEventArgs ae = new(key, panelId, ElemsCnt);
             ArrowEscape?.Invoke(this, ae);
         }
             
@@ -94,11 +102,11 @@ public partial class ElementsTable : UserControl
         } 
         else if (key == Key.Right && box.CaretIndex == box.Text.Length)
         { 
-            SetFocusRight(box, panel);
+            SetFocusRight(box, panelId);
         } 
         else if (key == Key.Left && box.CaretIndex == 0)
         {
-            SetFocusLeft(box, panel);
+            SetFocusLeft(box, panelId);
         }
     }
 
@@ -127,33 +135,25 @@ public partial class ElementsTable : UserControl
         next!.Focus();
     }
 
-    private void SetFocusRight(TextBox box, StackPanel panel)
+    private void SetFocusRight(TextBox box, int panelId)
     {
-        ObservableCollection<Element> elems = (ObservableCollection<Element>)Elems.ItemsSource;
-        Element currentElem = (Element)panel.DataContext;
-        int ind = elems.IndexOf(currentElem);
-
-        if (ind == -1 || ind == elems.Count - 1)
+        if (panelId == -1 || panelId == ElemsCnt - 1)
         {
             return;
         }
 
-        int nextIndex = ind + 1;
+        int nextIndex = panelId + 1;
         SetFocusInVisualTreeByInd(box, nextIndex);
     }
     
-    private void SetFocusLeft(TextBox box, StackPanel panel)
+    private void SetFocusLeft(TextBox box, int panelId)
     {
-        ObservableCollection<Element> elems = (ObservableCollection<Element>)Elems.ItemsSource;
-        Element currentElem = (Element)panel.DataContext;
-        int ind = elems.IndexOf(currentElem);
-
-        if (ind is -1 or 0)
+        if (panelId is -1 or 0)
         {
             return;
         }
 
-        int nextIndex = ind - 1;
+        int nextIndex = panelId - 1;
         SetFocusInVisualTreeByInd(box, nextIndex);
     }
 
@@ -161,7 +161,7 @@ public partial class ElementsTable : UserControl
     {
         ContentPresenter? container = Elems.ItemContainerGenerator.ContainerFromIndex(nextIndex) as ContentPresenter;
         DependencyObject group = VisualTreeHelper.GetChild(container!, 0);
-        StackPanel nextPanel = (StackPanel)VisualTreeHelper.GetChild(group!, 0);
+        StackPanel nextPanel = (StackPanel)VisualTreeHelper.GetChild(group, 0);
 
         TextBox? nextBox = FindByNameInPanel(box.Name, nextPanel);
         nextBox!.Focus();
@@ -180,9 +180,17 @@ public partial class ElementsTable : UserControl
         return null;
     }
 
-    private bool IsArrowEscaping(Key key, string boxName)
+    private int GetPanelId(StackPanel panel)
     {
-        return key == Key.Down && boxName == GradeBoxName || key == Key.Up && boxName == NameBoxName;
+        Element currentElem = (Element)panel.DataContext;
+        return _elems!.IndexOf(currentElem);
+    }
+
+    private bool IsArrowEscaping(Key key, TextBox box , int panelId)
+    {
+        return key == Key.Down && box.Name == GradeBoxName || key == Key.Up && box.Name == NameBoxName
+            || key == Key.Left && panelId == 0 && box.CaretIndex == 0 
+            || key == Key.Right && panelId == ElemsCnt - 1 && box.CaretIndex == box.Text.Length;
     }
 }
 
@@ -190,13 +198,13 @@ public partial class ElementsTable : UserControl
 public class ArrowEscapeEventArgs
 {
     public Key Key { get; }
-    public int BoxIndex { get; }
-    public int TotalBoxCount { get; }
+    public int PanelIndex { get; }
+    public int TotalPanelCount { get; }
     
-    public ArrowEscapeEventArgs(Key key, int boxIndex, int total)
+    public ArrowEscapeEventArgs(Key key, int panelIndex, int total)
     {
         Key = key;
-        BoxIndex = boxIndex;
-        TotalBoxCount = total;
+        PanelIndex = panelIndex;
+        TotalPanelCount = total;
     }
 } 

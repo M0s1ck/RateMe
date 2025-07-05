@@ -24,6 +24,16 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
+        
+        <Style x:Key="TextBoxNameColumnEditingStyle" TargetType="TextBox">
+            <Setter Property="Tag" Value="NameColumn" />
+            <EventSetter Event="PreviewKeyDown" Handler="SideBoxKeyDown"/>
+        </Style>
+        
+        <Style x:Key="TextBoxCreditsColumnEditingStyle" TargetType="TextBox">
+            <Setter Property="Tag" Value="CreditsColumn" />
+            <EventSetter Event="PreviewKeyDown" Handler="SideBoxKeyDown"/>
+        </Style>
             
         <DataTemplate x:Key="FormulaTemplate">
             <userControls:ElementsTable ArrowEscape="ArrowEscapeHandler"/>
@@ -66,11 +76,18 @@
                       Background="Transparent" BorderBrush="Transparent" Foreground="White" CanUserAddRows="False" HorizontalAlignment="Stretch">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Предмет" Binding="{Binding Name}" Width="200" FontSize="17" />
+                        <DataGridTextColumn x:Name="NamesColumn" Header="Предмет" Binding="{Binding Name}"
+                                            EditingElementStyle="{StaticResource TextBoxNameColumnEditingStyle}" Width="200" FontSize="17"/>
+                        
                         <DataGridTemplateColumn CellTemplate="{StaticResource FormulaTemplate}" Header="Элементы контроля" Width="*" />
-                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" Width="70" FontSize="15" />
+                        
+                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits, Mode=TwoWay}" 
+                                            EditingElementStyle="{StaticResource TextBoxCreditsColumnEditingStyle}" Width="70" FontSize="15" />
+                        
                         <DataGridTextColumn Header="Накоп" Binding="{Binding Score, StringFormat={}{0:0.##}}" IsReadOnly="True" Width="88" FontSize="16" />
+                        
                         <DataGridTemplateColumn CellTemplate="{StaticResource EditTemplate}" Header="Edit" Width="80"/>
+                        
                         <DataGridTemplateColumn CellTemplate="{StaticResource TrashBinTemplate}" Header="Remove" Width="80"/>
                     </DataGrid.Columns>
 
