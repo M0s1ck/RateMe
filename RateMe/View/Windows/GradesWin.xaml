@@ -50,7 +50,7 @@
         </DataTemplate>
     </local:BaseFullWin.Resources>
 
-    <Grid x:Name="windowGrid">
+    <Grid x:Name="WindowGrid">
         <Grid Margin="0,60,0,0" HorizontalAlignment="Center">
             
             <Grid.ColumnDefinitions>
@@ -68,7 +68,7 @@
                 
                 <TextBlock Style="{StaticResource OptionText}" Text="Выбрать новые" FontSize="15" VerticalAlignment="Bottom" Margin="0,0,0,100"/>
                 <TextBlock Style="{StaticResource OptionText}" Text="предметы из пуда" FontSize="15" VerticalAlignment="Bottom" Margin="0,0,0,80"/>
-                <userControls:CoolSvgButton Size="40" BiggerSize="45" Source="/Assets/refresh.svg" WhenClicked="OnRedoClick" VerticalAlignment="Bottom" Margin="0,0,0,30"/>
+                <userControls:CoolSvgButton Size="40" BiggerSize="45" Source="/Assets/repeat-svgrepo-com.svg" WhenClicked="OnRedoClick" VerticalAlignment="Bottom" Margin="0,0,0,30"/>
             </Grid>
             
             <Border Grid.Column="1" CornerRadius="10" BorderBrush="White" Background="Transparent" BorderThickness="2" Panel.ZIndex="1">
@@ -152,6 +152,9 @@
             <Grid Grid.Column="2" DockPanel.Dock="Right" Width="200">
 
                 <userControls:CoolSvgButton Size="45" BiggerSize="51" Source="/Assets/user-circle.svg" VerticalAlignment="Top" Margin="0,35,0,0" WhenClicked="OnAccountClick"/>
+                <TextBlock Style="{StaticResource OptionText}" Text="Москин" FontSize="19" VerticalAlignment="Top" Margin="0,90,0,0"/>
+                <TextBlock Style="{StaticResource OptionText}" Text="Арсений" FontSize="19" VerticalAlignment="Top" Margin="0,111,0,0"/>
+
 
                 <Button x:Name="SaveAndQuitButton" Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,0,0,50"
                         Content="Сохранить и выйти" VerticalAlignment="Bottom" FontSize="18" 

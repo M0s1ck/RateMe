@@ -45,7 +45,7 @@ public partial class GradesWin : BaseFullWin
         _syllabus = syllabus;
         GradesDataGrid.ItemsSource = _subjects;
         
-        Loaded += (_, _) => AddHeaderBar(windowGrid);
+        Loaded += (_, _) => AddHeaderBar(WindowGrid);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
         Loaded += (_, _) => _uiRows = GetUiRows();
     }
@@ -188,6 +188,13 @@ public partial class GradesWin : BaseFullWin
     
     private void OnAccountClick(object sender, RoutedEventArgs e)
     {
+        if (_userService.IsUserAvailable)
+        {
+            ProfileWin accWin = new(_userService);
+            accWin.Show();
+            return;
+        }
+        
         AuthWin authWin = new(_userService);
         authWin.Show();
     }
@@ -272,7 +279,7 @@ public partial class GradesWin : BaseFullWin
         switch (key)
         {
             case Key.Left: SetFocusToDataGridTextBox(row, NameColId); return;
-            case Key.Right: SetFocusToDataGridTextBox(row, CreditsColId);; return;
+            case Key.Right: SetFocusToDataGridTextBox(row, CreditsColId); return;
             default: return;
         }
     }
@@ -346,8 +353,6 @@ public partial class GradesWin : BaseFullWin
             TextBox textBox = (TextBox)VisualTreeHelper.GetChild(cp, 0);
             textBox.Focus();
             textBox.CaretIndex = textBox.Text.Length;
-
-            //textBox.PreviewKeyDown += (sender, e) => SideBoxKeyPressed(sender, e.Key, row, col);
         });
     }
 

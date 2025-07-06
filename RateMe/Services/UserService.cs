@@ -11,13 +11,14 @@ namespace RateMe.Services;
 
 public class UserService
 {
-    internal bool IsUserAvailable => _user != null;
+    public User? User { get; private set; }
+    internal bool IsUserAvailable => User != null;
     
     private ISubjectUpdater _subjectService;
     private IElemUpdater _elemService;
     
     private readonly UserClient _userClient;
-    private User? _user;
+    
     
     
     internal UserService(ISubjectUpdater subjService, IElemUpdater elemService)
@@ -26,12 +27,12 @@ public class UserService
         _elemService = elemService;
         
         _userClient = new UserClient();
-        _user = JsonFileModelsHelper.GetUserOrNull();
+        User = JsonFileModelsHelper.GetUserOrNull();
 
-        if (_user != null)
+        if (User != null)
         {
-            _subjectService.SubjClient = new SubjectsClient(_user.Id);
-            _elemService.ElemClient = new ElementsClient(_user.Id);
+            _subjectService.SubjClient = new SubjectsClient(User.Id);
+            _elemService.ElemClient = new ElementsClient(User.Id);
         }
     }
     
@@ -63,8 +64,8 @@ public class UserService
             return;
         }
         
-        _user = new User(userDto);
-        _user.Id = id;
+        User = new User(userDto);
+        User.Id = id;
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
@@ -112,9 +113,9 @@ public class UserService
             return;
         }
         
-        _user = new User(userDto);
+        User = new User(userDto);
         UpdateOnUser();
-        MessageBox.Show($"Hello, {_user.Name} {_user.Surname}");
+        MessageBox.Show($"Hello, {User.Name} {User.Surname}");
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
     }
@@ -139,7 +140,7 @@ public class UserService
         }
         
         JsonFileModelsHelper.RemoveUser();
-        _user = null;
+        User = null;
 
         await _subjectService.ClearLocal();
     }
@@ -159,9 +160,9 @@ public class UserService
     
     private void UpdateOnUser()
     {
-        JsonFileModelsHelper.SaveUser(_user!);
-        _subjectService.SubjClient = new SubjectsClient(_user!.Id);
-        _elemService.ElemClient = new ElementsClient(_user.Id);
+        JsonFileModelsHelper.SaveUser(User!);
+        _subjectService.SubjClient = new SubjectsClient(User!.Id);
+        _elemService.ElemClient = new ElementsClient(User.Id);
     }
 
 
