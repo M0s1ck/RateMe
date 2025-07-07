@@ -26,6 +26,9 @@ public partial class DataHintTextBox : UserControl
 
     public static readonly DependencyProperty TextBlockWidthProp =
         DependencyProperty.Register(nameof(TextBlockWidth), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(150.0));
+    
+    public static readonly DependencyProperty FontStyleProp =
+        DependencyProperty.Register(nameof(BoxFontStyle), typeof(FontStyle), typeof(DataHintTextBox), new PropertyMetadata(new FontStyle()));
 
 
     public double TextBoxFontSize
@@ -57,6 +60,12 @@ public partial class DataHintTextBox : UserControl
         get => (double)GetValue(TextBlockFontSizeProp);
         set => SetValue(TextBlockFontSizeProp, value);
     }
+
+    public FontStyle BoxFontStyle
+    {
+        get => (FontStyle)GetValue(FontStyleProp);
+        set => SetValue(FontStyleProp, value);
+    } 
     public double TextBlockWidth
     {
         get => (double)GetValue(TextBlockWidthProp);
