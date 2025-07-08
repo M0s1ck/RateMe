@@ -7,6 +7,8 @@ using RateMe.Models.ClientModels;
 using RateMe.Models.InterfaceModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Parser;
+using RateMe.Utils;
+using RateMe.Utils.LocalHelpers;
 
 namespace RateMe.View.Windows
 {
@@ -97,7 +99,7 @@ namespace RateMe.View.Windows
             int term = int.Parse(TermComboBox.SelectedItem.ToString() ?? "");
 
             SyllabusModel syllabus = new(student, curriculum, course, term);
-            JsonFileModelsHelper.SaveSyllabus(syllabus);
+            JsonFileHelper.SaveSyllabus(syllabus);
 
             return syllabus;
         }

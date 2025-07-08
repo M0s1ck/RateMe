@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Windows;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
+using RateMe.Utils;
+using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
 namespace RateMe.Services;
@@ -20,14 +22,13 @@ public class UserService
     private readonly UserClient _userClient;
     
     
-    
     internal UserService(ISubjectUpdater subjService, IElemUpdater elemService)
     {
         _subjectService = subjService;
         _elemService = elemService;
         
         _userClient = new UserClient();
-        User = JsonFileModelsHelper.GetUserOrNull();
+        User = JsonFileHelper.GetUserOrNull();
 
         if (User != null)
         {
@@ -79,10 +80,8 @@ public class UserService
         if (!IsUserAvailable && safe && _subjectService.IsAnyData)
         {
             WannaSignInNoSignUp(email, pass);
-            return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
-        }           // If still yes, we just remove all locals and continue
-                    // How to make so that we really sign up after "yes" - maybe just add safe bool flag param that's by
-                    // default is true and call func 
+            return;
+        }           
 
         try
         {
@@ -139,7 +138,7 @@ public class UserService
             return;
         }
         
-        JsonFileModelsHelper.RemoveUser();
+        JsonFileHelper.RemoveUser();
         User = null;
 
         await _subjectService.ClearLocal();
@@ -160,7 +159,7 @@ public class UserService
     
     private void UpdateOnUser()
     {
-        JsonFileModelsHelper.SaveUser(User!);
+        JsonFileHelper.SaveUser(User!);
         _subjectService.SubjClient = new SubjectsClient(User!.Id);
         _elemService.ElemClient = new ElementsClient(User.Id);
     }

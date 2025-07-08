@@ -10,6 +10,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
+using RateMe.Utils;
+using RateMe.Utils.LocalHelpers;
 using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;
@@ -116,9 +118,9 @@ public partial class GradesWin : BaseFullWin
         }
             
         // Log to config
-        Config config = JsonFileModelsHelper.GetConfig();
+        Config config = JsonFileHelper.GetConfig();
         config.IsSubjectsLoaded = true;
-        JsonFileModelsHelper.SaveConfig(config);
+        JsonFileHelper.SaveConfig(config);
     }
     
         
@@ -225,9 +227,9 @@ public partial class GradesWin : BaseFullWin
         dataWin.Show();
             
         // Log to config
-        Config config = JsonFileModelsHelper.GetConfig();
+        Config config = JsonFileHelper.GetConfig();
         config.IsSubjectsLoaded = false;
-        JsonFileModelsHelper.SaveConfig(config);
+        JsonFileHelper.SaveConfig(config);
     }
 
     private async void OnInfoClick(object sender, RoutedEventArgs e)

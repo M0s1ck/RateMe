@@ -1,3 +1,4 @@
+using RateMe.Utils.Enums;
 using RateMeShared.Dto;
 
 namespace RateMe.Models.JsonFileModels;
@@ -9,6 +10,7 @@ public class User
     public string Password { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
+    public PictureExtension PictureExtension { get; set; } = PictureExtension.None;
     
     public User() {}
 

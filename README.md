@@ -1,4 +1,6 @@
 # RateMe
+
+## About
 Desktop app that helps you analyze your grades.
 
 ## Functionality

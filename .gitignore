@@ -13,6 +13,7 @@ ToDo's.txt
 Temp.txt
 syllabus.json
 user.json
+profile-picture.jpg
 
 RateMeApiServer/Controllers/WeatherForecastController.cs
 RateMeApiServer/WeatherForecast.cs

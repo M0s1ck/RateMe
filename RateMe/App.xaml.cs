@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;
+using RateMe.Utils;
+using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
 namespace RateMe;
@@ -22,7 +24,7 @@ public partial class App : Application
         using SubjectsContext db = new();
         db.Database.Migrate();
             
-        Config config = JsonFileModelsHelper.GetConfig();
+        Config config = JsonFileHelper.GetConfig();
         OpenNextWin(config);
     }
         
@@ -35,7 +37,7 @@ public partial class App : Application
             return;
         }
 
-        SyllabusModel syllabus = JsonFileModelsHelper.GetSyllabus();
+        SyllabusModel syllabus = JsonFileHelper.GetSyllabus();
         GradesWin gradesWin = new(syllabus);
         gradesWin.Show();
     }
@@ -44,7 +46,7 @@ public partial class App : Application
     {
         string defaultPath = Directory.GetCurrentDirectory();
         string[] defaultPathArr = defaultPath.Split(Path.DirectorySeparatorChar);
-        string projectPath = string.Join(Path.DirectorySeparatorChar, defaultPathArr[..^3]);
+        string projectPath = string.Join(Path.DirectorySeparatorChar, defaultPathArr[..^3]);  // TODO: get via while() loop
         Directory.SetCurrentDirectory(projectPath);
     }
 }
