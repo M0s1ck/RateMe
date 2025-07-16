@@ -60,4 +60,9 @@ internal class UserClient : BaseClient
         MessageBox.Show($"Unhandled response: {msg}");
         return null;
     }
+
+    public async Task UpdateUser(UserFullDto userFullDto)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PatchAsJsonAsync(userFullDto.Id.ToString(), userFullDto);
+    }
 }

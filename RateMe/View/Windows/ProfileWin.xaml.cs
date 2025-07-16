@@ -10,6 +10,10 @@ public partial class ProfileWin : BaseFullWin
 {
     private readonly ProfileViewModel _viewModel;
     
+    private const string FileChoiceTitle = "Select a picture (preferably a square one)";
+    private const string FileChoiceFilter = "All supported graphics|*.jpg;*.jpeg;*.png|" + "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" + "Portable Network Graphic (*.png)|*.png";
+    
+    
     public ProfileWin(UserService userService)
     {
         InitializeComponent();
@@ -44,10 +48,8 @@ public partial class ProfileWin : BaseFullWin
     private void OnEditPictureClick(object sender, RoutedEventArgs e)
     {
         OpenFileDialog op = new OpenFileDialog();
-        op.Title = "Select a picture (preferably a square one)";
-        op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
-                    "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-                    "Portable Network Graphic (*.png)|*.png";
+        op.Title = FileChoiceTitle;
+        op.Filter = FileChoiceFilter;
         
         if (op.ShowDialog() == true)
         {

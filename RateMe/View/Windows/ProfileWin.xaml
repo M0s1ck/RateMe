@@ -56,11 +56,15 @@
                     <Grid x:Name="NormalInfo" Margin="15, 0,0,0">
                         <StackPanel Margin="0, 15,0,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" >
-                                <TextBlock Text="{Binding NameModel.Data}" Style="{StaticResource TextStyle}" Margin="0,0,20, 0"/> <!--{Binding UserService.User.Name}-->
+                                <TextBlock Text="{Binding NameModel.Data}" Style="{StaticResource TextStyle}" Margin="0,0,15, 0"/> <!--{Binding UserService.User.Name}-->
                                 <TextBlock Text="{Binding SurnameModel.Data}" Style="{StaticResource TextStyle}"/> <!--{Binding UserService.User.Surname}-->
                             </StackPanel>
                             
-                            <TextBlock Text="{Binding CurriculumModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10, 0,0">
+                                <TextBlock Text="{Binding CurriculumModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                <TextBlock Text="{Binding YearModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                            
                             <TextBlock Text="{Binding EmailModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,15,0,0"/>  <!-- only your OWN pfp --> 
                         </StackPanel>
                         
@@ -74,7 +78,11 @@
                                 <userControls:DataHintTextBox DataContext="{ Binding SurnameModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="37" TextBoxMinWidth="150" TextBoxMaxWidth="200" TextBlockFontSize="16" /> 
                             </StackPanel>
                             
-                            <userControls:DataHintTextBox DataContext="{ Binding CurriculumModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="18" TextBoxHeight="34" TextBoxMinWidth="120" TextBoxMaxWidth="80" TextBlockWidth="80" TextBlockFontSize="16" Margin="0,10,20,0"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,0">
+                                <userControls:DataHintTextBox DataContext="{ Binding CurriculumModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="18" TextBoxHeight="34" TextBoxMinWidth="120" TextBoxMaxWidth="80" TextBlockWidth="80" TextBlockFontSize="16" Margin="0,0,20,0"/>
+                                <userControls:DataHintTextBox DataContext="{ Binding YearModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="18" TextBoxHeight="34" TextBoxMinWidth="120" TextBoxMaxWidth="80" TextBlockWidth="80" TextBlockFontSize="16" /> 
+                            </StackPanel>
+                            
                             <userControls:DataHintTextBox DataContext="{ Binding EmailModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="19" TextBoxHeight="37" TextBoxMinWidth="180" TextBoxMaxWidth="220" TextBlockFontSize="16" Margin="0,10,20,0"/> 
                         </StackPanel>
                         

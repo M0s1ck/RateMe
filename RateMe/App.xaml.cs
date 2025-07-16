@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using RateMe.Api.Clients;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;
-using RateMe.Utils;
 using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
@@ -28,7 +28,7 @@ public partial class App : Application
         OpenNextWin(config);
     }
         
-    private static void OpenNextWin(Config? config)
+    private static async void OpenNextWin(Config? config)
     {
         if (config == null || !config.IsSubjectsLoaded)
         {
@@ -38,7 +38,11 @@ public partial class App : Application
         }
 
         SyllabusModel syllabus = JsonFileHelper.GetSyllabus();
-        GradesWin gradesWin = new(syllabus);
+
+        BaseClient client = new();
+        bool isRemoteAlive = await client.IsRemoteAlive();
+        
+        GradesWin gradesWin = new(syllabus, isRemoteAlive);
         gradesWin.Show();
     }
         

@@ -3,14 +3,11 @@ using System.Windows;
 using System.Windows.Input;
 using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
-using System.Net.Http;
-using System.Net.Sockets;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
-using RateMe.Utils;
 using RateMe.Utils.LocalHelpers;
 using RateMe.View.UserControls;
 
@@ -36,27 +33,29 @@ public partial class GradesWin : BaseFullWin
     /// <summary>
     /// Default constructor
     /// </summary>
-    public GradesWin(SyllabusModel syllabus)
+    public GradesWin(SyllabusModel syllabus, bool isRemoteAlive)
     {
         InitializeComponent();
-            
-        _subjectsService = new SubjectsService(_subjects);
-        _elementsService = new ElementsService(_subjects);
-        _userService = new UserService(_subjectsService, _elementsService);
+        
+        _subjectsService = new SubjectsService(_subjects, isRemoteAlive);
+        _elementsService = new ElementsService(_subjects, isRemoteAlive);
+        _userService = new UserService(_subjectsService, _elementsService, isRemoteAlive);
         
         _syllabus = syllabus;
         GradesDataGrid.ItemsSource = _subjects;
         
         Loaded += (_, _) => AddHeaderBar(WindowGrid);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
+        Loaded += async (_, _) => await UpdateRemoteUser();
         Loaded += (_, _) => _uiRows = GetUiRows();
+        Loaded += (_, _) => SetNames();
     }
     
     
     /// <summary>
     /// After pud subjects selection
     /// </summary>
-    public GradesWin(SyllabusModel syllabus, List<Subject> subjectsFromPud) : this(syllabus)
+    public GradesWin(SyllabusModel syllabus, List<Subject> subjectsFromPud, bool isRemoteAlive) : this(syllabus, isRemoteAlive)
     {
         Loaded += async (_, _) => await LoadSubjectsFromPud(subjectsFromPud);
     }
@@ -70,7 +69,7 @@ public partial class GradesWin : BaseFullWin
 
     private async Task SaveData()
     {
-        if (_userService.IsUserAvailable)
+        if (_userService.IsUserAvailable && _userService.IsRemoteAlive)
         {
             _subjectsService.RetainSubjectsToUpdate();
             _elementsService.RetainElemsToUpdate();
@@ -82,8 +81,7 @@ public partial class GradesWin : BaseFullWin
         {
             await UpdateRemote();
         }
-
-        if (!_userService.IsUserAvailable)
+        else 
         {
             MessageBox.Show("No remote save for ya because u are not signed up");
         }
@@ -92,18 +90,16 @@ public partial class GradesWin : BaseFullWin
 
     private async Task UpdateRemote()
     {
-        try
+        if (_subjectsService.IsRemoteAlive) 
         {
             await _subjectsService.SubjectsOverallRemoteUpdate();
             await _elementsService.ElementsOverallRemoteUpdate();
+            return;
         }
-        catch (HttpRequestException ex)
-        {
-            Type? exType = ex.InnerException?.GetType(); // TODO: make more appealing?
-            MessageBox.Show(exType == typeof(SocketException) ? "Похоже сервер не отвечает(" : ex.ToString());
-            await _subjectsService.MarkRemoteStates();
-            await _elementsService.MarkRemoteStates();
-        }
+    
+        MessageBox.Show("Похоже сервер не отвечает(");
+        await _subjectsService.MarkRemoteStates();
+        await _elementsService.MarkRemoteStates();
     }
     
 
@@ -124,17 +120,25 @@ public partial class GradesWin : BaseFullWin
     }
     
         
-    private async Task LoadSubjectsFromPud(List<Subject> subjectsFrommPud)
+    private async Task LoadSubjectsFromPud(List<Subject> subjectsFromPud)
     {
-        foreach (Subject subject in subjectsFrommPud)
+        foreach (Subject subject in subjectsFromPud)
         {
             _subjects.Add(subject);
         }
 
-        await _subjectsService.AddLocals(subjectsFrommPud);
+        await _subjectsService.AddLocals(subjectsFromPud);
+    }
+
+    private async Task UpdateRemoteUser()
+    {
+        if (_userService.IsUserAvailable && _userService.IsRemoteAlive && !_userService.User!.IsRemoteUpdated)
+        {
+            await _userService.UpdateRemoteUser();
+        }
     } 
     
-        
+    
     private async void OnAddSubject(object sender, MouseButtonEventArgs e)
     {
         Subject subject = new();
@@ -188,12 +192,12 @@ public partial class GradesWin : BaseFullWin
     }
 
     
-    private void OnAccountClick(object sender, RoutedEventArgs e)
+    private void OnProfileClick(object sender, RoutedEventArgs e)
     {
         if (_userService.IsUserAvailable)
         {
-            ProfileWin accWin = new(_userService);
-            accWin.Show();
+            ProfileWin pfWin = new(_userService);
+            pfWin.Show();
             return;
         }
         
@@ -237,6 +241,12 @@ public partial class GradesWin : BaseFullWin
         InfoWin infoWin = new();
         // infoWin.Show();
         await _userService.SignOut();
+    }
+
+    private void SetNames()
+    {
+        NameBlock.Text = _userService.User!.Name;
+        SurnameBlock.Text = _userService.User!.Surname;
     }
 
     

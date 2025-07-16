@@ -44,7 +44,16 @@ public partial class AuthWin : BaseFullWin
     private async void OnSignUpClick(object sender, RoutedEventArgs e)
     {
         SignUpButton.IsEnabled = false;
-        await _userService.SignUp(SignUpEmailModel.Data, SignUpPassModel.Data, NameModel.Data, SurnameModel.Data);
+        
+        if (_userService.IsRemoteAlive)
+        {
+            await _userService.SignUp(SignUpEmailModel.Data, SignUpPassModel.Data, NameModel.Data, SurnameModel.Data);
+        }
+        else
+        {
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
+        }
+        
         SignUpButton.IsEnabled = true;
     }
         
@@ -52,7 +61,16 @@ public partial class AuthWin : BaseFullWin
     private async void OnSignInClick(object sender, RoutedEventArgs e)
     {
         SignInButton.IsEnabled = false;
-        await _userService.SignIn(LogInEmailModel.Data, LogInPassModel.Data);
+        
+        if (_userService.IsRemoteAlive)
+        {
+            await _userService.SignIn(LogInEmailModel.Data, LogInPassModel.Data);
+        }
+        else
+        {
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
+        }
+        
         SignInButton.IsEnabled = true;
     }
         

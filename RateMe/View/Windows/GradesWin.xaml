@@ -151,9 +151,9 @@
             
             <Grid Grid.Column="2" DockPanel.Dock="Right" Width="200">
 
-                <userControls:CoolSvgButton Size="45" BiggerSize="51" Source="/Assets/user-circle.svg" VerticalAlignment="Top" Margin="0,35,0,0" WhenClicked="OnAccountClick"/>
-                <TextBlock Style="{StaticResource OptionText}" Text="Москин" FontSize="19" VerticalAlignment="Top" Margin="0,90,0,0"/>
-                <TextBlock Style="{StaticResource OptionText}" Text="Арсений" FontSize="19" VerticalAlignment="Top" Margin="0,111,0,0"/>
+                <userControls:CoolSvgButton Size="45" BiggerSize="51" Source="/Assets/user-circle.svg" VerticalAlignment="Top" Margin="0,35,0,0" WhenClicked="OnProfileClick"/>
+                <TextBlock x:Name="NameBlock" Style="{StaticResource OptionText}" Text="{Binding _userService.User.Name}" FontSize="19" VerticalAlignment="Top" Margin="0,90,0,0"/>
+                <TextBlock x:Name="SurnameBlock" Style="{StaticResource OptionText}" Text="{Binding _userService.User.Surname}" FontSize="19" VerticalAlignment="Top" Margin="0,111,0,0"/>
 
 
                 <Button x:Name="SaveAndQuitButton" Style="{StaticResource ResourceKey=ContinueButtonStyle}" Click="OnSaveAndQuitClick" Margin="0,0,0,50"

@@ -1,4 +1,4 @@
-namespace RateMe.Utils.Enums;
+namespace RateMeShared.Enums;
 
 public enum PictureExtension
 {

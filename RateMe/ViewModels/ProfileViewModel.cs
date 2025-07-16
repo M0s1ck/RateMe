@@ -3,19 +3,23 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using RateMe.Models.ClientModels;
+using RateMe.Models.JsonFileModels;
 using RateMe.Services;
-using RateMe.Utils.Enums;
 using RateMe.Utils.LocalHelpers;
+using RateMeShared.Enums;
 
 namespace RateMe.ViewModels;
 
 public class ProfileViewModel : INotifyPropertyChanged
 {
-    private UserService UserService { get; }
+    private readonly UserService _userService;
+    private User _user;
+    
     
     public DataHintTextModel NameModel { get; }
     public DataHintTextModel SurnameModel { get; }
     public DataHintTextModel CurriculumModel { get; }
+    public DataHintTextModel YearModel { get; }
     public DataHintTextModel EmailModel { get; }
     public DataHintTextModel AboutModel { get; }
     
@@ -39,43 +43,64 @@ public class ProfileViewModel : INotifyPropertyChanged
         {".jpg", PictureExtension.Jpg},
         {".jpeg", PictureExtension.Jpeg}
     };
+    
+    private const int MinYear = 2000;
+    private const int MaxYear = 2050;
 
     public ProfileViewModel(UserService userService)
     {
-        UserService = userService;
-        NameModel = new DataHintTextModel(UserService.User!.Name, "Имя");
-        SurnameModel = new DataHintTextModel(UserService.User!.Surname, "Фамилия");
-        CurriculumModel = new DataHintTextModel("SE 2028", "оп");
-        EmailModel = new DataHintTextModel(UserService.User!.Email, "Email");
-        AboutModel = new DataHintTextModel("You know after all that...", "О себе");
+        _userService = userService;
+        _user = userService.User!;
+        
+        NameModel = new DataHintTextModel(_user.Name, "Имя");
+        SurnameModel = new DataHintTextModel(_user.Surname, "Фамилия");
+        CurriculumModel = new DataHintTextModel(_user.Curriculum, "оп");
+        YearModel = new DataHintTextModel(_user.Year.ToString(), "Год выпуска");
+        EmailModel = new DataHintTextModel(_user.Email, "Email");
+        AboutModel = new DataHintTextModel(_user.Quote, "О себе");
 
-        string picturePath = userService.User!.PictureExtension != PictureExtension.None
+        string picturePath = _user.PictureExtension != PictureExtension.None
             ? PictureHelper.CurrentPicturePath
             : PictureHelper.BuildDefaultProfilePicturePath;
 
         _imageSource = PictureHelper.LoadPicture(picturePath);
     }
-
+    
     public ProfileViewModel() {}
 
-    public void SaveChanges()
+    
+    public async void SaveChanges()
     {
-        UserService.User!.Name = NameModel.Data;   // TODO: profile picture + push in db + check for actual changes
-        UserService.User!.Surname = SurnameModel.Data;
-        UserService.User!.Email = EmailModel.Data;  // Rn just change, maybe after add validations
+        _user.Name = NameModel.Data;   // TODO: profile picture + push in db + check for actual changes
+        _user.Surname = SurnameModel.Data;
+        _user.Email = EmailModel.Data;  // Rn just change, maybe after add validations
+        _user.Curriculum = CurriculumModel.Data;
+        _user.Quote = AboutModel.Data;
 
+        bool isYearValid = int.TryParse(YearModel.Data, out int year) && year is > MinYear and < MaxYear;
+
+        if (isYearValid)
+        {
+           _user.Year = year;
+        }
+        else
+        {
+            YearModel.Data = _user.Year.ToString();
+        }
+        
         if (_pictureChanged)
         {
             string newPicturePath = ((BitmapImage)_imageSource).UriSource.LocalPath;
             PictureHelper.ChangeProfilePicture(newPicturePath);
             
             string ext = Path.GetExtension(newPicturePath);
-            UserService.User!.PictureExtension = ExtentionMap[ext];
+            _user.PictureExtension = ExtentionMap[ext];
         }
         
-        JsonFileHelper.SaveUser(UserService.User!);
+        await _userService.UpdateUser(_user);
     }
 
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void NotifyPropertyChanged(string propertyName = "")

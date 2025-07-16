@@ -1,19 +1,32 @@
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Text.Json;
-using RateMe.Models.JsonFileModels;
-using RateMe.Utils;
 using RateMe.Utils.LocalHelpers;
+
 
 namespace RateMe.Api.Clients;
 
-public abstract class BaseClient
+public class BaseClient
 {
-    protected HttpClient TheHttpClient { get; init; } = null!;
+    protected HttpClient TheHttpClient { get; init; } = new HttpClient() { Timeout = TimeSpan.FromSeconds(2) };
 
     protected static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
-    protected static Uri BaseUri = new Uri(JsonFileHelper.GetConfig().ApiUrl);
+    protected static readonly Uri BaseUri = new Uri(JsonFileHelper.GetConfig().ApiUrl);
+
+    public async Task<bool> IsRemoteAlive()
+    {
+        try
+        {
+            HttpResponseMessage response = await TheHttpClient.GetAsync(BaseUri);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+        {
+            return false;
+        }
+    } 
 }

@@ -3,9 +3,9 @@ using RateMeShared.Dto;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
+using RateMe.Api.Mappers;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
-using RateMe.Utils;
 using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
@@ -15,6 +15,7 @@ public class UserService
 {
     public User? User { get; private set; }
     internal bool IsUserAvailable => User != null;
+    public bool IsRemoteAlive { get; }
     
     private ISubjectUpdater _subjectService;
     private IElemUpdater _elemService;
@@ -22,13 +23,14 @@ public class UserService
     private readonly UserClient _userClient;
     
     
-    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService)
+    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, bool isRemoteAlive)
     {
         _subjectService = subjService;
         _elemService = elemService;
         
         _userClient = new UserClient();
         User = JsonFileHelper.GetUserOrNull();
+        IsRemoteAlive = isRemoteAlive;
 
         if (User != null)
         {
@@ -40,6 +42,12 @@ public class UserService
     
     internal async Task SignUp(string email, string pass, string name, string surname)
     {
+        if (!IsRemoteAlive)
+        {
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
+            return;
+        }
+        
         if (IsUserAvailable)
         {
             MessageBox.Show("You are already signed in!");
@@ -49,16 +57,7 @@ public class UserService
         await _subjectService.UpdateAllLocals();
         
         UserDto userDto = new() { Email = email, Password = pass, Name = name, Surname = surname };
-        int id = 0;
-        
-        try
-        {
-            id = await _userClient.SignUpUserAsync(userDto);
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-        }
+        int id = await _userClient.SignUpUserAsync(userDto);
 
         if (id == 0)
         {
@@ -70,42 +69,30 @@ public class UserService
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
-        // In theory не нужен _elementsService.ElementsOverallRemoteUpdate()
         MessageBox.Show($"You've been signed up! Your id: {id}");
     }
     
 
     internal async Task SignIn(string email, string pass, bool safe=true)
     {
-        if (!IsUserAvailable && safe && _subjectService.IsAnyData)
+        if (!IsRemoteAlive)
         {
-            WannaSignInNoSignUp(email, pass);
-            return;
-        }           
-
-        try
-        {
-            await OverallSaveUpdate();
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
             await _subjectService.MarkRemoteStates();
             await _elemService.MarkRemoteStates();
             return;
         }
         
-        AuthRequest request = new() { Email = email, Password = pass };
-        UserDto? userDto = null; 
+        if (!IsUserAvailable && safe && _subjectService.IsAnyData)
+        {
+            WannaSignInNoSignUp(email, pass);
+            return;
+        }           
         
-        try
-        {
-            userDto = await _userClient.AuthUserAsync(request);
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-        }
+        await OverallSaveUpdate();
+        
+        AuthRequest request = new() { Email = email, Password = pass };
+        UserDto? userDto = await _userClient.AuthUserAsync(request);
 
         if (userDto == null)
         {
@@ -119,8 +106,30 @@ public class UserService
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
     }
 
+    
+    internal async Task UpdateUser(User user)
+    {
+        User = user;
+        
+        if (IsRemoteAlive)
+        {
+            await UpdateRemoteUser();
+        }
+        else
+        {
+            user.IsRemoteUpdated = false;
+        }
+        
+        JsonFileHelper.SaveUser(user);
+    }
 
-    // Should be available only if userIsAvailable
+    internal async Task UpdateRemoteUser()
+    {
+        UserFullDto fullDto = UserMapper.UserToFullDto(User!);
+        await _userClient.UpdateUser(fullDto);
+        User!.IsRemoteUpdated = true;
+    }
+    
     internal async Task SignOut()
     {
         if (!IsUserAvailable)
@@ -128,14 +137,9 @@ public class UserService
             return;
         }
 
-        try
+        if (IsRemoteAlive)
         {
             await OverallSaveUpdate();
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-            return;
         }
         
         JsonFileHelper.RemoveUser();
@@ -163,7 +167,6 @@ public class UserService
         _subjectService.SubjClient = new SubjectsClient(User!.Id);
         _elemService.ElemClient = new ElementsClient(User.Id);
     }
-
 
     private void WannaSignInNoSignUp(string email, string pass)
     {
