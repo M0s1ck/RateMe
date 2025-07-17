@@ -6,6 +6,7 @@ using RateMe.Models.LocalDbModels;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using RateMe.Api.Clients;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 using RateMe.Utils.LocalHelpers;
@@ -135,6 +136,10 @@ public partial class GradesWin : BaseFullWin
         if (_userService.IsUserAvailable && _userService.IsRemoteAlive && !_userService.User!.IsRemoteUpdated)
         {
             await _userService.UpdateRemoteUser();
+            
+            PictureClient pictureClient = new PictureClient(_userService.User!.Id);
+            PictureService pictureService = new PictureService(pictureClient);
+            await pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
         }
     } 
     
@@ -196,7 +201,10 @@ public partial class GradesWin : BaseFullWin
     {
         if (_userService.IsUserAvailable)
         {
-            ProfileWin pfWin = new(_userService);
+            PictureClient pictureClient = new PictureClient(_userService.User!.Id);
+            PictureService pictureService = new PictureService(pictureClient);
+            
+            ProfileWin pfWin = new(_userService, pictureService);
             pfWin.Show();
             return;
         }

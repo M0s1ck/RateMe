@@ -107,19 +107,9 @@ public class UserService
     }
 
     
-    internal async Task UpdateUser(User user)
+    internal void UpdateUser(User user)
     {
         User = user;
-        
-        if (IsRemoteAlive)
-        {
-            await UpdateRemoteUser();
-        }
-        else
-        {
-            user.IsRemoteUpdated = false;
-        }
-        
         JsonFileHelper.SaveUser(user);
     }
 

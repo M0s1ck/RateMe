@@ -12,9 +12,9 @@ namespace RateMe.ViewModels;
 
 public class ProfileViewModel : INotifyPropertyChanged
 {
+    private readonly PictureService _pictureService;
     private readonly UserService _userService;
     private User _user;
-    
     
     public DataHintTextModel NameModel { get; }
     public DataHintTextModel SurnameModel { get; }
@@ -47,8 +47,10 @@ public class ProfileViewModel : INotifyPropertyChanged
     private const int MinYear = 2000;
     private const int MaxYear = 2050;
 
-    public ProfileViewModel(UserService userService)
+    
+    public ProfileViewModel(UserService userService, PictureService pictureService)
     {
+        _pictureService = pictureService;
         _userService = userService;
         _user = userService.User!;
         
@@ -60,7 +62,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         AboutModel = new DataHintTextModel(_user.Quote, "О себе");
 
         string picturePath = _user.PictureExtension != PictureExtension.None
-            ? PictureHelper.CurrentPicturePath
+            ? PictureHelper.ProfilePicturePathJpg
             : PictureHelper.BuildDefaultProfilePicturePath;
 
         _imageSource = PictureHelper.LoadPicture(picturePath);
@@ -70,6 +72,23 @@ public class ProfileViewModel : INotifyPropertyChanged
 
     
     public async void SaveChanges()
+    {
+        UpdateLocal();   
+
+        if (!_userService.IsRemoteAlive)
+        {
+            return;
+        }
+        
+        await _userService.UpdateRemoteUser();
+        
+        if (_pictureChanged)
+        {
+            await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
+        }
+    }
+
+    private void UpdateLocal()
     {
         _user.Name = NameModel.Data;   // TODO: profile picture + push in db + check for actual changes
         _user.Surname = SurnameModel.Data;
@@ -81,23 +100,20 @@ public class ProfileViewModel : INotifyPropertyChanged
 
         if (isYearValid)
         {
-           _user.Year = year;
+            _user.Year = year;
         }
         else
         {
             YearModel.Data = _user.Year.ToString();
         }
+
+        _userService.UpdateUser(_user);
         
         if (_pictureChanged)
         {
-            string newPicturePath = ((BitmapImage)_imageSource).UriSource.LocalPath;
-            PictureHelper.ChangeProfilePicture(newPicturePath);
-            
-            string ext = Path.GetExtension(newPicturePath);
-            _user.PictureExtension = ExtentionMap[ext];
+            BitmapImage newPicture = (BitmapImage)_imageSource;
+            PictureHelper.ChangeProfilePicture(newPicture);
         }
-        
-        await _userService.UpdateUser(_user);
     }
 
     

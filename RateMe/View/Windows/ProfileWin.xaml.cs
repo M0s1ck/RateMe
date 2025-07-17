@@ -14,10 +14,10 @@ public partial class ProfileWin : BaseFullWin
     private const string FileChoiceFilter = "All supported graphics|*.jpg;*.jpeg;*.png|" + "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" + "Portable Network Graphic (*.png)|*.png";
     
     
-    public ProfileWin(UserService userService)
+    public ProfileWin(UserService userService, PictureService pictureService)
     {
         InitializeComponent();
-        _viewModel = new ProfileViewModel(userService);  
+        _viewModel = new ProfileViewModel(userService, pictureService);  
         DataContext = _viewModel;
         Loaded += (_, _) => AddHeaderBar(WindowGrid);
     }

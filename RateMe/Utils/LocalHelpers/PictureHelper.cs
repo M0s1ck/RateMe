@@ -1,31 +1,26 @@
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace RateMe.Utils.LocalHelpers;
 
 public static class PictureHelper
 {
-    public static string BuildDefaultProfilePicturePath { get; } = "pack://application:,,,/Assets/default-profile-picture.jpg";
+    public const string BuildDefaultProfilePicturePath = "pack://application:,,,/Assets/default-profile-picture.jpg";
     
-    private static readonly string ProfilePictureName = "profile-picture";
-    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");         // Move Up the hierarchy for helpers   
-    private static readonly string PicturePathTemplate = Path.Combine(DataDir, ProfilePictureName + "{0}");
+    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");         // Move Up the hierarchy for helpers
     
-    public static string CurrentPicturePath { get; private set; } = GetPicturePath();
+    public static readonly string ProfilePicturePathJpg = Path.Combine(DataDir, "profile-picture.jpg");
     
     
-    public static void ChangeProfilePicture(string picturePath)
+    public static void ChangeProfilePicture(BitmapImage image)
     {
-        string ext = Path.GetExtension(picturePath);
-        string dataPicturePath = string.Format(PicturePathTemplate, ext);
+        CroppedBitmap croppedToSquare = CropToSquare(image);
         
-        if (CurrentPicturePath != string.Empty)
-        {
-            File.Delete(CurrentPicturePath);
-        }
-        
-        File.Copy(picturePath, dataPicturePath);
-        CurrentPicturePath = dataPicturePath;
+        using FileStream stream = new(ProfilePicturePathJpg, FileMode.Create, FileAccess.Write);
+        JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(croppedToSquare));
+        encoder.Save(stream);
     }
 
     public static BitmapImage LoadPicture(string path)
@@ -40,9 +35,18 @@ public static class PictureHelper
         return image;
     }
 
-    private static string GetPicturePath()
+    private static CroppedBitmap CropToSquare(BitmapImage source)
     {
-        IEnumerable<string> pictureFiles = Directory.EnumerateFiles(DataDir, ProfilePictureName + ".*");
-        return pictureFiles.FirstOrDefault() ?? string.Empty;
-    }
+        int width = source.PixelWidth;
+        int height = source.PixelHeight;
+        
+        int side = Math.Min(width, height);
+        
+        int x = (width - side) / 2;
+        int y = (height - side) / 2;
+        
+        CroppedBitmap cropped = new CroppedBitmap(source, new Int32Rect(x, y, side, side));
+
+        return cropped;
+    } 
 }

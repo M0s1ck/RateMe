@@ -9,11 +9,12 @@ namespace RateMe.Api.Clients;
 
 internal class UserClient : BaseClient
 {
+    private const string RelativePath = "api/users/";
+    
     public UserClient()
     {
         TheHttpClient = new HttpClient();
-        string relativePath = "api/users/";
-        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
+        TheHttpClient.BaseAddress = new Uri(BaseUri, RelativePath);
     }
         
         
