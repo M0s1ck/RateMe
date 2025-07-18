@@ -17,7 +17,6 @@ public static class UserMapper
             Curriculum = user.Curriculum,
             Year = user.Year,
             Quote = user.Quote,
-            PictureExtension = user.PictureExtension
         };
     }
 }

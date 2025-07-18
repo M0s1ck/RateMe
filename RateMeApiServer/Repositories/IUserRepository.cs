@@ -1,5 +1,6 @@
 ﻿using RateMeApiServer.Common;
 using RateMeApiServer.Models.Entities;
+using RateMeShared.Dto;
 
 namespace RateMeApiServer.Repositories
 {
@@ -8,5 +9,6 @@ namespace RateMeApiServer.Repositories
         Task<DbInteractionResult<User>> GetByIdAsync(int id);
         Task<DbInteractionResult<int>> AddAsync(User user);
         Task<DbInteractionResult<User>> AuthAsync(string email, string password);
+        Task<DbInteractionStatus> UpdateAsync(UserFullDto userFullDto);
     }
 }

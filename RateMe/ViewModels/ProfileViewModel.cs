@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using RateMe.Models.ClientModels;
@@ -84,7 +83,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         
         if (_pictureChanged)
         {
-            await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
+            // await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); not implemented to back yet
         }
     }
 
