@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
-using RateMe.Api.Clients;
+using RateMe.Api.MainApi.Clients;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;

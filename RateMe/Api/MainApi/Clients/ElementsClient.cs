@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Windows;
 using RateMeShared.Dto;
 
-namespace RateMe.Api.Clients;
+namespace RateMe.Api.MainApi.Clients;
 
 public class ElementsClient : BaseClient
 {

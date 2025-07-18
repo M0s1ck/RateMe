@@ -49,4 +49,8 @@
     <ProjectReference Include="..\RateMeShared\RateMeShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Api\MainApi\" />
+  </ItemGroup>
+
 </Project>

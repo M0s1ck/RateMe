@@ -1,10 +1,8 @@
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Text.Json;
 using RateMe.Utils.LocalHelpers;
 
-
-namespace RateMe.Api.Clients;
+namespace RateMe.Api.MainApi.Clients;
 
 public class BaseClient
 {

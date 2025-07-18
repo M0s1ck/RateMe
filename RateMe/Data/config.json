@@ -1,5 +1,6 @@
 {
   "IsSubjectsLoaded": true,
   "IsFirstTime": false,
-  "ApiUrl": "http://localhost:5200"
+  "ApiUrl": "http://localhost:5200",
+  "S3Url": "http://localhost:4400"
 }

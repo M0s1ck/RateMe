@@ -1,9 +1,9 @@
-using RateMe.Api.Clients;
 using RateMeShared.Dto;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
-using RateMe.Api.Mappers;
+using RateMe.Api.MainApi.Clients;
+using RateMe.Api.MainApi.Mappers;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
 using RateMe.Utils.LocalHelpers;

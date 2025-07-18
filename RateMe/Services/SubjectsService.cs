@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
-using RateMe.Api.Clients;
-using RateMe.Api.Mappers;
+using RateMe.Api.MainApi.Clients;
+using RateMe.Api.MainApi.Mappers;
 using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;

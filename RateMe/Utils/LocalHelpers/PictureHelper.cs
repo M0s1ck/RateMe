@@ -23,13 +23,24 @@ public static class PictureHelper
         encoder.Save(stream);
     }
 
-    public static BitmapImage LoadPicture(string path)
+    public static BitmapImage LoadCurrentProfilePicture()
     {
-        using FileStream stream = new(path, FileMode.Open, FileAccess.Read);
+        using FileStream stream = new(ProfilePicturePathJpg, FileMode.Open, FileAccess.Read);
         BitmapImage image = new();
         image.BeginInit();
         image.CacheOption = BitmapCacheOption.OnLoad;
         image.StreamSource = stream;
+        image.EndInit();
+        image.Freeze();
+        return image;
+    }
+    
+    public static BitmapImage LoadDefaultProfilePicture()
+    {
+        BitmapImage image = new();
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.UriSource = new Uri(BuildDefaultProfilePicturePath, UriKind.Absolute);
         image.EndInit();
         image.Freeze();
         return image;

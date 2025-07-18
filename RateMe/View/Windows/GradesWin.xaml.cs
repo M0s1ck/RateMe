@@ -6,7 +6,7 @@ using RateMe.Models.LocalDbModels;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using RateMe.Api.Clients;
+using RateMe.Api.MinIoApi;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 using RateMe.Utils.LocalHelpers;
@@ -40,7 +40,7 @@ public partial class GradesWin : BaseFullWin
         
         _subjectsService = new SubjectsService(_subjects, isRemoteAlive);
         _elementsService = new ElementsService(_subjects, isRemoteAlive);
-        _userService = new UserService(_subjectsService, _elementsService, isRemoteAlive);
+        _userService = new UserService(_subjectsService, _elementsService, isRemoteAlive); // TODO: move to viewModel!!
         
         _syllabus = syllabus;
         GradesDataGrid.ItemsSource = _subjects;
@@ -139,7 +139,10 @@ public partial class GradesWin : BaseFullWin
             
             PictureClient pictureClient = new PictureClient(_userService.User!.Id);
             PictureService pictureService = new PictureService(pictureClient);
-            await pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
+            // await pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); Not implemented yet
+
+            _userService.User!.IsRemoteUpdated = true;
+            JsonFileHelper.SaveUser(_userService.User!);
         }
     } 
     

@@ -5,7 +5,6 @@ using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 using RateMe.Utils.LocalHelpers;
-using RateMeShared.Enums;
 
 namespace RateMe.ViewModels;
 
@@ -35,13 +34,6 @@ public class ProfileViewModel : INotifyPropertyChanged
     }
 
     private bool _pictureChanged;
-
-    private static readonly Dictionary<string, PictureExtension> ExtentionMap = new()
-    { 
-        {".png", PictureExtension.Png},
-        {".jpg", PictureExtension.Jpg},
-        {".jpeg", PictureExtension.Jpeg}
-    };
     
     private const int MinYear = 2000;
     private const int MaxYear = 2050;
@@ -60,11 +52,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         EmailModel = new DataHintTextModel(_user.Email, "Email");
         AboutModel = new DataHintTextModel(_user.Quote, "О себе");
 
-        string picturePath = _user.PictureExtension != PictureExtension.None
-            ? PictureHelper.ProfilePicturePathJpg
-            : PictureHelper.BuildDefaultProfilePicturePath;
-
-        _imageSource = PictureHelper.LoadPicture(picturePath);
+        _imageSource = _user.IsDefaultPicture ? PictureHelper.LoadDefaultProfilePicture() : PictureHelper.LoadCurrentProfilePicture();
     }
     
     public ProfileViewModel() {}

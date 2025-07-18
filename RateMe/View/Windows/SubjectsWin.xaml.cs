@@ -4,7 +4,7 @@ using RateMe.View.Windows;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using RateMe.Api.Clients;
+using RateMe.Api.MainApi.Clients;
 
 namespace RateMe
 {

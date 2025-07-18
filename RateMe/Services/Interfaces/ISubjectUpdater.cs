@@ -1,4 +1,4 @@
-using RateMe.Api.Clients;
+using RateMe.Api.MainApi.Clients;
 
 namespace RateMe.Services.Interfaces;
 

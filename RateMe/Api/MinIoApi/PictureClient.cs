@@ -1,25 +1,26 @@
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using RateMe.Utils.LocalHelpers;
 
-namespace RateMe.Api.Clients;
+namespace RateMe.Api.MinIoApi;
 
-public class PictureClient : BaseClient
+public class PictureClient
 {
-    private const string UrlTemplate = "api/users/{0}/picture/";
-    private HttpClient _plainHttpClient; 
+    private const string UrlTemplate = "pictures/{0}/";
+    private readonly HttpClient _httpClient; 
     
     public PictureClient(int userId)
     {
-        TheHttpClient = new HttpClient();
+        _httpClient = new HttpClient();
+        Uri domen = new Uri(JsonFileHelper.GetConfig().S3Url);
         string relativePath = string.Format(UrlTemplate, userId);
-        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
-        _plainHttpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri(domen, relativePath);
     }
 
     public async Task<string> GetPreSignedUploadUrl()
     {
-        using HttpResponseMessage response = await TheHttpClient.GetAsync("upload");
+        using HttpResponseMessage response = await _httpClient.GetAsync("upload");
 
         if (response.StatusCode != HttpStatusCode.Created)
         {
@@ -36,7 +37,7 @@ public class PictureClient : BaseClient
         using ByteArrayContent content = new ByteArrayContent(dataBytes);
         content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(mediaType);
         
-        using HttpResponseMessage response = await _plainHttpClient.PutAsync(presignedUrl, content);
+        using HttpResponseMessage response = await _httpClient.PutAsync(presignedUrl, content);
         
     }
 }

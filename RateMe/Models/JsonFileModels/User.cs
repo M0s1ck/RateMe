@@ -1,5 +1,4 @@
 using RateMeShared.Dto;
-using RateMeShared.Enums;
 
 namespace RateMe.Models.JsonFileModels;
 
@@ -13,7 +12,7 @@ public class User
     public string Curriculum { get; set; } = string.Empty;
     public int Year { get; set; }
     public string Quote { get; set; }= string.Empty;
-    public PictureExtension PictureExtension { get; set; } = PictureExtension.None;
+    public bool IsDefaultPicture { get; set; } = true;
     public bool IsRemoteUpdated { get; set; } = true;
     
     public User() {}

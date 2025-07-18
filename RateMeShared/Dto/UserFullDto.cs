@@ -1,5 +1,3 @@
-using RateMeShared.Enums;
-
 namespace RateMeShared.Dto;
 
 public class UserFullDto : UserDto

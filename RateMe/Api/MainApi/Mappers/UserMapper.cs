@@ -1,7 +1,7 @@
 using RateMe.Models.JsonFileModels;
 using RateMeShared.Dto;
 
-namespace RateMe.Api.Mappers;
+namespace RateMe.Api.MainApi.Mappers;
 
 public static class UserMapper
 {

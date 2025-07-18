@@ -1,5 +1,5 @@
 using System.IO;
-using RateMe.Api.Clients;
+using RateMe.Api.MinIoApi;
 using RateMe.Utils.LocalHelpers;
 
 namespace RateMe.Services;

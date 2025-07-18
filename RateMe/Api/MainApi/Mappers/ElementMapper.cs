@@ -1,8 +1,7 @@
 using RateMe.Models.LocalDbModels;
 using RateMeShared.Dto;
 
-
-namespace RateMe.Api.Mappers;
+namespace RateMe.Api.MainApi.Mappers;
 
 internal static class ElementMapper
 {
