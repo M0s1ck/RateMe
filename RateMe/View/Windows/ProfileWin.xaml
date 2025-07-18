@@ -1,0 +1,112 @@
+<windows:BaseFullWin x:Class="RateMe.View.Windows.ProfileWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        xmlns:userControls="clr-namespace:RateMe.View.UserControls"
+        xmlns:windows="clr-namespace:RateMe.View.Windows"
+        xmlns:viewModels="clr-namespace:RateMe.ViewModels"
+        Title="GradesWin" Height="760" Width="1000" WindowStartupLocation="CenterScreen"
+        Background="#10151b" MouseDown="OnWindowClick">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome />
+    </WindowChrome.WindowChrome>
+    
+    <Window.DataContext>
+        <viewModels:ProfileViewModel/>
+    </Window.DataContext>
+    
+    <windows:BaseFullWin.Resources>
+        <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Bahnschrift SemiCondensed"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+    </windows:BaseFullWin.Resources>
+    
+    <Grid x:Name="WindowGrid">
+        <Grid Margin="0,110,0,0">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="210" />
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="0" Margin="60, 0,0,0">
+                    <Border CornerRadius="20" Width="200" Height="200" VerticalAlignment="Top">  
+                        <Border.Background>
+                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding ImageSource, Mode=TwoWay}"/> <!--Temp E:\Projects\ActuallySomethingMine\RateMe\RateMe\Assets\dio.jpg-->
+                        </Border.Background> <!-- "" -->
+                    </Border>
+                    <userControls:CoolSvgButton x:Name="EditPictureButton" WhenClicked="OnEditPictureClick" Visibility="Collapsed" Size="25" BiggerSize="30" Source="/Assets/edit-pen4.svg" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,11,0" Panel.ZIndex="1" />
+                </Grid>
+                
+                <Grid Grid.Column="1">
+                    <Grid x:Name="NormalInfo" Margin="15, 0,0,0">
+                        <StackPanel Margin="0, 15,0,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" >
+                                <TextBlock Text="{Binding NameModel.Data}" Style="{StaticResource TextStyle}" Margin="0,0,15, 0"/> <!--{Binding UserService.User.Name}-->
+                                <TextBlock Text="{Binding SurnameModel.Data}" Style="{StaticResource TextStyle}"/> <!--{Binding UserService.User.Surname}-->
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10, 0,0">
+                                <TextBlock Text="{Binding CurriculumModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                <TextBlock Text="{Binding YearModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                            
+                            <TextBlock Text="{Binding EmailModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,15,0,0"/>  <!-- only your OWN pfp --> 
+                        </StackPanel>
+                        
+                        <TextBlock Text="{Binding AboutModel.Data}" Foreground="White" FontSize="19" FontStyle="Italic" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,20"/>
+                    </Grid>
+                    
+                    <Grid x:Name="EditInfo" Visibility="Collapsed" Margin="15, 0,0,0">
+                        <StackPanel Margin="0, 10,0,0" >
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" >
+                                <userControls:DataHintTextBox DataContext="{ Binding NameModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="37" TextBoxMinWidth="150" TextBoxMaxWidth="200" TextBlockFontSize="16" Margin="0,0,20, 0"/>
+                                <userControls:DataHintTextBox DataContext="{ Binding SurnameModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="37" TextBoxMinWidth="150" TextBoxMaxWidth="200" TextBlockFontSize="16" /> 
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,0">
+                                <userControls:DataHintTextBox DataContext="{ Binding CurriculumModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="18" TextBoxHeight="34" TextBoxMinWidth="120" TextBoxMaxWidth="80" TextBlockWidth="80" TextBlockFontSize="16" Margin="0,0,20,0"/>
+                                <userControls:DataHintTextBox DataContext="{ Binding YearModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="18" TextBoxHeight="34" TextBoxMinWidth="120" TextBoxMaxWidth="80" TextBlockWidth="80" TextBlockFontSize="16" /> 
+                            </StackPanel>
+                            
+                            <userControls:DataHintTextBox DataContext="{ Binding EmailModel }" VerticalAlignment="Top" HorizontalAlignment="Left" TextBoxFontSize="19" TextBoxHeight="37" TextBoxMinWidth="180" TextBoxMaxWidth="220" TextBlockFontSize="16" Margin="0,10,20,0"/> 
+                        </StackPanel>
+                        
+                        <userControls:DataHintTextBox DataContext="{ Binding AboutModel }" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextBoxFontSize="19" BoxFontStyle="Italic" TextBoxHeight="37" TextBoxMinWidth="180" TextBoxMaxWidth="400" TextBlockFontSize="16" Margin="0,0,20, 0"/>
+                    </Grid>
+                </Grid>
+                    
+                <Grid Grid.Column="2">
+                    <userControls:CoolSvgButton WhenClicked="OnEditClick" Size="40" BiggerSize="45" Source="/Assets/edit-pen3.svg" VerticalAlignment="Top" />
+                    <userControls:NormalButton x:Name="SaveButton" WhenClicked="OnSaveClick" TheContent="Сохранить" Visibility="Collapsed" Back="#591e73" BackHover="#772899"  VerticalAlignment="Bottom" />
+                </Grid>
+                
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="0" Margin="60, 0,0,0">
+                    <!--<userControls:CoolSvgButton x:Name="EditPictureButton" WhenClicked="OnEditPictureClick"  Size="25" BiggerSize="35" Source="/Assets/edit-pen4.svg" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,0" Panel.ZIndex="1" /> -->
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</windows:BaseFullWin>

@@ -4,9 +4,9 @@ using RateMe.Models.LocalDbModels;
 
 namespace RateMe.Models.ClientModels;
 
-public class ControlElement : INotifyPropertyChanged
+public class Element : INotifyPropertyChanged
 {
-    public ElementLocal LocalModel { get; set; }
+    public ElementLocal LocalModel { get; }
 
     public string Name
     {
@@ -47,7 +47,7 @@ public class ControlElement : INotifyPropertyChanged
     private decimal _weight;
     private decimal _grade;
 
-    public ControlElement()
+    public Element()
     {
         _name = "Элемент контроля";
         _weight = 0;
@@ -55,7 +55,7 @@ public class ControlElement : INotifyPropertyChanged
         LocalModel = new ElementLocal { Name = _name, Weight = _weight, Grade = _grade };
     }
 
-    public ControlElement(string name, decimal weight)
+    public Element(string name, decimal weight)
     {
         _name = name;
         _weight = weight;
@@ -63,7 +63,7 @@ public class ControlElement : INotifyPropertyChanged
         LocalModel = new ElementLocal { Name = _name, Weight = _weight, Grade = _grade };
     }
 
-    public ControlElement(ElementLocal elemLocal)
+    public Element(ElementLocal elemLocal)
     {
         _name = elemLocal.Name;
         _weight = elemLocal.Weight;
@@ -71,7 +71,7 @@ public class ControlElement : INotifyPropertyChanged
         LocalModel = elemLocal;
     }
 
-    public ControlElement(ControlElement other)
+    public Element(Element other)
     {
         _name = other.Name;
         _name = other.Name;

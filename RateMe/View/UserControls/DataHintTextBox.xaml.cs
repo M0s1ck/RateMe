@@ -10,22 +10,25 @@ namespace RateMe.View.UserControls;
 public partial class DataHintTextBox : UserControl
 {
     public static readonly DependencyProperty TextBoxFontSizeProp =
-        DependencyProperty.Register("TextBoxFontSize", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(15.0));
+        DependencyProperty.Register(nameof(TextBoxFontSize), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(15.0));
 
     public static readonly DependencyProperty TextBoxHeightProp =
-        DependencyProperty.Register("TextBoxHeight", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(30.0));
+        DependencyProperty.Register(nameof(TextBoxHeight), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(30.0));
 
     public static readonly DependencyProperty TextBoxMinWidthProp =
-        DependencyProperty.Register("TextBoxMinWidth", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(120.0));
+        DependencyProperty.Register(nameof(TextBoxMinWidth), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(120.0));
 
     public static readonly DependencyProperty TextBoxMaxWidthProp =
-        DependencyProperty.Register("TextBoxMaxWidth", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(1000.0));
+        DependencyProperty.Register(nameof(TextBoxMaxWidth), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(1000.0));
 
     public static readonly DependencyProperty TextBlockFontSizeProp =
-        DependencyProperty.Register("TextBlockFontSize", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(13.0));
+        DependencyProperty.Register(nameof(TextBlockFontSize), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(13.0));
 
     public static readonly DependencyProperty TextBlockWidthProp =
-        DependencyProperty.Register("TextBlockWidth", typeof(double), typeof(DataHintTextBox), new PropertyMetadata(150.0));
+        DependencyProperty.Register(nameof(TextBlockWidth), typeof(double), typeof(DataHintTextBox), new PropertyMetadata(150.0));
+    
+    public static readonly DependencyProperty FontStyleProp =
+        DependencyProperty.Register(nameof(BoxFontStyle), typeof(FontStyle), typeof(DataHintTextBox), new PropertyMetadata(new FontStyle()));
 
 
     public double TextBoxFontSize
@@ -57,6 +60,12 @@ public partial class DataHintTextBox : UserControl
         get => (double)GetValue(TextBlockFontSizeProp);
         set => SetValue(TextBlockFontSizeProp, value);
     }
+
+    public FontStyle BoxFontStyle
+    {
+        get => (FontStyle)GetValue(FontStyleProp);
+        set => SetValue(FontStyleProp, value);
+    } 
     public double TextBlockWidth
     {
         get => (double)GetValue(TextBlockWidthProp);
@@ -71,6 +80,6 @@ public partial class DataHintTextBox : UserControl
 
     private void OnUpdatedText(object sender, TextChangedEventArgs e)
     {
-        ((DataHintTextModel)DataContext).Data = dataTextBox.Text;    // NUll ref
+        ((DataHintTextModel)DataContext).Data = dataTextBox.Text;
     }
 }

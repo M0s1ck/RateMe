@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
-using RateMe.Api.Clients;
-using RateMe.Api.Mappers;
+using RateMe.Api.MainApi.Clients;
+using RateMe.Api.MainApi.Mappers;
 using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
@@ -13,6 +13,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
 {
     public SubjectsClient? SubjClient { get; set; }
     public bool IsAnyData => _allSubjects.Count != 0;
+    public bool IsRemoteAlive { get; }
     
     private readonly ObservableCollection<Subject> _allSubjects;
     
@@ -22,9 +23,10 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     private SubjectsRepository _rep = new();
 
     
-    public SubjectsService(ObservableCollection<Subject> allSubjects)
+    public SubjectsService(ObservableCollection<Subject> allSubjects, bool isRemoteAlive)
     {
         _allSubjects = allSubjects;
+        IsRemoteAlive = isRemoteAlive;
     }
     
     

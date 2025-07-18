@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using RateMe.Api.MainApi.Clients;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;
+using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
 namespace RateMe;
@@ -22,11 +24,11 @@ public partial class App : Application
         using SubjectsContext db = new();
         db.Database.Migrate();
             
-        Config config = JsonFileModelsHelper.GetConfig();
+        Config config = JsonFileHelper.GetConfig();
         OpenNextWin(config);
     }
         
-    private static void OpenNextWin(Config? config)
+    private static async void OpenNextWin(Config? config)
     {
         if (config == null || !config.IsSubjectsLoaded)
         {
@@ -35,8 +37,12 @@ public partial class App : Application
             return;
         }
 
-        SyllabusModel syllabus = JsonFileModelsHelper.GetSyllabus();
-        GradesWin gradesWin = new(syllabus);
+        SyllabusModel syllabus = JsonFileHelper.GetSyllabus();
+
+        BaseClient client = new();
+        bool isRemoteAlive = await client.IsRemoteAlive();
+        
+        GradesWin gradesWin = new(syllabus, isRemoteAlive);
         gradesWin.Show();
     }
         
@@ -44,7 +50,7 @@ public partial class App : Application
     {
         string defaultPath = Directory.GetCurrentDirectory();
         string[] defaultPathArr = defaultPath.Split(Path.DirectorySeparatorChar);
-        string projectPath = string.Join(Path.DirectorySeparatorChar, defaultPathArr[..^3]);
+        string projectPath = string.Join(Path.DirectorySeparatorChar, defaultPathArr[..^3]);  // TODO: get via while() loop
         Directory.SetCurrentDirectory(projectPath);
     }
 }

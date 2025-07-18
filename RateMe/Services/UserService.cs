@@ -1,43 +1,53 @@
-using RateMe.Api.Clients;
 using RateMeShared.Dto;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
+using RateMe.Api.MainApi.Clients;
+using RateMe.Api.MainApi.Mappers;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services.Interfaces;
+using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
 namespace RateMe.Services;
 
 public class UserService
 {
-    internal bool IsUserAvailable => _user != null;
+    public User? User { get; private set; }
+    internal bool IsUserAvailable => User != null;
+    public bool IsRemoteAlive { get; }
     
     private ISubjectUpdater _subjectService;
     private IElemUpdater _elemService;
     
     private readonly UserClient _userClient;
-    private User? _user;
     
     
-    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService)
+    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, bool isRemoteAlive)
     {
         _subjectService = subjService;
         _elemService = elemService;
         
         _userClient = new UserClient();
-        _user = JsonFileModelsHelper.GetUserOrNull();
+        User = JsonFileHelper.GetUserOrNull();
+        IsRemoteAlive = isRemoteAlive;
 
-        if (_user != null)
+        if (User != null)
         {
-            _subjectService.SubjClient = new SubjectsClient(_user.Id);
-            _elemService.ElemClient = new ElementsClient(_user.Id);
+            _subjectService.SubjClient = new SubjectsClient(User.Id);
+            _elemService.ElemClient = new ElementsClient(User.Id);
         }
     }
     
     
     internal async Task SignUp(string email, string pass, string name, string surname)
     {
+        if (!IsRemoteAlive)
+        {
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
+            return;
+        }
+        
         if (IsUserAvailable)
         {
             MessageBox.Show("You are already signed in!");
@@ -47,80 +57,69 @@ public class UserService
         await _subjectService.UpdateAllLocals();
         
         UserDto userDto = new() { Email = email, Password = pass, Name = name, Surname = surname };
-        int id = 0;
-        
-        try
-        {
-            id = await _userClient.SignUpUserAsync(userDto);
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-        }
+        int id = await _userClient.SignUpUserAsync(userDto);
 
         if (id == 0)
         {
             return;
         }
         
-        _user = new User(userDto);
-        _user.Id = id;
+        User = new User(userDto);
+        User.Id = id;
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
-        // In theory не нужен _elementsService.ElementsOverallRemoteUpdate()
         MessageBox.Show($"You've been signed up! Your id: {id}");
     }
     
 
     internal async Task SignIn(string email, string pass, bool safe=true)
     {
-        if (!IsUserAvailable && safe && _subjectService.IsAnyData)
+        if (!IsRemoteAlive)
         {
-            WannaSignInNoSignUp(email, pass);
-            return; // TODO: what if still sign in? Add yes/no window, disable others wins to answer rn
-        }           // If still yes, we just remove all locals and continue
-                    // How to make so that we really sign up after "yes" - maybe just add safe bool flag param that's by
-                    // default is true and call func 
-
-        try
-        {
-            await OverallSaveUpdate();
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
+            MessageBox.Show("К сожалению сервер сейчас не доступен(");
             await _subjectService.MarkRemoteStates();
             await _elemService.MarkRemoteStates();
             return;
         }
         
-        AuthRequest request = new() { Email = email, Password = pass };
-        UserDto? userDto = null; 
+        if (!IsUserAvailable && safe && _subjectService.IsAnyData)
+        {
+            WannaSignInNoSignUp(email, pass);
+            return;
+        }           
         
-        try
-        {
-            userDto = await _userClient.AuthUserAsync(request);
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-        }
+        await OverallSaveUpdate();
+        
+        AuthRequest request = new() { Email = email, Password = pass };
+        UserDto? userDto = await _userClient.AuthUserAsync(request);
 
         if (userDto == null)
         {
             return;
         }
         
-        _user = new User(userDto);
+        User = new User(userDto);
         UpdateOnUser();
-        MessageBox.Show($"Hello, {_user.Name} {_user.Surname}");
+        MessageBox.Show($"Hello, {User.Name} {User.Surname}");
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
     }
 
+    
+    internal void UpdateUser(User user)
+    {
+        User = user;
+        JsonFileHelper.SaveUser(user);
+    }
 
-    // Should be available only if userIsAvailable
+    internal async Task UpdateRemoteUser()
+    {
+        UserFullDto fullDto = UserMapper.UserToFullDto(User!);
+        await _userClient.UpdateUser(fullDto);
+        User!.IsRemoteUpdated = true;
+    }
+    
     internal async Task SignOut()
     {
         if (!IsUserAvailable)
@@ -128,18 +127,13 @@ public class UserService
             return;
         }
 
-        try
+        if (IsRemoteAlive)
         {
             await OverallSaveUpdate();
         }
-        catch (HttpRequestException ex)
-        {
-            HandleHttpException(ex);
-            return;
-        }
         
-        JsonFileModelsHelper.RemoveUser();
-        _user = null;
+        JsonFileHelper.RemoveUser();
+        User = null;
 
         await _subjectService.ClearLocal();
     }
@@ -159,12 +153,11 @@ public class UserService
     
     private void UpdateOnUser()
     {
-        JsonFileModelsHelper.SaveUser(_user!);
-        _subjectService.SubjClient = new SubjectsClient(_user!.Id);
-        _elemService.ElemClient = new ElementsClient(_user.Id);
+        JsonFileHelper.SaveUser(User!);
+        _subjectService.SubjClient = new SubjectsClient(User!.Id);
+        _elemService.ElemClient = new ElementsClient(User.Id);
     }
 
-    // Temporary
     private void WannaSignInNoSignUp(string email, string pass)
     {
         string question = "You are not signed up! All local data will be lost. Continue?";

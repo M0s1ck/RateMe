@@ -1,5 +1,5 @@
-using RateMe.Api.Clients;
-using RateMe.Api.Mappers;
+using RateMe.Api.MainApi.Clients;
+using RateMe.Api.MainApi.Mappers;
 using RateMe.Models.ClientModels;
 using RateMe.Models.LocalDbModels;
 using RateMe.Repositories;
@@ -11,6 +11,7 @@ namespace RateMe.Services;
 internal class ElementsService : ILocalElemService, IElemUpdater
 {
     public ElementsClient? ElemClient { get; set; }
+    public bool IsRemoteAlive { get; }
     
     private readonly IEnumerable<Subject> _allSubjects;
     private List<ElementLocal> _elemsToUpdate = [];
@@ -18,9 +19,11 @@ internal class ElementsService : ILocalElemService, IElemUpdater
 
     private ElementsRepository _rep = new();
     
-    internal ElementsService(IEnumerable<Subject> allSubjects)
+    
+    internal ElementsService(IEnumerable<Subject> allSubjects, bool isRemoteAlive)
     {
         _allSubjects = allSubjects;
+        IsRemoteAlive = isRemoteAlive;
     }
 
     public async Task ElementsOverallRemoteUpdate()
@@ -108,9 +111,9 @@ internal class ElementsService : ILocalElemService, IElemUpdater
         await _rep.Add(subId, elems);
     }
 
-    public async Task RemoveLocals(IEnumerable<ElementLocal> elems)
+    public async Task RemoveLocals(int subId, IEnumerable<ElementLocal> elems)
     {
-        await _rep.Remove(elems);
+        await _rep.Remove(subId, elems);
     }
 
 
@@ -125,7 +128,7 @@ internal class ElementsService : ILocalElemService, IElemUpdater
                 continue;
             }
 
-            foreach (ControlElement elem in subj.FormulaObj)
+            foreach (Element elem in subj.FormulaObj)
             {
                 bool isToUpdate = elem.LocalModel.RemoteStatus == RemoteStatus.ToUpdate;
                 bool isDiff = elem.LocalModel.Name != elem.Name || elem.LocalModel.Weight != elem.Weight ||

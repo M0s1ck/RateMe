@@ -4,10 +4,11 @@ using System.Text.Json;
 using System.Text.Unicode;
 using System.Windows;
 using RateMe.Models.ClientModels;
+using RateMe.Models.JsonFileModels;
 
-namespace RateMe.Models.JsonFileModels;
+namespace RateMe.Utils.LocalHelpers;
 
-public static class JsonFileModelsHelper
+public static class JsonFileHelper
 {
     #region static consts
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");

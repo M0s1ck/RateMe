@@ -5,15 +5,16 @@ using System.Text.Json;
 using System.Windows;
 using RateMeShared.Dto;
 
-namespace RateMe.Api.Clients;
+namespace RateMe.Api.MainApi.Clients;
 
 internal class UserClient : BaseClient
 {
+    private const string RelativePath = "api/users/";
+    
     public UserClient()
     {
         TheHttpClient = new HttpClient();
-        string relativePath = "api/users/";
-        TheHttpClient.BaseAddress = new Uri(BaseUri, relativePath);
+        TheHttpClient.BaseAddress = new Uri(BaseUri, RelativePath);
     }
         
         
@@ -59,5 +60,10 @@ internal class UserClient : BaseClient
 
         MessageBox.Show($"Unhandled response: {msg}");
         return null;
+    }
+
+    public async Task UpdateUser(UserFullDto userFullDto)
+    {
+        using HttpResponseMessage response = await TheHttpClient.PatchAsJsonAsync(userFullDto.Id.ToString(), userFullDto);
     }
 }

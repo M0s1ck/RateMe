@@ -12,8 +12,8 @@ namespace RateMe.Models.ClientModels
     {
         public int[] Modules { get; } = [];
         public bool IsNis { get; }
-        public Formula FormulaObj { get; set; }
-        public SubjectLocal LocalModel { get; set; }
+        public Formula FormulaObj { get; private set; }
+        public SubjectLocal LocalModel { get; }
 
         public string Name
         {
@@ -109,7 +109,7 @@ namespace RateMe.Models.ClientModels
 
             foreach (ElementLocal elemLocal in localSubj.Elements)
             {
-                ControlElement elem = new ControlElement(elemLocal);
+                Element elem = new Element(elemLocal);
                 FormulaObj.Add(elem);
                 elem.GradesUpdated += UpdateScore;
             }
@@ -124,9 +124,9 @@ namespace RateMe.Models.ClientModels
             Credits = other.Credits;
             FormulaObj = [];
             
-            foreach (ControlElement otherElem in other.FormulaObj)
+            foreach (Element otherElem in other.FormulaObj)
             {
-                ControlElement elem = new ControlElement(otherElem);
+                Element elem = new Element(otherElem);
                 FormulaObj.Add(elem);
                 elem.GradesUpdated += UpdateScore;
             }
@@ -140,7 +140,7 @@ namespace RateMe.Models.ClientModels
             LocalModel.Name = Name;
             LocalModel.Credits = Credits;
 
-            foreach (ControlElement elem in FormulaObj)
+            foreach (Element elem in FormulaObj)
             {
                 elem.UpdateLocalModel();
             }
@@ -150,7 +150,7 @@ namespace RateMe.Models.ClientModels
         {
             decimal score = 0;
 
-            foreach (ControlElement elem in FormulaObj)
+            foreach (Element elem in FormulaObj)
             {
                 score += elem.Weight * elem.Grade;
             }
@@ -195,7 +195,7 @@ namespace RateMe.Models.ClientModels
                 return false;
             }
 
-            foreach (ControlElement elem in FormulaObj)
+            foreach (Element elem in FormulaObj)
             {
                 elem.GradesUpdated += UpdateScore;
             }

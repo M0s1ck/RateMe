@@ -39,10 +39,18 @@
     <None Remove="Assets\refresh.svg" />
     <Resource Include="Assets\user-circle.svg" />
     <Resource Include="Assets\refresh.svg" />
+    <Resource Include="Assets\repeat-svgrepo-com.svg" />
+    <Resource Include="Assets\edit-pen3.svg" />
+    <Resource Include="Assets\edit-pen4.svg" />
+    <Resource Include="Assets\default-profile-picture.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RateMeShared\RateMeShared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Api\MainApi\" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using RateMe.View.Windows;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using RateMe.Api.MainApi.Clients;
 
 namespace RateMe
 {
@@ -40,7 +41,7 @@ namespace RateMe
             Loaded += (_, _) => AddHeaderBar(WindowGrid);
         }
 
-        private void OnContinueClick(object sender, RoutedEventArgs e)
+        private async void OnContinueClick(object sender, RoutedEventArgs e)
         {
             List<Subject> selectedSubjs = [];
 
@@ -52,8 +53,11 @@ namespace RateMe
                     selectedSubjs.Add(subject);
                 }
             }
+            
+            BaseClient client = new();
+            bool isRemoteAlive = await client.IsRemoteAlive();
 
-            GradesWin gradesWin = new(_syllabus, selectedSubjs);
+            GradesWin gradesWin = new(_syllabus, selectedSubjs, isRemoteAlive);
             gradesWin.Show();
             Close();
         }
