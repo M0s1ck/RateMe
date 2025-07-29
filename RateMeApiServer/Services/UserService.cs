@@ -37,17 +37,17 @@ public class UserService : IUserService
     }
 
         
-    public async Task<DbInteractionResult<UserDto>> AuthUserAsync(AuthRequest authRequest)
+    public async Task<DbInteractionResult<UserFullDto>> AuthUserAsync(AuthRequest authRequest)
     { 
         DbInteractionResult<User> interaction = await _userRepository.AuthAsync(authRequest.Email, authRequest.Password);
 
         if (interaction.Status != DbInteractionStatus.Success)
         {
-            return new DbInteractionResult<UserDto>(null, interaction.Status);
+            return new DbInteractionResult<UserFullDto>(null, interaction.Status);
         }
             
-        UserDto userDto = UserMapper.GetUserDto(interaction.Value!);
-        return new DbInteractionResult<UserDto>(userDto, DbInteractionStatus.Success);
+        UserFullDto userDto = UserMapper.GetFullUserDto(interaction.Value!);
+        return new DbInteractionResult<UserFullDto>(userDto, DbInteractionStatus.Success);
     }
 
     

@@ -9,6 +9,8 @@ namespace RateMe.View.Windows;
 /// </summary>
 public partial class AuthWin : BaseFullWin
 {
+    public event Action? UserSignedUp;
+    
     public DataHintTextModel LogInEmailModel { get; } = new("Email");
     public DataHintTextModel LogInPassModel { get; } = new("Password");
 
@@ -55,6 +57,7 @@ public partial class AuthWin : BaseFullWin
         }
         
         SignUpButton.IsEnabled = true;
+        Close();
     }
         
 
@@ -72,6 +75,8 @@ public partial class AuthWin : BaseFullWin
         }
         
         SignInButton.IsEnabled = true;
+        UserSignedUp?.Invoke();
+        Close();
     }
         
 

@@ -41,14 +41,14 @@ internal class UserClient : BaseClient
     }
 
 
-    public async Task<UserDto?> AuthUserAsync(AuthRequest authRequest)
+    public async Task<UserFullDto?> AuthUserAsync(AuthRequest authRequest)
     {
         using HttpResponseMessage response = await TheHttpClient.PostAsJsonAsync("auth", authRequest);
         string msg = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            UserDto? user = JsonSerializer.Deserialize<UserDto>(msg, options: CaseInsensitiveOptions);
+            UserFullDto? user = JsonSerializer.Deserialize<UserFullDto>(msg, options: CaseInsensitiveOptions);
             return user;
         }
 

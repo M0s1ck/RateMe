@@ -92,14 +92,14 @@ public class UserService
         await OverallSaveUpdate();
         
         AuthRequest request = new() { Email = email, Password = pass };
-        UserDto? userDto = await _userClient.AuthUserAsync(request);
+        UserFullDto? userDto = await _userClient.AuthUserAsync(request);
 
         if (userDto == null)
         {
             return;
         }
-        
-        User = new User(userDto);
+
+        User = UserMapper.UserFromFullDto(userDto);
         UpdateOnUser();
         MessageBox.Show($"Hello, {User.Name} {User.Surname}");
 

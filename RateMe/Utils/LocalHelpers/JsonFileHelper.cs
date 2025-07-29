@@ -21,6 +21,13 @@ public static class JsonFileHelper
 
     public static SyllabusModel GetSyllabus()
     {
+        if (!File.Exists(SyllabusJsonPath))
+        {
+            SyllabusModel defaultSm = new SyllabusModel();
+            WriteSyllabus(defaultSm);
+            return defaultSm;
+        }
+        
         string jsonContent = File.ReadAllText(SyllabusJsonPath);
         SyllabusModel? syllabus = JsonSerializer.Deserialize<SyllabusModel>(jsonContent);
 
@@ -93,5 +100,11 @@ public static class JsonFileHelper
     public static void RemoveUser()
     {
         File.Delete(UserJsonPath);
+    }
+    
+    private static void WriteSyllabus(SyllabusModel sm)
+    {
+        string jsonString = JsonSerializer.Serialize(sm, JsonOptions);
+        File.WriteAllTextAsync(SyllabusJsonPath, jsonString);
     }
 }

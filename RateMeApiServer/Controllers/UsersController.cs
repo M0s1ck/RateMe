@@ -66,7 +66,7 @@ public class UsersController : ControllerBase
     [HttpPost("auth")]
     public async Task<IActionResult> SignIn(AuthRequest authRequest)
     {
-        DbInteractionResult<UserDto> interaction = await _userService.AuthUserAsync(authRequest);
+        DbInteractionResult<UserFullDto> interaction = await _userService.AuthUserAsync(authRequest);
             
         switch (interaction.Status)
         {

@@ -213,6 +213,7 @@ public partial class GradesWin : BaseFullWin
         }
         
         AuthWin authWin = new(_userService);
+        authWin.UserSignedUp += SetNames;
         authWin.Show();
     }
 
@@ -251,13 +252,22 @@ public partial class GradesWin : BaseFullWin
     {
         InfoWin infoWin = new();
         // infoWin.Show();
-        await _userService.SignOut();
+        await _userService.SignOut();   // TODO: вынести куда надо в profile
+        SetNames();
     }
 
     private void SetNames()
     {
-        NameBlock.Text = _userService.User!.Name;
-        SurnameBlock.Text = _userService.User!.Surname;
+        if (_userService.IsUserAvailable)
+        {
+            NameBlock.Text = _userService.User!.Name;
+            SurnameBlock.Text = _userService.User!.Surname;
+        }
+        else
+        {
+            NameBlock.Text = "Войти";
+            SurnameBlock.Text = string.Empty;
+        }
     }
 
     

@@ -19,4 +19,19 @@ public static class UserMapper
             Quote = user.Quote,
         };
     }
+    
+    internal static User UserFromFullDto(UserFullDto dto)
+    {
+        return new User
+        {
+            Id = dto.Id,
+            Email = dto.Email,
+            Name = dto.Name,
+            Surname = dto.Surname,
+            Password = dto.Password,
+            Curriculum = dto.Curriculum,
+            Year = dto.Year,
+            Quote = dto.Quote
+        };
+    }
 }
