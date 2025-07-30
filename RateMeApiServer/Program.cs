@@ -11,6 +11,11 @@ namespace RateMeApiServer
         static void Main(string[] args)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            
+            builder.Configuration
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
 
             // Add services to the container.
             builder.Services.AddHttpLogging(_ => { });
@@ -48,7 +53,9 @@ namespace RateMeApiServer
             }
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            
+            // For now swagger always available
+            //if (app.Environment.IsDevelopment()) 
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
