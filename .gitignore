@@ -5,6 +5,7 @@ obj/
 *.DotSettings.user
 *.csproj.user
 
+.env
 *.db
 *.db-shm
 *.db-wal
