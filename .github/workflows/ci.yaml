@@ -12,6 +12,14 @@ jobs:
     steps:
       - name: Copy source code
         uses: actions/checkout@v4
+        
+      - name: Build .env file from GitHub secrets
+        run: |
+          cat <<EOF > .env
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          EOF
       
       - name: Build containers 
         run: docker compose build --no-cache
