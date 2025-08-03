@@ -2,9 +2,8 @@ name: Simple CI
 
 on:
   push:
-    branches: [ tech/devops ]
-    
-    
+  pull_request:
+
 jobs:
   build:
     runs-on: ubuntu-latest

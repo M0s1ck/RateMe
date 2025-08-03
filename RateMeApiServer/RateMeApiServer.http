@@ -1,6 +1,0 @@
-@RateMeApiServer_HostAddress = http://localhost:5200
-
-GET {{RateMeApiServer_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
