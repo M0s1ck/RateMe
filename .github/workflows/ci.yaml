@@ -1,0 +1,41 @@
+name: Simple CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Copy source code
+        uses: actions/checkout@v4
+        
+      - name: Build .env file from GitHub secrets
+        run: |
+          cat <<EOF > .env
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          EOF
+      
+      - name: Build containers 
+        run: docker compose build --no-cache
+      
+      - name: Bring up containers
+        run: docker compose up -d
+        
+      - name: Wait
+        run: sleep 10
+      
+      - name: Naive test
+        run: curl --fail http://localhost:8080
+        
+      - name: Show logs
+        if: always()
+        run: docker compose logs --tail=200
+      
+      - name: Bring down
+        if: always()
+        run: docker compose down
