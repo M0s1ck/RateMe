@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeApiServer", "RateMeAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeShared", "RateMeShared\RateMeShared.csproj", "{8E186B05-E2E1-4909-8C73-BD68B168DD80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeApiServerTests", "Tests\RateMeApiServerTests\RateMeApiServerTests.csproj", "{8AAFE305-F871-4CC7-BAE3-C1887F32F3FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8E186B05-E2E1-4909-8C73-BD68B168DD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E186B05-E2E1-4909-8C73-BD68B168DD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E186B05-E2E1-4909-8C73-BD68B168DD80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AAFE305-F871-4CC7-BAE3-C1887F32F3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AAFE305-F871-4CC7-BAE3-C1887F32F3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AAFE305-F871-4CC7-BAE3-C1887F32F3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AAFE305-F871-4CC7-BAE3-C1887F32F3FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
