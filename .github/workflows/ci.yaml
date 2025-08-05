@@ -5,9 +5,27 @@ on:
   pull_request:
 
 jobs:
-  build:
+  unit-tests:
     runs-on: ubuntu-latest
-    
+    steps:
+      - name: Copy source code
+        uses: actions/checkout@v4
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+      
+      - name: Restore .net projects
+        run: dotnet restore
+      
+      - name: Run .net tests
+        run: |
+          dotnet test Tests/Unit/RateMeApiUnitTests/RateMeApiUnitTests.csproj --verbosity normal
+  
+  build-image:
+    needs: unit-tests
+    runs-on: ubuntu-latest
     steps:
       - name: Copy source code
         uses: actions/checkout@v4
@@ -29,7 +47,7 @@ jobs:
       - name: Wait
         run: sleep 10
       
-      - name: Naive test
+      - name: Ping test
         run: curl --fail http://localhost:8080
         
       - name: Show logs

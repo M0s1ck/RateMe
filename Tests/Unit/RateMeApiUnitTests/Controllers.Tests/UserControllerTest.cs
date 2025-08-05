@@ -7,7 +7,7 @@ using RateMeApiServer.Services;
 using RateMeShared.Dto;
 using Xunit;
 
-namespace RateMeApiServerTests.UnitTests.Controllers.Tests;
+namespace RateMeApiUnitTests.Controllers.Tests;
 
 public class UserControllerTest
 {
@@ -55,5 +55,27 @@ public class UserControllerTest
         result.Should().BeOfType<OkObjectResult>();
         OkObjectResult? ok = result as OkObjectResult;
         ok!.Value.Should().BeEquivalentTo(responseDto);
+    }
+
+    [Fact]
+    public async Task SignUp_Fail()  // To check if it fails in CI
+    {
+        UserDto existingUser = new UserDto()
+        {
+            Email = "exists@me",
+            Password = "pass"
+        };
+        
+        var mockService = new Mock<IUserService>();
+        mockService.Setup(s => s.AddUserAsync(It.IsAny<UserDto>()))
+            .ReturnsAsync(new DbInteractionResult<int>(0, DbInteractionStatus.Conflict));
+        
+        UsersController userController = new UsersController(mockService.Object);
+        
+        // Act
+        IActionResult result = await userController.SignUp(existingUser);
+        
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();  // Here it fails
     }
 }

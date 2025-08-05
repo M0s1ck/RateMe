@@ -12,7 +12,7 @@ public class Subject
     public int Credits { get; set; }
     
     public int  UserId { get; set; }
-    public User User { get; set; }
+    public User? User { get; set; }
     
     public List<Element> Elements { get; set; } = [];
 }
