@@ -180,9 +180,15 @@ public class UsersTest
         // Act 6
         using HttpResponseMessage newAuthResponse = await _client.PostAsJsonAsync("auth", authNewGoodRequest);
         
-        // Arrange 6
+        // Assert 6
         Assert.Equal(HttpStatusCode.OK, newAuthResponse.StatusCode);
         
+        
+        // Act 7
+        using HttpResponseMessage deleteResponse = await _client.DeleteAsync(userId.ToString());
+        
+        // Assert 7
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
         
         // Arrange 7
         AuthRequest wrongPassAuthRequest = new AuthRequest()  // TODO: в отдельный тест

@@ -78,4 +78,19 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
         return DbInteractionStatus.Success;
     }
+
+    public async Task<DbInteractionStatus> RemoveAsync(int id)
+    {
+        User? user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+        {
+            return DbInteractionStatus.NotFound;
+        }
+
+        _context.Users.Remove(user);
+        
+        await _context.SaveChangesAsync();
+        return DbInteractionStatus.Success;
+    }
 }

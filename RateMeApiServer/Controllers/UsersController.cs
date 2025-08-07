@@ -84,7 +84,7 @@ public class UsersController : ControllerBase
     /// <response code="200">If ok</response>
     /// <response code="404">Such id doesn't exist</response>
     [HttpPatch("{id:int}")]
-    public async Task<IActionResult> Update(int id, UserFullDto userFullDto) //TODO: Test!!
+    public async Task<IActionResult> Update(int id, UserFullDto userFullDto)
     {
         DbInteractionStatus status = await _userService.UpdateAsync(userFullDto);
 
@@ -95,4 +95,23 @@ public class UsersController : ControllerBase
             default: return StatusCode(500);
         }
     }
+    
+    
+    /// <summary>
+    /// Removes user by id.
+    /// </summary>
+    /// <response code="204">If removed</response>
+    /// <response code="404">Such id doesn't exist</response>
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Remove(int id)
+    {
+        DbInteractionStatus status = await _userService.RemoveAsync(id);
+
+        switch (status)
+        {
+            case DbInteractionStatus.Success: return NoContent();
+            case DbInteractionStatus.NotFound: return NotFound();
+            default: return StatusCode(500);
+        }
+    }    
 }

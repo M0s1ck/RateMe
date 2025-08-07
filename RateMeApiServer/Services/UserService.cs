@@ -56,4 +56,9 @@ public class UserService : IUserService
         User user = UserMapper.GetFullUserFromDto(userFullDto);
         return await _userRepository.UpdateAsync(user);
     }
+
+    public async Task<DbInteractionStatus> RemoveAsync(int id)
+    {
+        return await _userRepository.RemoveAsync(id);
+    }
 }
