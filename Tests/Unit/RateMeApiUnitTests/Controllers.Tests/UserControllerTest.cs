@@ -58,7 +58,7 @@ public class UserControllerTest
     }
 
     [Fact]
-    public async Task SignUp_Fail()  // To check if it fails in CI
+    public async Task SignUp_Fail()
     {
         UserDto existingUser = new UserDto()
         {
@@ -76,6 +76,6 @@ public class UserControllerTest
         IActionResult result = await userController.SignUp(existingUser);
         
         // Assert
-        result.Should().BeOfType<OkObjectResult>();  // Here it fails
+        result.Should().BeOfType<ConflictObjectResult>();
     }
 }

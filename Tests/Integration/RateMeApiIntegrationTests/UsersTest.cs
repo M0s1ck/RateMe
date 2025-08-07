@@ -8,7 +8,7 @@ namespace RateMeApiIntegrationTests;
 
 public class UsersTest
 {
-    private static string _uriPath = "http://localhost:5200/api/users/"; // 5200 for dev, 8080 for docker
+    private static string _uriPath = "http://localhost:8080/api/users/"; // 5200 for dev, 8080 for docker
     private HttpClient _client = new HttpClient() { BaseAddress = new Uri(_uriPath) };
     
     private static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
@@ -189,12 +189,85 @@ public class UsersTest
         
         // Assert 7
         Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
-        // Arrange 7
-        AuthRequest wrongPassAuthRequest = new AuthRequest()  // TODO: в отдельный тест
+    }
+
+    
+    [Fact]
+    public async Task Auth_ReturnsExpected()
+    {
+        // Arrange: sign up user
+        const string email = "email@added";
+        const string pass = "pass";
+        const string name = "name";
+        const string surname = "surname";
+
+        UserDto usr = new UserDto()
         {
-            Email = newEmail,
+            Email = email,
+            Password = pass,
+            Name = name,
+            Surname = surname,
+        };
+        
+        HttpResponseMessage createdResponse = await _client.PostAsJsonAsync("signup", usr);
+        
+        Assert.Equal(HttpStatusCode.Created, createdResponse.StatusCode);
+        
+        using JsonDocument json = await JsonDocument.ParseAsync(await createdResponse.Content.ReadAsStreamAsync());
+        int userId = json.RootElement.GetProperty("id").GetInt32();
+        
+        
+        // Test wrong pass 
+        AuthRequest authWrongPassRequest = new AuthRequest()
+        {
+            Email = email,
             Password = "wrong"
         };
+        
+        using HttpResponseMessage wrongPassResponse = await _client.PostAsJsonAsync("auth", authWrongPassRequest);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, wrongPassResponse.StatusCode);
+        
+        
+        // Test email taken when sign up
+        UserDto anotherUser = new UserDto()
+        {
+            Email = email,
+            Password = "somePass",
+            Name = "name1",
+            Surname = "surname1",
+        };
+        
+        HttpResponseMessage emailTakenResponse = await _client.PostAsJsonAsync("signup", anotherUser);
+        
+        Assert.Equal(HttpStatusCode.Conflict, emailTakenResponse.StatusCode);
+        
+        // Remove created user
+        using HttpResponseMessage deleteResponse = await _client.DeleteAsync(userId.ToString());
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Get_NotFound()
+    {
+        const int nonExistingId = 1_000_000;
+        using HttpResponseMessage extendResponse = await _client.GetAsync(nonExistingId.ToString());
+        Assert.Equal(HttpStatusCode.NotFound, extendResponse.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Auth_NotFound() // Failing test to check CI
+    {
+        const string nonExistingEmail = "lalalalala@gmail.com";
+        
+        AuthRequest authNonExistingEmailRequest = new AuthRequest()
+        {
+            Email = nonExistingEmail,
+            Password = "pass"
+        };
+        
+        using HttpResponseMessage wrongPassResponse = await _client.PostAsJsonAsync("auth", authNonExistingEmailRequest);
+
+        Assert.Equal(HttpStatusCode.OK, wrongPassResponse.StatusCode);
     }
 }
