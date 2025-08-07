@@ -17,7 +17,8 @@ jobs:
           dotnet-version: 9.0
       
       - name: Restore .net projects
-        run: dotnet restore
+        run: | 
+          dotnet restore Tests/Unit/RateMeApiUnitTests/RateMeApiUnitTests.csproj
       
       - name: Run .net tests
         run: |

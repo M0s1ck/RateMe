@@ -39,7 +39,7 @@ public class UsersController : ControllerBase
     /// <summary>
     /// Signs up user
     /// </summary>
-    /// <response code="200">Returns the newly created user's id</response>
+    /// <response code="201">Returns the newly created user's id</response>
     /// <response code="409">If this email is already taken</response>
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp(UserDto userRequestDto)
@@ -79,9 +79,9 @@ public class UsersController : ControllerBase
     
     
     /// <summary>
-    /// Gets user by id.
+    /// Updates user by id.
     /// </summary>
-    /// <response code="200">Returns user</response>
+    /// <response code="200">If ok</response>
     /// <response code="404">Such id doesn't exist</response>
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> Update(int id, UserFullDto userFullDto) //TODO: Test!!

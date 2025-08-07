@@ -32,6 +32,7 @@ public static class UserMapper
     {
         return new User
         {
+            Id = dto.Id,
             Email = dto.Email,
             Password = dto.Password,
             Name = dto.Name,

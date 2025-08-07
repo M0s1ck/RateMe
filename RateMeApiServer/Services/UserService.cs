@@ -53,6 +53,7 @@ public class UserService : IUserService
     
     public async Task<DbInteractionStatus> UpdateAsync(UserFullDto userFullDto)
     {
-        return await _userRepository.UpdateAsync(userFullDto);
+        User user = UserMapper.GetFullUserFromDto(userFullDto);
+        return await _userRepository.UpdateAsync(user);
     }
 }

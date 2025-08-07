@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeShared", "RateMeShare
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeApiUnitTests", "Tests\Unit\RateMeApiUnitTests\RateMeApiUnitTests.csproj", "{113550AC-9738-4A07-BF07-264E47D05956}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateMeApiIntegrationTests", "Tests\Integration\RateMeApiIntegrationTests\RateMeApiIntegrationTests.csproj", "{EA256976-D67A-4F7C-863F-C5D25D33CC78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{113550AC-9738-4A07-BF07-264E47D05956}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{113550AC-9738-4A07-BF07-264E47D05956}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{113550AC-9738-4A07-BF07-264E47D05956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA256976-D67A-4F7C-863F-C5D25D33CC78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA256976-D67A-4F7C-863F-C5D25D33CC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA256976-D67A-4F7C-863F-C5D25D33CC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA256976-D67A-4F7C-863F-C5D25D33CC78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
