@@ -256,7 +256,7 @@ public class UsersTest
     }
     
     [Fact]
-    public async Task Auth_NotFound() // Failing test to check CI
+    public async Task Auth_NotFound()
     {
         const string nonExistingEmail = "lalalalala@gmail.com";
         
@@ -268,6 +268,6 @@ public class UsersTest
         
         using HttpResponseMessage wrongPassResponse = await _client.PostAsJsonAsync("auth", authNonExistingEmailRequest);
 
-        Assert.Equal(HttpStatusCode.OK, wrongPassResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, wrongPassResponse.StatusCode);
     }
 }
