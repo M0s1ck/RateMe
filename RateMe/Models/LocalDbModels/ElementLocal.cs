@@ -13,7 +13,7 @@ public class ElementLocal
     public decimal Grade { get; set; }
 
     public int SubjectId { get; set; }
-    public SubjectLocal Subject { get; set; }
+    public SubjectLocal? Subject { get; set; }
         
     public int RemoteId { get; set; }
     public RemoteStatus RemoteStatus { get; set; }

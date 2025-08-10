@@ -12,5 +12,5 @@ public class Element
     public decimal Grade { get; set; }
 
     public int SubjectId { get; set; }
-    public Subject Subject { get; set; }
+    public Subject? Subject { get; set; }
 }

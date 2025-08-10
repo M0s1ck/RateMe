@@ -63,22 +63,33 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<DbInteractionStatus> UpdateAsync(UserFullDto userFullDto)
+    public async Task<DbInteractionStatus> UpdateAsync(User user)
     {
-        User? user = await _context.Users.FindAsync(userFullDto.Id);
+        bool exists = _context.Users.Any(u => u.Id == user.Id);
+
+        if (!exists)
+        {
+            return DbInteractionStatus.NotFound;
+        }
+        
+        _context.Users.Attach(user);
+        _context.Entry(user).State = EntityState.Modified;
+
+        await _context.SaveChangesAsync();
+        return DbInteractionStatus.Success;
+    }
+
+    public async Task<DbInteractionStatus> RemoveAsync(int id)
+    {
+        User? user = await _context.Users.FindAsync(id);
 
         if (user == null)
         {
             return DbInteractionStatus.NotFound;
         }
 
-        user.Email = userFullDto.Email;
-        user.Name = userFullDto.Name;
-        user.Surname = userFullDto.Surname;
-        user.Curriculum = userFullDto.Curriculum;
-        user.Year = userFullDto.Year;
-        user.Quote = userFullDto.Quote;
-
+        _context.Users.Remove(user);
+        
         await _context.SaveChangesAsync();
         return DbInteractionStatus.Success;
     }

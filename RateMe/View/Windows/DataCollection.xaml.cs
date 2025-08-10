@@ -5,9 +5,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using RateMe.Models.ClientModels;
 using RateMe.Models.InterfaceModels;
-using RateMe.Models.JsonFileModels;
 using RateMe.Parser;
-using RateMe.Utils;
 using RateMe.Utils.LocalHelpers;
 
 namespace RateMe.View.Windows
@@ -153,7 +151,7 @@ namespace RateMe.View.Windows
             matrixAnimation.BeginTime = TimeSpan.FromMilliseconds(250 * i);
 
             // Makes balls visible only when animation BeginTime passes
-            EventHandler onmatrixAnimationBegin = (sender, args) => { ball.Visibility = Visibility.Visible; };
+            EventHandler onmatrixAnimationBegin = (_, _) => { ball.Visibility = Visibility.Visible; };
             matrixAnimation.CurrentTimeInvalidated += onmatrixAnimationBegin;
 
             BallsCanvas.Children.Add(ball);

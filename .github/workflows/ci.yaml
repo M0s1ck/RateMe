@@ -3,14 +3,84 @@ name: Simple CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
 
 jobs:
-  build:
+  analyze:
+
+    name: analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+      - name: Copy source code
+        uses: actions/checkout@v4
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Build .net
+        run: |
+          dotnet restore
+          dotnet build
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        
+        
+  unit-tests:
+    
+    name: unit-tests
     runs-on: ubuntu-latest
     
     steps:
       - name: Copy source code
         uses: actions/checkout@v4
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+      
+      - name: Restore .net projects
+        run: | 
+          dotnet restore Tests/Unit/RateMeApiUnitTests/RateMeApiUnitTests.csproj
+      
+      - name: Run .net tests
+        run: |
+          dotnet test Tests/Unit/RateMeApiUnitTests/RateMeApiUnitTests.csproj --verbosity normal
+  
+  
+  integration-tests:
+    
+    needs: unit-tests
+    name: integration-tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Copy source code
+        uses: actions/checkout@v4
+        
+      - name: Setup .net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
         
       - name: Build .env file from GitHub secrets
         run: |
@@ -28,13 +98,18 @@ jobs:
         
       - name: Wait
         run: sleep 10
-      
-      - name: Naive test
-        run: curl --fail http://localhost:8080
-        
+
       - name: Show logs
         if: always()
         run: docker compose logs --tail=200
+      
+      - name: Ping test
+        run: curl --fail http://localhost:8080
+        
+      - name: Run Integration tests .net
+        run: |
+          dotnet restore Tests/Integration/RateMeApiIntegrationTests/RateMeApiIntegrationTests.csproj
+          dotnet test Tests/Integration/RateMeApiIntegrationTests/RateMeApiIntegrationTests.csproj
       
       - name: Bring down
         if: always()
