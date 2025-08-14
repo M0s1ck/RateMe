@@ -1,0 +1,72 @@
+info:
+  contact: {}
+paths:
+  /get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a file of a photo from storage by id
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a photo
+      tags:
+      - Photos
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a user photo to MinIO storage
+      parameters:
+      - description: Photo file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload a photo
+      tags:
+      - Photos
+swagger: "2.0"
