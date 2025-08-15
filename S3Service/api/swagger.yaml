@@ -51,9 +51,11 @@ paths:
         "200":
           description: OK
           schema:
-            type: file
-        "400":
-          description: Bad Request
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
           schema:
             additionalProperties:
               type: string
@@ -67,28 +69,16 @@ paths:
       summary: Get a presigned url to a photo
       tags:
       - Photos
-  /upload:
-    post:
+  /presigned/upload:
+    get:
       consumes:
       - multipart/form-data
-      description: Upload a user photo to MinIO storage
-      parameters:
-      - description: Photo file
-        in: formData
-        name: file
-        required: true
-        type: file
+      description: Gets a presigned url to upload a photo to MinIO storage
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
           schema:
             additionalProperties:
               type: string
@@ -99,7 +89,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Upload a photo
+      summary: Get a presigned url to upload a photo
       tags:
       - Photos
 swagger: "2.0"

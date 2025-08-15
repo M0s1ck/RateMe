@@ -91,11 +91,14 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "file"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -115,9 +118,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/upload": {
-            "post": {
-                "description": "Upload a user photo to MinIO storage",
+        "/presigned/upload": {
+            "get": {
+                "description": "Gets a presigned url to upload a photo to MinIO storage",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -127,28 +130,10 @@ const docTemplate = `{
                 "tags": [
                     "Photos"
                 ],
-                "summary": "Upload a photo",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Photo file",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
+                "summary": "Get a presigned url to upload a photo",
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {

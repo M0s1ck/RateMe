@@ -21,6 +21,7 @@ func (ph *PhotoHandler) RegisterRoutes(engine *gin.Engine) {
 	engine.GET("", ph.GetHello)
 	engine.GET("get/:id", ph.Get)
 	engine.GET("presigned/get/:id", ph.GetPresigned)
+	engine.GET("presigned/upload", ph.UploadPresigned)
 }
 
 func (ph *PhotoHandler) GetHello(c *gin.Context) {
@@ -66,8 +67,8 @@ func (ph *PhotoHandler) Get(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"Photo id"
-//	@Success		200	{file}	file
-//	@Failure		400	{object}	map[string]string
+//	@Success		200	{object}	map[string]string
+//	@Failure		404	{object}	map[string]string
 //	@Failure		500	{object}	map[string]string
 //	@Router			/presigned/get/{id} [get]
 func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
@@ -87,18 +88,23 @@ func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 	c.IndentedJSON(200, gin.H{"url": url.String()})
 }
 
-// Upload godoc
+// UploadPresigned godoc
 //
-//	@Summary		Upload a photo
-//	@Description	Upload a user photo to MinIO storage
+//	@Summary		Get a presigned url to upload a photo
+//	@Description	Gets a presigned url to upload a photo to MinIO storage
 //	@Tags			Photos
 //	@Accept			mpfd
 //	@Produce		json
-//	@Param			file	formData	file	true	"Photo file"
 //	@Success		200	{object}	map[string]string
-//	@Failure		400	{object}	map[string]string
 //	@Failure		500	{object}	map[string]string
-//	@Router			/upload [post]
-func (ph *PhotoHandler) Upload(c *gin.Context) {
-	c.IndentedJSON(200, gin.H{"id": "HelloWorld1234"})
+//	@Router			/presigned/upload [get]
+func (ph *PhotoHandler) UploadPresigned(c *gin.Context) {
+	url, err := ph.photoUC.UploadPresigned()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(200, gin.H{"url": url.String()})
 }

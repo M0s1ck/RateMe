@@ -4,6 +4,7 @@ import (
 	"S3Service/internal/domain"
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"net/url"
 	"time"
@@ -44,5 +45,16 @@ func (repo *S3PresignedRepo) Get(name string, bucket string, extension string) (
 }
 
 func (repo *S3PresignedRepo) Upload(bucket string, extension string) (presigned *url.URL, err error) {
-	panic("implement me")
+	ctx := context.Background()
+
+	id := uuid.NewString()
+	objName := id + "." + extension
+
+	presignedURL, err := repo.minioClient.PresignedPutObject(ctx, bucket, objName, time.Second*1000)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return presignedURL, err
 }

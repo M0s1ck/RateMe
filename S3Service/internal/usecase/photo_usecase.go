@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"S3Service/internal/domain"
-	"github.com/gin-gonic/gin"
 	"io"
 	"net/url"
 )
@@ -27,4 +26,6 @@ func (uc *PhotoUseCase) GetPresigned(id string) (url *url.URL, err error) {
 	return uc.presignedRepo.Get(id)
 }
 
-func (uc *PhotoUseCase) UploadPhoto(c *gin.Context) {}
+func (uc *PhotoUseCase) UploadPresigned() (url *url.URL, err error) {
+	return uc.presignedRepo.Upload()
+}

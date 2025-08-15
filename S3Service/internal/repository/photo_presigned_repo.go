@@ -20,5 +20,5 @@ func (repo *PhotoPresignedRepo) Get(id string) (url *url.URL, err error) {
 }
 
 func (repo *PhotoPresignedRepo) Upload() (presigned *url.URL, err error) {
-	panic("implement me")
+	return repo.s3Repo.Upload(photoBucketName, photoExtension)
 }
