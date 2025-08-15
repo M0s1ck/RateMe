@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"S3Service/internal/domain"
 	"context"
 	"errors"
 	"fmt"
@@ -39,7 +40,7 @@ func (repo *FileRepo) Get(name string, bucket string) (io.ReadCloser, int64, err
 	var minioErr minio.ErrorResponse
 
 	if errors.As(err, &minioErr) && minioErr.StatusCode == 404 {
-		return nil, info.Size, err // TODO: domain.ErrNotFound
+		return nil, info.Size, domain.ErrNotFound
 	}
 
 	return nil, 0, err

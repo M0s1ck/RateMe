@@ -21,7 +21,11 @@ func main() {
 	// DI
 	minioFileRepo := repository.NewFileRepo(minioClient)
 	photoRepo := repository.NewPhotoMinioRepo(minioFileRepo)
-	photoUseCase := usecase.NewPhotoUseCase(photoRepo)
+
+	s3PresignedRepo := repository.NewS3PresignedRepo(minioClient)
+	photoPresignedRepo := repository.NewPhotoPresignedRepo(s3PresignedRepo)
+
+	photoUseCase := usecase.NewPhotoUseCase(photoRepo, photoPresignedRepo)
 	photoHandler := delivery.NewPhotoHandler(photoUseCase)
 
 	// Gin app

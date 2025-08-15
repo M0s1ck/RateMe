@@ -1,7 +1,9 @@
 package delivery
 
 import (
+	"S3Service/internal/domain"
 	"S3Service/internal/usecase"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,6 +20,7 @@ func NewPhotoHandler(photoUc *usecase.PhotoUseCase) *PhotoHandler {
 func (ph *PhotoHandler) RegisterRoutes(engine *gin.Engine) {
 	engine.GET("", ph.GetHello)
 	engine.GET("get/:id", ph.Get)
+	engine.GET("presigned/get/:id", ph.GetPresigned)
 }
 
 func (ph *PhotoHandler) GetHello(c *gin.Context) {
@@ -40,14 +43,48 @@ func (ph *PhotoHandler) Get(c *gin.Context) {
 	id := c.Param("id")
 	reader, size, err := ph.photoUC.Get(id)
 
-	if err != nil { // TODO: if errors.Is(err, domain.ErrNotFound)
-		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
+	if errors.Is(err, domain.ErrNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{"message": fmt.Sprintf("Photo with id=%v was not found", id)})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", id))
 	c.DataFromReader(http.StatusOK, size, "application/octet-stream", reader, nil)
 	_ = reader.Close()
+}
+
+// GetPresigned godoc
+//
+//	@Summary		Get a presigned url to a photo
+//	@Description	Get a presigned url to a photo from storage by id
+//	@Tags			Photos
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Photo id"
+//	@Success		200	{file}	file
+//	@Failure		400	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/presigned/get/{id} [get]
+func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
+	id := c.Param("id")
+	url, err := ph.photoUC.GetPresigned(id)
+
+	if errors.Is(err, domain.ErrNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{"message": fmt.Sprintf("Photo with id=%v was not found", id)})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(200, gin.H{"url": url.String()})
 }
 
 // Upload godoc
