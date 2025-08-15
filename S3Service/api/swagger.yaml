@@ -1,3 +1,28 @@
+definitions:
+  dto.ErrorInternalResponse:
+    properties:
+      message:
+        example: Internal Server Error
+        type: string
+    type: object
+  dto.ErrorNotFoundResponse:
+    properties:
+      message:
+        example: Photo with id=1214a280-1162-408a-918f-5cb9300194ce was not found
+        type: string
+    type: object
+  dto.PresignedGetUrlResponse:
+    properties:
+      url:
+        example: http://localhost:9000/photos/1214a288-1362-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250815T143131Z&X-Amz-Expires=1000&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%221214a280-1162-408a-918f-5cb9300174ce.jpg%22&X-Amz-Signature=97b7e7c5cf44566f2cbfc246eeb26493267e8ff4afc184532d8b3f4af0b5e142
+        type: string
+    type: object
+  dto.PresignedUploadUrlResponse:
+    properties:
+      url:
+        example: http://localhost:9000/photos/1214a280-1162-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250815T140417Z&X-Amz-Expires=1000&X-Amz-SignedHeaders=host&X-Amz-Signature=dee82423f46583c7027b704d486620dc601766fd198887d60345cc3ee9872549
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -31,7 +56,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Get a photo
+      summary: Get a photo (file)
       tags:
       - Photos
   /presigned/get/{id}:
@@ -51,21 +76,15 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.PresignedGetUrlResponse'
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorNotFoundResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorInternalResponse'
       summary: Get a presigned url to a photo
       tags:
       - Photos
@@ -80,15 +99,11 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.PresignedUploadUrlResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorInternalResponse'
       summary: Get a presigned url to upload a photo
       tags:
       - Photos

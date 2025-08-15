@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"S3Service/internal/domain"
+	"S3Service/internal/dto"
 	"S3Service/internal/usecase"
 	"errors"
 	"fmt"
@@ -30,7 +31,7 @@ func (ph *PhotoHandler) GetHello(c *gin.Context) {
 
 // Get godoc
 //
-//	@Summary		Get a photo
+//	@Summary		Get a photo (file)
 //	@Description	Get a file of a photo from storage by id
 //	@Tags			Photos
 //	@Accept			json
@@ -67,25 +68,25 @@ func (ph *PhotoHandler) Get(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"Photo id"
-//	@Success		200	{object}	map[string]string
-//	@Failure		404	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Success		200	{object}    dto.PresignedGetUrlResponse
+//	@Failure		404	{object}	dto.ErrorNotFoundResponse
+//	@Failure		500	{object}	dto.ErrorInternalResponse
 //	@Router			/presigned/get/{id} [get]
 func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 	id := c.Param("id")
 	url, err := ph.photoUC.GetPresigned(id)
 
 	if errors.Is(err, domain.ErrNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{"message": fmt.Sprintf("Photo with id=%v was not found", id)})
+		c.JSON(http.StatusNotFound, dto.ErrorNotFoundResponse{Message: fmt.Sprintf("Photo with id=%v was not found", id)})
 		return
 	}
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.JSON(http.StatusInternalServerError, dto.ErrorInternalResponse{Message: err.Error()})
 		return
 	}
 
-	c.IndentedJSON(200, gin.H{"url": url.String()})
+	c.IndentedJSON(http.StatusOK, dto.PresignedGetUrlResponse{URL: url.String()})
 }
 
 // UploadPresigned godoc
@@ -95,16 +96,16 @@ func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 //	@Tags			Photos
 //	@Accept			mpfd
 //	@Produce		json
-//	@Success		200	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Success		200	{object}	dto.PresignedUploadUrlResponse
+//	@Failure		500	{object}	dto.ErrorInternalResponse
 //	@Router			/presigned/upload [get]
 func (ph *PhotoHandler) UploadPresigned(c *gin.Context) {
 	url, err := ph.photoUC.UploadPresigned()
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.JSON(http.StatusInternalServerError, dto.ErrorInternalResponse{Message: err.Error()})
 		return
 	}
 
-	c.IndentedJSON(200, gin.H{"url": url.String()})
+	c.IndentedJSON(http.StatusOK, dto.PresignedUploadUrlResponse{URL: url.String()})
 }

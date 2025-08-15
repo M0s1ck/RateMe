@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Photos"
                 ],
-                "summary": "Get a photo",
+                "summary": "Get a photo (file)",
                 "parameters": [
                     {
                         "type": "string",
@@ -91,28 +91,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.PresignedGetUrlResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrorNotFoundResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrorInternalResponse"
                         }
                     }
                 }
@@ -135,21 +126,53 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.PresignedUploadUrlResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrorInternalResponse"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.ErrorInternalResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                }
+            }
+        },
+        "dto.ErrorNotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Photo with id=1214a280-1162-408a-918f-5cb9300194ce was not found"
+                }
+            }
+        },
+        "dto.PresignedGetUrlResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "example": "http://localhost:9000/photos/1214a288-1362-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250815T143131Z\u0026X-Amz-Expires=1000\u0026X-Amz-SignedHeaders=host\u0026response-content-disposition=attachment%3B%20filename%3D%221214a280-1162-408a-918f-5cb9300174ce.jpg%22\u0026X-Amz-Signature=97b7e7c5cf44566f2cbfc246eeb26493267e8ff4afc184532d8b3f4af0b5e142"
+                }
+            }
+        },
+        "dto.PresignedUploadUrlResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "example": "http://localhost:9000/photos/1214a280-1162-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250815T140417Z\u0026X-Amz-Expires=1000\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=dee82423f46583c7027b704d486620dc601766fd198887d60345cc3ee9872549"
                 }
             }
         }
