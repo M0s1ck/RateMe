@@ -65,7 +65,80 @@ const docTemplate = `{
                 }
             }
         },
-        "/presigned/get/{id}": {
+        "/presigned/upload": {
+            "get": {
+                "description": "Gets a presigned url to upload a new photo to S3",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Photos"
+                ],
+                "summary": "Get a presigned url to upload a photo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PresignedUploadUrlResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorInternalResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/presigned/upload/{id}": {
+            "put": {
+                "description": "Get a presigned url to update an existing photo in S3",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Photos"
+                ],
+                "summary": "Get a presigned url to update a photo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Photo id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PresignedUploadUrlResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorInternalResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/presigned/{id}": {
             "get": {
                 "description": "Get a presigned url to a photo from storage by id",
                 "consumes": [
@@ -91,7 +164,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PresignedGetUrlResponse"
+                            "$ref": "#/definitions/dto.PresignedUrlResponse"
                         }
                     },
                     "404": {
@@ -109,11 +182,11 @@ const docTemplate = `{
                 }
             }
         },
-        "/presigned/upload": {
-            "get": {
-                "description": "Gets a presigned url to upload a photo to MinIO storage",
+        "/remove/{id}": {
+            "delete": {
+                "description": "Remove a photo from S3 by id",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -121,13 +194,19 @@ const docTemplate = `{
                 "tags": [
                     "Photos"
                 ],
-                "summary": "Get a presigned url to upload a photo",
+                "summary": "Remove a photo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Photo id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PresignedUploadUrlResponse"
-                        }
+                    "204": {
+                        "description": "No content"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -158,21 +237,25 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PresignedGetUrlResponse": {
+        "dto.PresignedUploadUrlResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "1214a280-1162-408a-918f-5cb9300174ce"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "http://localhost:9000/photos/1214a280-1162-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250815T140417Z\u0026X-Amz-Expires=1000\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=dee82423f46583c7027b704d486620dc601766fd198887d60345cc3ee9872549"
+                }
+            }
+        },
+        "dto.PresignedUrlResponse": {
             "type": "object",
             "properties": {
                 "url": {
                     "type": "string",
                     "example": "http://localhost:9000/photos/1214a288-1362-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250815T143131Z\u0026X-Amz-Expires=1000\u0026X-Amz-SignedHeaders=host\u0026response-content-disposition=attachment%3B%20filename%3D%221214a280-1162-408a-918f-5cb9300174ce.jpg%22\u0026X-Amz-Signature=97b7e7c5cf44566f2cbfc246eeb26493267e8ff4afc184532d8b3f4af0b5e142"
-                }
-            }
-        },
-        "dto.PresignedUploadUrlResponse": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string",
-                    "example": "http://localhost:9000/photos/1214a280-1162-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250815T140417Z\u0026X-Amz-Expires=1000\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=dee82423f46583c7027b704d486620dc601766fd198887d60345cc3ee9872549"
                 }
             }
         }

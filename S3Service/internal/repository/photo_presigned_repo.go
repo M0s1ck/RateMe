@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"S3Service/internal/domain"
 	"net/url"
 )
 
@@ -16,9 +17,41 @@ func NewPhotoPresignedRepo(s3Repo *S3PresignedRepo) *PhotoPresignedRepo {
 }
 
 func (repo *PhotoPresignedRepo) Get(id string) (url *url.URL, err error) {
-	return repo.s3Repo.Get(id, photoBucketName, photoExtension)
+	objName := id + "." + photoExtension
+	exists, err := repo.s3Repo.CheckIfExists(objName, photoBucketName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !exists {
+		return nil, domain.ErrNotFound
+	}
+
+	return repo.s3Repo.Get(objName, photoBucketName)
 }
 
-func (repo *PhotoPresignedRepo) Upload() (presigned *url.URL, err error) {
-	return repo.s3Repo.Upload(photoBucketName, photoExtension)
+func (repo *PhotoPresignedRepo) Upload(id string) (presigned *url.URL, err error) {
+	objName := id + "." + photoExtension
+	return repo.s3Repo.Upload(objName, photoBucketName)
+}
+
+func (repo *PhotoPresignedRepo) Update(id string) (presigned *url.URL, err error) {
+	objName := id + "." + photoExtension
+	exists, err := repo.s3Repo.CheckIfExists(objName, photoBucketName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !exists {
+		return nil, domain.ErrNotFound
+	}
+
+	return repo.s3Repo.Upload(objName, photoBucketName)
+}
+
+func (repo *PhotoPresignedRepo) Remove(id string) (err error) {
+	objName := id + "." + photoExtension
+	return repo.s3Repo.Remove(objName, photoBucketName)
 }

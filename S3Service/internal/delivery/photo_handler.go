@@ -21,8 +21,10 @@ func NewPhotoHandler(photoUc *usecase.PhotoUseCase) *PhotoHandler {
 func (ph *PhotoHandler) RegisterRoutes(engine *gin.Engine) {
 	engine.GET("", ph.GetHello)
 	engine.GET("get/:id", ph.Get)
-	engine.GET("presigned/get/:id", ph.GetPresigned)
+	engine.GET("presigned/:id", ph.GetPresigned)
 	engine.GET("presigned/upload", ph.UploadPresigned)
+	engine.PUT("presigned/upload/:id", ph.UpdatePresigned)
+	engine.DELETE("remove/:id", ph.Remove)
 }
 
 func (ph *PhotoHandler) GetHello(c *gin.Context) {
@@ -68,10 +70,10 @@ func (ph *PhotoHandler) Get(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"Photo id"
-//	@Success		200	{object}    dto.PresignedGetUrlResponse
+//	@Success		200	{object}    dto.PresignedUrlResponse
 //	@Failure		404	{object}	dto.ErrorNotFoundResponse
 //	@Failure		500	{object}	dto.ErrorInternalResponse
-//	@Router			/presigned/get/{id} [get]
+//	@Router			/presigned/{id} [get]
 func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 	id := c.Param("id")
 	url, err := ph.photoUC.GetPresigned(id)
@@ -86,13 +88,13 @@ func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, dto.PresignedGetUrlResponse{URL: url.String()})
+	c.IndentedJSON(http.StatusOK, dto.PresignedUrlResponse{URL: url.String()})
 }
 
 // UploadPresigned godoc
 //
 //	@Summary		Get a presigned url to upload a photo
-//	@Description	Gets a presigned url to upload a photo to MinIO storage
+//	@Description	Gets a presigned url to upload a new photo to S3
 //	@Tags			Photos
 //	@Accept			mpfd
 //	@Produce		json
@@ -100,12 +102,64 @@ func (ph *PhotoHandler) GetPresigned(c *gin.Context) {
 //	@Failure		500	{object}	dto.ErrorInternalResponse
 //	@Router			/presigned/upload [get]
 func (ph *PhotoHandler) UploadPresigned(c *gin.Context) {
-	url, err := ph.photoUC.UploadPresigned()
+	url, id, err := ph.photoUC.UploadPresigned()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorInternalResponse{Message: err.Error()})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, dto.PresignedUploadUrlResponse{URL: url.String()})
+	c.IndentedJSON(http.StatusOK, dto.PresignedUploadUrlResponse{URL: url.String(), Id: id})
+}
+
+// UpdatePresigned godoc
+//
+//	@Summary		Get a presigned url to update a photo
+//	@Description	Get a presigned url to update an existing photo in S3
+//	@Tags			Photos
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Photo id"
+//	@Success		200	{object}    dto.PresignedUploadUrlResponse
+//	@Failure		404	{object}	dto.ErrorNotFoundResponse
+//	@Failure		500	{object}	dto.ErrorInternalResponse
+//	@Router			/presigned/upload/{id} [put]
+func (ph *PhotoHandler) UpdatePresigned(c *gin.Context) {
+	id := c.Param("id")
+	url, err := ph.photoUC.UpdatePresigned(id)
+
+	if errors.Is(err, domain.ErrNotFound) {
+		c.JSON(http.StatusNotFound, dto.ErrorNotFoundResponse{Message: fmt.Sprintf("Photo with id=%v was not found", id)})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorInternalResponse{Message: err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, dto.PresignedUrlResponse{URL: url.String()})
+}
+
+// Remove godoc
+//
+//	@Summary		Remove a photo
+//	@Description	Remove a photo from S3 by id
+//	@Tags			Photos
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Photo id"
+//	@Success		204    "No content"
+//	@Failure		500	{object}	dto.ErrorInternalResponse
+//	@Router			/remove/{id} [delete]
+func (ph *PhotoHandler) Remove(c *gin.Context) {
+	id := c.Param("id")
+	err := ph.photoUC.Remove(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorInternalResponse{Message: err.Error()})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

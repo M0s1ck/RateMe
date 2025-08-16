@@ -13,5 +13,7 @@ type PhotoRepository interface {
 
 type PhotoPresignedRepo interface {
 	Get(id string) (presigned *url.URL, err error)
-	Upload() (presigned *url.URL, err error)
+	Upload(id string) (presigned *url.URL, err error)
+	Update(id string) (presigned *url.URL, err error)
+	Remove(id string) (err error)
 }
