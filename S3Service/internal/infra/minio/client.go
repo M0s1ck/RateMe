@@ -7,7 +7,8 @@ import (
 )
 
 func NewMinioClient() *minio.Client {
-	endpoint := "localhost:9000" // TODO: вынести в .env
+	//TODO: fix!! Launches in docker bu gives presigned urls with "minio:9000" domain
+	endpoint := "minio:9000" // TODO: вынести в .env, config for dev and prod (localhost for local and minio for docker)
 	accessKeyID := "minioadmin"
 	secretAccessKey := "minioadmin"
 

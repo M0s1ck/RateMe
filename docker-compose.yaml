@@ -38,9 +38,26 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_SERVER_URL: http://localhost:9000
     volumes:
       - minio-data:/data
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  s3-service:
+    build:
+      context: ./S3Service
+      dockerfile: Dockerfile
+    container_name: s3-service
+    ports:
+      - "8800:8800"
+    depends_on:
+      minio:
+        condition: service_healthy
 
 volumes:
   pgdata:

@@ -36,7 +36,7 @@ func main() {
 	api.SwaggerInfo.BasePath = ""
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	err := engine.Run(":8080")
+	err := engine.Run(":8800") // Maybe move port to .env
 
 	if err != nil {
 		fmt.Println(err)
