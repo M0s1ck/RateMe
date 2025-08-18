@@ -38,9 +38,12 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-      MINIO_SERVER_URL: http://localhost:9000
     volumes:
       - minio-data:/data
+    networks:
+      default:
+        aliases:
+          - my-minio.local   # Should be set in etc/hosts
     command: server /data --console-address ":9001"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
