@@ -88,6 +88,13 @@ jobs:
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
+          MINIO_HOST_ALIAS=${{ vars.MINIO_HOST_ALIAS }}
+          MINIO_S3_API_PORT=${{ vars.MINIO_S3_API_PORT }}
+          MINIO_WEB_UI_PORT=${{ vars.MINIO_WEB_UI_PORT }}
+          S3_SERVICE_PORT=${{ vars.S3_SERVICE_PORT }}
+          GIN_MODE=${{ vars.GIN_MODE }}
           EOF
       
       - name: Build containers 
