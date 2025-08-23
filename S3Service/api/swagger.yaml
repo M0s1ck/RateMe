@@ -1,0 +1,165 @@
+definitions:
+  dto.ErrorInternalResponse:
+    properties:
+      message:
+        example: Internal Server Error
+        type: string
+    type: object
+  dto.ErrorNotFoundResponse:
+    properties:
+      message:
+        example: Photo with id=1214a280-1162-408a-918f-5cb9300194ce was not found
+        type: string
+    type: object
+  dto.PresignedUploadUrlResponse:
+    properties:
+      id:
+        example: 1214a280-1162-408a-918f-5cb9300174ce
+        type: string
+      url:
+        example: http://localhost:9000/photos/1214a280-1162-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250815T140417Z&X-Amz-Expires=1000&X-Amz-SignedHeaders=host&X-Amz-Signature=dee82423f46583c7027b704d486620dc601766fd198887d60345cc3ee9872549
+        type: string
+    type: object
+  dto.PresignedUrlResponse:
+    properties:
+      url:
+        example: http://localhost:9000/photos/1214a288-1362-408a-918f-5cb9300174ce.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20250815%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250815T143131Z&X-Amz-Expires=1000&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%221214a280-1162-408a-918f-5cb9300174ce.jpg%22&X-Amz-Signature=97b7e7c5cf44566f2cbfc246eeb26493267e8ff4afc184532d8b3f4af0b5e142
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a file of a photo from storage by id
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a photo (file)
+      tags:
+      - Photos
+  /presigned/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a presigned url to a photo from storage by id
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PresignedUrlResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorNotFoundResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorInternalResponse'
+      summary: Get a presigned url to a photo
+      tags:
+      - Photos
+  /presigned/upload:
+    get:
+      consumes:
+      - multipart/form-data
+      description: Gets a presigned url to upload a new photo to S3
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PresignedUploadUrlResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorInternalResponse'
+      summary: Get a presigned url to upload a photo
+      tags:
+      - Photos
+  /presigned/upload/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Get a presigned url to update an existing photo in S3
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PresignedUploadUrlResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorNotFoundResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorInternalResponse'
+      summary: Get a presigned url to update a photo
+      tags:
+      - Photos
+  /remove/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a photo from S3 by id
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorInternalResponse'
+      summary: Remove a photo
+      tags:
+      - Photos
+swagger: "2.0"

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:17
@@ -29,5 +27,40 @@ services:
       db:
         condition: service_healthy
 
+  s3:
+    image: quay.io/minio/minio
+    container_name: minio
+    ports:
+      - "${MINIO_S3_API_PORT}:${MINIO_S3_API_PORT}"
+      - "${MINIO_WEB_UI_PORT}:${MINIO_WEB_UI_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - minio-data:/data
+    networks:
+      default:
+        aliases:
+          - "${MINIO_HOST_ALIAS}"   # Should be set in etc/hosts
+    command: server /data --console-address ":${MINIO_WEB_UI_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${MINIO_S3_API_PORT}/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  s3-service:
+    build:
+      context: ./S3Service
+      dockerfile: Dockerfile
+    container_name: s3-service
+    env_file:
+      - .env
+    ports:
+      - "${S3_SERVICE_PORT}:${S3_SERVICE_PORT}"
+    depends_on:
+      s3:
+        condition: service_healthy
+
 volumes:
   pgdata:
+  minio-data:
