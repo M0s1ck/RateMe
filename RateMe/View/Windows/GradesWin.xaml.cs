@@ -6,7 +6,7 @@ using RateMe.Models.LocalDbModels;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using RateMe.Api.MinIoApi;
+using RateMe.Api.S3ServiceApi;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 using RateMe.Utils.LocalHelpers;

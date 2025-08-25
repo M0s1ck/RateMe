@@ -11,7 +11,8 @@ public static class PictureHelper
     private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");         // Move Up the hierarchy for helpers
     
     public static readonly string ProfilePicturePathJpg = Path.Combine(DataDir, "profile-picture.jpg");
-    
+
+    public static bool IsDefaultPicture => !File.Exists(ProfilePicturePathJpg);
     
     public static void ChangeProfilePicture(BitmapImage image)
     {
@@ -59,5 +60,5 @@ public static class PictureHelper
         CroppedBitmap cropped = new CroppedBitmap(source, new Int32Rect(x, y, side, side));
 
         return cropped;
-    } 
+    }
 }

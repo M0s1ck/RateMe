@@ -60,18 +60,22 @@ public class ProfileViewModel : INotifyPropertyChanged
     
     public async void SaveChanges()
     {
-        UpdateLocal();   
+        bool hasUpd = HasDataChanged();
 
-        if (!_userService.IsRemoteAlive)
+        if (hasUpd)
         {
-            return;
+            UpdateLocal();
+        }
+
+        if (_userService.IsRemoteAlive && hasUpd)
+        {
+            await _userService.UpdateRemoteUser();
         }
         
-        await _userService.UpdateRemoteUser();
-        
-        if (_pictureChanged)
+        if (_pictureChanged)  // TODO: Add domain healthcheck for S3Service :(, with IsAlive 
         {
-            // await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); not implemented to back yet
+            UpdateLocalPicture();
+            await UpdateS3Picture();
         }
     }
     
@@ -84,7 +88,7 @@ public class ProfileViewModel : INotifyPropertyChanged
     {
         _user.Name = NameModel.Data; // TODO: profile picture + push in db + check for actual changes
         _user.Surname = SurnameModel.Data;
-        _user.Email = EmailModel.Data; // Rn just change, maybe after add validations
+        _user.Email = EmailModel.Data;
         _user.Curriculum = CurriculumModel.Data;
         _user.Quote = AboutModel.Data;
 
@@ -100,12 +104,31 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
 
         _userService.UpdateUser(_user);
+    }
 
-        if (_pictureChanged)
+    private void UpdateLocalPicture()
+    {
+        BitmapImage newPicture = (BitmapImage)_imageSource;
+        PictureHelper.ChangeProfilePicture(newPicture);
+        _user.IsDefaultPicture = false;
+        JsonFileHelper.SaveUser(_user);
+    }
+
+    private async Task UpdateS3Picture()
+    {
+        string? picId = await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
+
+        if (picId != null)
         {
-            BitmapImage newPicture = (BitmapImage)_imageSource;
-            PictureHelper.ChangeProfilePicture(newPicture);
+            _user.PictureS3Id = picId;
+            JsonFileHelper.SaveUser(_user);
         }
+    }
+
+    private bool HasDataChanged()
+    {
+        return _user.Name != NameModel.Data || _user.Surname != SurnameModel.Data || _user.Email != EmailModel.Data ||
+               _user.Curriculum != CurriculumModel.Data || _user.Quote != AboutModel.Data;
     }
 
     

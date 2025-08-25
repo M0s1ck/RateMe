@@ -13,6 +13,7 @@ public class User
     public int Year { get; set; }
     public string Quote { get; set; }= string.Empty;
     public bool IsDefaultPicture { get; set; } = true;
+    public string PictureS3Id { get; set; } = string.Empty;
     public bool IsRemoteUpdated { get; set; } = true;
     
     public User() {}
