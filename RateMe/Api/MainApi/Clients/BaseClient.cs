@@ -6,7 +6,7 @@ namespace RateMe.Api.MainApi.Clients;
 
 public class BaseClient
 {
-    protected HttpClient TheHttpClient { get; init; } = new HttpClient() { Timeout = TimeSpan.FromSeconds(2) };
+    protected HttpClient TheHttpClient { get; init; } = new HttpClient() { Timeout = TimeSpan.FromSeconds(20) };  // TODO: decrease
 
     protected static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {

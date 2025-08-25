@@ -43,6 +43,7 @@
     <Resource Include="Assets\repeat-svgrepo-com.svg" />
     <Resource Include="Assets\edit-pen3.svg" />
     <Resource Include="Assets\edit-pen4.svg" />
+    <Resource Include="Assets\log-out-door.svg" />
     <Resource Include="Assets\default-profile-picture.jpg" />
   </ItemGroup>
 

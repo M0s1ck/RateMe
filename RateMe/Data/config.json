@@ -1,6 +1,6 @@
 {
   "IsSubjectsLoaded": true,
   "IsFirstTime": false,
-  "ApiUrl": "http://localhost:5200",
-  "S3Url": "http://localhost:4400"
+  "ApiUrl": "https://assured-tolerant-guppy.ngrok-free.app",
+  "S3Url": "http://localhost:8800"
 }

@@ -41,6 +41,7 @@ public partial class GradesWin : BaseFullWin
         _subjectsService = new SubjectsService(_subjects, isRemoteAlive);
         _elementsService = new ElementsService(_subjects, isRemoteAlive);
         _userService = new UserService(_subjectsService, _elementsService, isRemoteAlive); // TODO: move to viewModel!!
+        _userService.SignedOut += SetNames;
         
         _syllabus = syllabus;
         GradesDataGrid.ItemsSource = _subjects;
@@ -251,9 +252,7 @@ public partial class GradesWin : BaseFullWin
     private async void OnInfoClick(object sender, RoutedEventArgs e)
     {
         InfoWin infoWin = new();
-        // infoWin.Show();
-        await _userService.SignOut();   // TODO: вынести куда надо в profile
-        SetNames();
+        infoWin.Show();
     }
 
     private void SetNames()

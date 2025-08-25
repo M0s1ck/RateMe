@@ -12,7 +12,8 @@ public partial class ProfileWin : BaseFullWin
     
     private const string FileChoiceTitle = "Select a picture (preferably a square one)";
     private const string FileChoiceFilter = "All supported graphics|*.jpg;*.jpeg;*.png|" + "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" + "Portable Network Graphic (*.png)|*.png";
-    
+
+    private const string LogOutQuestion = "You are about to log out. Continue?";
     
     public ProfileWin(UserService userService, PictureService pictureService)
     {
@@ -55,5 +56,23 @@ public partial class ProfileWin : BaseFullWin
         {
             _viewModel.ImageSource = new BitmapImage(new Uri(op.FileName));
         }
+    }
+
+    private void OnOkClick(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void OnLeaveClick(object sender, RoutedEventArgs e)
+    {
+        YesNoWin win = new(LogOutQuestion);
+        
+        win.YesButton.Click += async (_, _) =>
+        {
+            await _viewModel.SignOut();
+            Close();
+        };
+        
+        win.Show();
     }
 }

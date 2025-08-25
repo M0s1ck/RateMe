@@ -33,7 +33,8 @@
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="210" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="80" />
             </Grid.RowDefinitions>
             
             <Grid Grid.Row="0">
@@ -96,16 +97,18 @@
                 </Grid>
                 
             </Grid>
+            
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
-                
-                <Grid Grid.Column="0" Margin="60, 0,0,0">
-                    <!--<userControls:CoolSvgButton x:Name="EditPictureButton" WhenClicked="OnEditPictureClick"  Size="25" BiggerSize="35" Source="/Assets/edit-pen4.svg" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,0" Panel.ZIndex="1" /> -->
-                </Grid>
+            </Grid>
+            
+            <Grid Grid.Row="2">
+                <userControls:NormalButton WhenClicked="OnOkClick" Back="#591e73" BackHover="#772899" TheContent="Ok" TheFontSize="17" />
+                <userControls:CoolSvgButton WhenClicked="OnLeaveClick" Size="40" BiggerSize="45" Source="/Assets/log-out-door.svg" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,20,0"/>
             </Grid>
         </Grid>
     </Grid>

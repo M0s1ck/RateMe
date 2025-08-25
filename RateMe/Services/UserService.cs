@@ -1,6 +1,4 @@
 using RateMeShared.Dto;
-using System.Net.Http;
-using System.Net.Sockets;
 using System.Windows;
 using RateMe.Api.MainApi.Clients;
 using RateMe.Api.MainApi.Mappers;
@@ -21,6 +19,8 @@ public class UserService
     private IElemUpdater _elemService;
     
     private readonly UserClient _userClient;
+    
+    public event Action? SignedOut;
     
     
     internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, bool isRemoteAlive)
@@ -136,6 +136,7 @@ public class UserService
         User = null;
 
         await _subjectService.ClearLocal();
+        SignedOut?.Invoke();
     }
 
 
@@ -163,19 +164,12 @@ public class UserService
         string question = "You are not signed up! All local data will be lost. Continue?";
         YesNoWin win = new(question);
         
-        win.YesButton.Click += async (o, args) =>
+        win.YesButton.Click += async (_, _) =>
         {
             await _subjectService.ClearLocal();
             await SignIn(email, pass, safe: false); 
         };
         
         win.Show();
-    }
-    
-    private void HandleHttpException(HttpRequestException ex)
-    {
-        Type? exType = ex.InnerException?.GetType();
-        string msg = exType == typeof(SocketException) ? "Похоже сервер не отвечает(" : ex.ToString();
-        MessageBox.Show(msg); //TODO: make more appealing?
     }
 }

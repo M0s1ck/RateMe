@@ -74,12 +74,17 @@ public class ProfileViewModel : INotifyPropertyChanged
             // await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); not implemented to back yet
         }
     }
+    
+    public async Task SignOut()
+    {
+        await _userService.SignOut();
+    }
 
     private void UpdateLocal()
     {
-        _user.Name = NameModel.Data;   // TODO: profile picture + push in db + check for actual changes
+        _user.Name = NameModel.Data; // TODO: profile picture + push in db + check for actual changes
         _user.Surname = SurnameModel.Data;
-        _user.Email = EmailModel.Data;  // Rn just change, maybe after add validations
+        _user.Email = EmailModel.Data; // Rn just change, maybe after add validations
         _user.Curriculum = CurriculumModel.Data;
         _user.Quote = AboutModel.Data;
 
@@ -95,7 +100,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
 
         _userService.UpdateUser(_user);
-        
+
         if (_pictureChanged)
         {
             BitmapImage newPicture = (BitmapImage)_imageSource;
