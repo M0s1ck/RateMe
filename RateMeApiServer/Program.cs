@@ -6,7 +6,7 @@ using RateMeApiServer.Services;
 
 namespace RateMeApiServer;
 
-class Program
+internal static class Program
 {
     static void Main(string[] args)
     {
@@ -32,8 +32,7 @@ class Program
         builder.Services.AddScoped<ISubjectService, SubjectService>();
         builder.Services.AddScoped<IElementsRepository, ElementsRepository>();
         builder.Services.AddScoped<IElementService, ElementService>();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {

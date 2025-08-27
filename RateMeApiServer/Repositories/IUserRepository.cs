@@ -11,5 +11,6 @@ namespace RateMeApiServer.Repositories
         Task<DbInteractionResult<User>> AuthAsync(string email, string password);
         Task<DbInteractionStatus> UpdateAsync(User user);
         Task<DbInteractionStatus> RemoveAsync(int id);
+        Task<DbInteractionStatus> UpdateS3PicId(int userId, Guid s3Id);
     }
 }

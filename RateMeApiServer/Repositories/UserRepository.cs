@@ -2,7 +2,6 @@
 using RateMeApiServer.Common;
 using RateMeApiServer.Data;
 using RateMeApiServer.Models.Entities;
-using RateMeShared.Dto;
 
 namespace RateMeApiServer.Repositories;
 
@@ -90,6 +89,20 @@ public class UserRepository : IUserRepository
 
         _context.Users.Remove(user);
         
+        await _context.SaveChangesAsync();
+        return DbInteractionStatus.Success;
+    }
+
+    public async Task<DbInteractionStatus> UpdateS3PicId(int userId, Guid s3Id)
+    {
+        User? user = await _context.Users.FindAsync(userId);
+
+        if (user == null)
+        {
+            return DbInteractionStatus.NotFound;
+        }
+
+        user.S3PicId = s3Id;
         await _context.SaveChangesAsync();
         return DbInteractionStatus.Success;
     }

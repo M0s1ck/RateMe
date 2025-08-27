@@ -61,4 +61,9 @@ public class UserService : IUserService
     {
         return await _userRepository.RemoveAsync(id);
     }
+
+    public async Task<DbInteractionStatus> UpdateS3PicId(int userId, Guid s3Id)
+    {
+        return await _userRepository.UpdateS3PicId(userId, s3Id);
+    }
 }
