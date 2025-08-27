@@ -10,6 +10,7 @@ namespace RateMe.Api.S3ServiceApi;
 public class PictureClient
 {
     private const string UploadPath = "/presigned/upload";
+    private const string UpdatePath = "/presigned/upload/{0}";
 
     private static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {
@@ -38,6 +39,22 @@ public class PictureClient
         string msg = await response.Content.ReadAsStringAsync();
         PresignedUploadDto? uploadDto = JsonSerializer.Deserialize<PresignedUploadDto>(msg, options: CaseInsensitiveOptions);
         return uploadDto;
+    }
+    
+    public async Task<string?> GetPreSignedUpdateUrl(string id)
+    {
+        string path = string.Format(UpdatePath, id);
+        using HttpResponseMessage response = await _httpClient.PutAsync(path, null);
+
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            MessageBox.Show($"S3 service error: {response.StatusCode}");
+            return null;
+        }
+        
+        using JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        string url = json.RootElement.GetProperty("url").ToString();
+        return url;
     }
 
     public async Task PushDataViaPreSignedUrl(byte[] dataBytes, string mediaType, string presignedUrl)

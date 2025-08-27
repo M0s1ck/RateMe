@@ -72,10 +72,26 @@ public class ProfileViewModel : INotifyPropertyChanged
             await _userService.UpdateRemoteUser();
         }
         
-        if (_pictureChanged)  // TODO: Add domain healthcheck for S3Service :(, with IsAlive 
+        if (_pictureChanged)
         {
             UpdateLocalPicture();
+        }
+        
+        if (_pictureChanged && _user.IsDefaultPicture)  // TODO: Add domain healthcheck for S3Service :(, with IsAlive 
+        {
+            await UploadS3Picture();
+        }
+        
+        if (_pictureChanged && !_user.IsDefaultPicture) 
+        {
             await UpdateS3Picture();
+        }
+
+        if (_pictureChanged)
+        {
+            _user.IsDefaultPicture = false;
+            JsonFileHelper.SaveUser(_user);
+            _pictureChanged = false;
         }
     }
     
@@ -86,7 +102,7 @@ public class ProfileViewModel : INotifyPropertyChanged
 
     private void UpdateLocal()
     {
-        _user.Name = NameModel.Data; // TODO: profile picture + push in db + check for actual changes
+        _user.Name = NameModel.Data;
         _user.Surname = SurnameModel.Data;
         _user.Email = EmailModel.Data;
         _user.Curriculum = CurriculumModel.Data;
@@ -110,11 +126,9 @@ public class ProfileViewModel : INotifyPropertyChanged
     {
         BitmapImage newPicture = (BitmapImage)_imageSource;
         PictureHelper.ChangeProfilePicture(newPicture);
-        _user.IsDefaultPicture = false;
-        JsonFileHelper.SaveUser(_user);
     }
 
-    private async Task UpdateS3Picture()
+    private async Task UploadS3Picture()  // TODO: Add to back s3Ids
     {
         string? picId = await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
 
@@ -123,6 +137,12 @@ public class ProfileViewModel : INotifyPropertyChanged
             _user.PictureS3Id = picId;
             JsonFileHelper.SaveUser(_user);
         }
+    }
+
+    private async Task UpdateS3Picture()
+    {
+        string id = _user.PictureS3Id;
+        await _pictureService.UpdateJpgPicture(id, PictureHelper.ProfilePicturePathJpg);
     }
 
     private bool HasDataChanged()

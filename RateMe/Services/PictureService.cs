@@ -31,5 +31,18 @@ public class PictureService
         return preSignedDto.Id;
     }
     
+    public async Task UpdateJpgPicture(string s3Id, string path)
+    {
+        string? presignedUrl = await _pictureClient.GetPreSignedUpdateUrl(s3Id);
+
+        if (string.IsNullOrEmpty(presignedUrl))
+        {
+            return;
+        }
+        
+        byte[] fileBytes = await File.ReadAllBytesAsync(path);
+        await _pictureClient.PushDataViaPreSignedUrl(fileBytes, JpegMediaType, presignedUrl);
+    }
+    
     
 }

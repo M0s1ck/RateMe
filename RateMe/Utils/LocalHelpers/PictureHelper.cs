@@ -8,7 +8,7 @@ public static class PictureHelper
 {
     public const string BuildDefaultProfilePicturePath = "pack://application:,,,/Assets/default-profile-picture.jpg";
     
-    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");         // Move Up the hierarchy for helpers
+    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
     
     public static readonly string ProfilePicturePathJpg = Path.Combine(DataDir, "profile-picture.jpg");
 
