@@ -119,6 +119,12 @@ public class UserService
         await _userClient.UpdateUser(fullDto);
         User!.IsRemoteUpdated = true;
     }
+
+    internal async Task UpdateS3PicId(string s3Id)
+    {
+        int userId = User!.Id;
+        await _userClient.UpdateS3PicId(userId, s3Id);
+    } 
     
     internal async Task SignOut()
     {

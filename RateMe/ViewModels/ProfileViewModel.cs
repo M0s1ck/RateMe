@@ -128,7 +128,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         PictureHelper.ChangeProfilePicture(newPicture);
     }
 
-    private async Task UploadS3Picture()  // TODO: Add to back s3Ids
+    private async Task UploadS3Picture()
     {
         string? picId = await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
 
@@ -136,12 +136,14 @@ public class ProfileViewModel : INotifyPropertyChanged
         {
             _user.PictureS3Id = picId;
             JsonFileHelper.SaveUser(_user);
+            
+            await _userService.UpdateS3PicId(picId);
         }
     }
 
     private async Task UpdateS3Picture()
     {
-        string id = _user.PictureS3Id;
+        string id = _user.PictureS3Id!;
         await _pictureService.UpdateJpgPicture(id, PictureHelper.ProfilePicturePathJpg);
     }
 

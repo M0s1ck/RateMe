@@ -66,4 +66,13 @@ internal class UserClient : BaseClient
     {
         using HttpResponseMessage response = await TheHttpClient.PatchAsJsonAsync(userFullDto.Id.ToString(), userFullDto);
     }
+
+    public async Task UpdateS3PicId(int userId, string s3Id)
+    {
+        string rUri = $"{userId}/s3/{s3Id}";
+        HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), rUri);
+        // request.Content = null;
+        
+        using HttpResponseMessage response = await TheHttpClient.SendAsync(request);
+    }
 }
