@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -9,6 +10,7 @@ namespace RateMe.Api.S3ServiceApi;
 
 public class PictureClient
 {
+    private const string GetPath = "/presigned/{0}";
     private const string UploadPath = "/presigned/upload";
     private const string UpdatePath = "/presigned/upload/{0}";
 
@@ -19,11 +21,27 @@ public class PictureClient
     
     private readonly HttpClient _httpClient; 
     
-    public PictureClient(int userId)
+    public PictureClient()
     {
         _httpClient = new HttpClient();
         Uri domain  = new Uri(JsonFileHelper.GetConfig().S3Url);
         _httpClient.BaseAddress = domain;
+    }
+
+    public async Task<string> GetPresignedGetUrl(string id)
+    {
+        string rPath = string.Format(GetPath, id);
+        using HttpResponseMessage response = await _httpClient.GetAsync(rPath);
+        
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            MessageBox.Show($"S3 service error: {response.StatusCode}");
+            return string.Empty;
+        }
+        
+        using JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        string url = json.RootElement.GetProperty("url").ToString();
+        return url;
     }
 
     public async Task<PresignedUploadDto?> GetPreSignedUploadUrl()
@@ -69,4 +87,22 @@ public class PictureClient
             MessageBox.Show($"Minio error: {response.StatusCode}");
         }
     }
+
+    public async Task<MemoryStream?> GetDataViaPresignedUrl(string url)
+    {
+        using HttpResponseMessage response = await _httpClient.GetAsync(url);
+        
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            MessageBox.Show($"Minio error: {response.StatusCode}");
+            return null;
+        }
+
+        await using Stream stream = await response.Content.ReadAsStreamAsync();
+        
+        MemoryStream memory = new MemoryStream();
+        await stream.CopyToAsync(memory);
+        memory.Position = 0;
+        return memory;
+    } 
 }

@@ -1,5 +1,7 @@
 using System.IO;
+using System.Windows.Media.Imaging;
 using RateMe.Api.S3ServiceApi;
+using RateMe.Utils.LocalHelpers;
 using RateMeShared.Dto;
 
 namespace RateMe.Services;
@@ -15,6 +17,22 @@ public class PictureService
         _pictureClient = client;
     }
 
+    public async Task LoadPictureFromS3(string id)
+    {
+        string url = await _pictureClient.GetPresignedGetUrl(id);
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return;
+        }
+
+        MemoryStream? stream = await _pictureClient.GetDataViaPresignedUrl(url);
+
+        if (stream != null)
+        {
+            await PictureHelper.GenerateProfilePictureFromStream(stream);
+        }
+    }
     
     public async Task<string?> UploadJpgPicture(string path)
     {
@@ -43,6 +61,4 @@ public class PictureService
         byte[] fileBytes = await File.ReadAllBytesAsync(path);
         await _pictureClient.PushDataViaPreSignedUrl(fileBytes, JpegMediaType, presignedUrl);
     }
-    
-    
 }

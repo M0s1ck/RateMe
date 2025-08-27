@@ -17,16 +17,18 @@ public class UserService
     
     private ISubjectUpdater _subjectService;
     private IElemUpdater _elemService;
+    private PictureService _picService;
     
     private readonly UserClient _userClient;
     
     public event Action? SignedOut;
     
     
-    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, bool isRemoteAlive)
+    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, PictureService picService, bool isRemoteAlive)
     {
         _subjectService = subjService;
         _elemService = elemService;
+        _picService = picService;
         
         _userClient = new UserClient();
         User = JsonFileHelper.GetUserOrNull();
@@ -73,7 +75,7 @@ public class UserService
     }
     
 
-    internal async Task SignIn(string email, string pass, bool safe=true)
+    internal async Task SignIn(string email, string pass, bool safe=true) // TODO: fix messed up subjs when signing in/out
     {
         if (!IsRemoteAlive)
         {
@@ -100,10 +102,16 @@ public class UserService
         }
 
         User = UserMapper.UserFromFullDto(userDto);
-        UpdateOnUser();
-        MessageBox.Show($"Hello, {User.Name} {User.Surname}");
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
+
+        if (User.PictureS3Id != null)  
+        {
+            await _picService.LoadPictureFromS3(User.PictureS3Id);   // TODO: what if s3-service is not alive
+            User.IsDefaultPicture = false;
+        }
+        
+        UpdateOnUser();
     }
 
     
@@ -140,6 +148,8 @@ public class UserService
         
         JsonFileHelper.RemoveUser();
         User = null;
+        
+        PictureHelper.RemoveProfilePicture();
 
         await _subjectService.ClearLocal();
         SignedOut?.Invoke();

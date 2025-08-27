@@ -5,7 +5,7 @@ using RateMe.Services;
 namespace RateMe.View.Windows;
 
 /// <summary>
-/// Логика взаимодействия для AuthenticationWin.xaml
+/// Логика взаимодействия для AuthWin.xaml
 /// </summary>
 public partial class AuthWin : BaseFullWin
 {

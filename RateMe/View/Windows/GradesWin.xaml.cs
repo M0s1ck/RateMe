@@ -25,6 +25,7 @@ public partial class GradesWin : BaseFullWin
     private readonly SubjectsService _subjectsService;
     private readonly ElementsService _elementsService;
     private readonly UserService _userService;
+    private readonly PictureService _picService;
 
     private UIElementCollection? _uiRows;
     private static readonly int NameColId = 0; 
@@ -40,7 +41,11 @@ public partial class GradesWin : BaseFullWin
         
         _subjectsService = new SubjectsService(_subjects, isRemoteAlive);
         _elementsService = new ElementsService(_subjects, isRemoteAlive);
-        _userService = new UserService(_subjectsService, _elementsService, isRemoteAlive); // TODO: move to viewModel!!
+        
+        PictureClient pictureClient = new();
+        _picService = new PictureService(pictureClient);
+        
+        _userService = new UserService(_subjectsService, _elementsService, _picService, isRemoteAlive); // TODO: move to viewModel
         _userService.SignedOut += SetNames;
         
         _syllabus = syllabus;
@@ -137,10 +142,6 @@ public partial class GradesWin : BaseFullWin
         if (_userService.IsUserAvailable && _userService.IsRemoteAlive && !_userService.User!.IsRemoteUpdated)
         {
             await _userService.UpdateRemoteUser();
-            
-            PictureClient pictureClient = new PictureClient(_userService.User!.Id);
-            PictureService pictureService = new PictureService(pictureClient);
-            // await pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); Not implemented yet
 
             _userService.User!.IsRemoteUpdated = true;
             JsonFileHelper.SaveUser(_userService.User!);
@@ -205,10 +206,7 @@ public partial class GradesWin : BaseFullWin
     {
         if (_userService.IsUserAvailable)
         {
-            PictureClient pictureClient = new PictureClient(_userService.User!.Id);
-            PictureService pictureService = new PictureService(pictureClient);
-            
-            ProfileWin pfWin = new(_userService, pictureService);
+            ProfileWin pfWin = new(_userService, _picService);
             pfWin.Show();
             return;
         }

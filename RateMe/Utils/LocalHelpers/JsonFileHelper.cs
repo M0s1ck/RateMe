@@ -91,7 +91,7 @@ public static class JsonFileHelper
         File.WriteAllTextAsync(ConfigJsonPath, jsonString);
     }
 
-    public static void SaveUser(User user)   // TODO: вынести в интерфейс ??? 3 функции
+    public static void SaveUser(User user)
     {
         string jsonString = JsonSerializer.Serialize(user, JsonOptions);
         File.WriteAllTextAsync(UserJsonPath, jsonString);
