@@ -1,6 +1,10 @@
 ﻿using RateMe.Models.ClientModels;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using RateMe.Services;
+using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;
 
@@ -88,5 +92,67 @@ public partial class AuthWin : BaseFullWin
 
         LogInPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         SignUpPanel.Visibility = LogInPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+    }
+    
+    // Arrow management
+
+    private void OnSignInKeyPressed(object sender, KeyEventArgs e)
+    {
+        DataHintTextBox box = (DataHintTextBox)sender;
+        DependencyObject panel = VisualTreeHelper.GetParent(box)!;
+        
+        if (box.Name == "LogInEmailForm" && e.Key == Key.Down)
+        {
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(panel, 1);
+            next.DataTextBox.Focus();
+        } 
+        else if (box.Name == "LogInPassForm" && e.Key == Key.Up)
+        {
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(panel, 0);
+            next.DataTextBox.Focus();
+        }
+    }
+    
+    private void OnSignUpKeyPressed(object sender, KeyEventArgs e)
+    {
+        DataHintTextBox box = (DataHintTextBox)sender;
+        DependencyObject panel = VisualTreeHelper.GetParent(box)!;
+        
+        if (box.Name == "SignUpNameForm" && e.Key == Key.Right && box.DataTextBox.CaretIndex == box.DataTextBox.Text.Length)
+        {
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(panel, 1);
+            next.DataTextBox.Focus();
+            return;
+        }
+        
+        if (box.Name == "SignUpSurnameForm" && e.Key == Key.Left && box.DataTextBox.CaretIndex == 0)
+        {
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(panel, 0);
+            next.DataTextBox.Focus();
+            return;
+        }
+
+        if (box.Name is "SignUpSurnameForm" or "SignUpNameForm" && e.Key == Key.Up)
+        {
+            DependencyObject prePanel = VisualTreeHelper.GetParent(panel)!;
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(prePanel, 0);
+            next.DataTextBox.Focus();
+            return;
+        }
+        
+        if (box.Name is "SignUpSurnameForm" or "SignUpNameForm" && e.Key == Key.Down)
+        {
+            DependencyObject prePanel = VisualTreeHelper.GetParent(panel)!;
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(prePanel, 2);
+            next.DataTextBox.Focus();
+            return;
+        }
+        
+        if (box.Name == "SignUpEmailForm" && e.Key == Key.Down || box.Name == "SignUpPassForm" && e.Key == Key.Up)
+        {
+            DependencyObject childPanel = VisualTreeHelper.GetChild(panel, 1);
+            DataHintTextBox next = (DataHintTextBox)VisualTreeHelper.GetChild(childPanel, 0);
+            next.DataTextBox.Focus();
+        }
     }
 }

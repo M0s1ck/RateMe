@@ -251,6 +251,9 @@ public partial class GradesWin : BaseFullWin
     {
         InfoWin infoWin = new();
         infoWin.Show();
+        
+        AuthWin authWin = new(_userService); // TODO: Remove
+        authWin.Show();
     }
 
     private void SetNames()

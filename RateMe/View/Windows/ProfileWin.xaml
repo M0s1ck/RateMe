@@ -108,7 +108,7 @@
             
             <Grid Grid.Row="2">
                 <userControls:NormalButton WhenClicked="OnOkClick" Back="#591e73" BackHover="#772899" TheContent="Ok" TheFontSize="17" />
-                <userControls:CoolSvgButton WhenClicked="OnLeaveClick" Size="40" BiggerSize="45" Source="/Assets/log-out-door.svg" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,20,0"/>
+                <userControls:CoolSvgButton WhenClicked="OnLeaveClick" Size="40" BiggerSize="45" Source="/Assets/log-out-door.svg" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,30,0"/>
             </Grid>
         </Grid>
     </Grid>

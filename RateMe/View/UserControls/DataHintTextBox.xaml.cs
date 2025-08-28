@@ -80,6 +80,6 @@ public partial class DataHintTextBox : UserControl
 
     private void OnUpdatedText(object sender, TextChangedEventArgs e)
     {
-        ((DataHintTextModel)DataContext).Data = dataTextBox.Text;
+        ((DataHintTextModel)DataContext).Data = DataTextBox.Text;
     }
 }

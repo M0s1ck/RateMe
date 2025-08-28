@@ -71,11 +71,11 @@ public class UserService
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
-        MessageBox.Show($"You've been signed up! Your id: {id}");
+        MessageBox.Show($"You've been signed up!");
     }
     
 
-    internal async Task SignIn(string email, string pass, bool safe=true) // TODO: fix messed up subjs when signing in/out
+    internal async Task SignIn(string email, string pass, bool safe=true)
     {
         if (!IsRemoteAlive)
         {
@@ -102,6 +102,7 @@ public class UserService
         }
 
         User = UserMapper.UserFromFullDto(userDto);
+        UpdateOnUser();
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
 
@@ -109,9 +110,8 @@ public class UserService
         {
             await _picService.LoadPictureFromS3(User.PictureS3Id);   // TODO: what if s3-service is not alive
             User.IsDefaultPicture = false;
+            JsonFileHelper.SaveUser(User);
         }
-        
-        UpdateOnUser();
     }
 
     
