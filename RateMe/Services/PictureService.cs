@@ -8,12 +8,15 @@ namespace RateMe.Services;
 
 public class PictureService
 {
+    public bool IsServiceAlive { get; }
+    
     private const string JpegMediaType = "image/jpeg"; 
     
     private PictureClient _pictureClient;
     
-    public PictureService(PictureClient client)
+    public PictureService(PictureClient client, bool isServiceAlive)
     {
+        IsServiceAlive = isServiceAlive;
         _pictureClient = client;
     }
 

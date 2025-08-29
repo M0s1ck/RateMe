@@ -11,7 +11,7 @@ namespace RateMe.Utils.LocalHelpers;
 public static class JsonFileHelper
 {
     #region static consts
-    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+    private static readonly string DataDir = Directory.GetCurrentDirectory();
     private static readonly string SyllabusJsonPath = Path.Combine(DataDir, "syllabus.json");
     private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
     private static readonly string UserJsonPath = Path.Combine(DataDir, "user.json");

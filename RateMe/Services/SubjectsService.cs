@@ -177,7 +177,11 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     public async Task AddLocals(IEnumerable<Subject> subjs)
     {
         SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
-        await _rep.Add(locals);
+
+        if (locals.Length != 0)
+        {
+            await _rep.Add(locals);
+        }
     }
 
 

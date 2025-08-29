@@ -13,6 +13,7 @@ public class PictureClient
     private const string GetPath = "/presigned/{0}";
     private const string UploadPath = "/presigned/upload";
     private const string UpdatePath = "/presigned/upload/{0}";
+    private const string HealthPath = "/health";
 
     private static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {
@@ -104,5 +105,31 @@ public class PictureClient
         await stream.CopyToAsync(memory);
         memory.Position = 0;
         return memory;
+    }
+
+    public async Task<bool> IsS3ServiceAlive()
+    {
+        Console.WriteLine($"Testing connection to s3 service at {_httpClient.BaseAddress}");
+        
+        try
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(HealthPath);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("S3 service connection successful");
+            }
+            else
+            {
+                Console.WriteLine($"S3 service connection issue: {response.StatusCode}");
+            }
+            
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+        {
+            Console.WriteLine("S3 service is unavailable :(");
+            return false;
+        }
     } 
 }

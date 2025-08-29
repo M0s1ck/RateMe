@@ -19,8 +19,7 @@ namespace RateMe.View.Windows;
 /// </summary>
 public partial class GradesWin : BaseFullWin
 {
-    private ObservableCollection<Subject> _subjects = [];
-    private SyllabusModel _syllabus;
+    private ObservableCollection<Subject> _subjects;
         
     private readonly SubjectsService _subjectsService;
     private readonly ElementsService _elementsService;
@@ -35,38 +34,27 @@ public partial class GradesWin : BaseFullWin
     /// <summary>
     /// Default constructor
     /// </summary>
-    public GradesWin(SyllabusModel syllabus, bool isRemoteAlive)
+    public GradesWin(ObservableCollection<Subject> subjs, SubjectsService subjService, ElementsService elemService, UserService userService, PictureService picService)
     {
         InitializeComponent();
         
-        _subjectsService = new SubjectsService(_subjects, isRemoteAlive);
-        _elementsService = new ElementsService(_subjects, isRemoteAlive);
+        _subjectsService = subjService;
+        _elementsService = elemService;
+        _picService = picService;
         
-        PictureClient pictureClient = new();
-        _picService = new PictureService(pictureClient);
-        
-        _userService = new UserService(_subjectsService, _elementsService, _picService, isRemoteAlive); // TODO: move to viewModel
+        _userService = userService;
         _userService.SignedOut += SetNames;
         
-        _syllabus = syllabus;
+        _subjects = subjs;
         GradesDataGrid.ItemsSource = _subjects;
         
         Loaded += (_, _) => AddHeaderBar(WindowGrid);
+        Loaded += async (_, _) => await _subjectsService.AddLocals(subjs);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
         Loaded += async (_, _) => await UpdateRemoteUser();
         Loaded += (_, _) => _uiRows = GetUiRows();
         Loaded += (_, _) => SetNames();
     }
-    
-    
-    /// <summary>
-    /// After pud subjects selection
-    /// </summary>
-    public GradesWin(SyllabusModel syllabus, List<Subject> subjectsFromPud, bool isRemoteAlive) : this(syllabus, isRemoteAlive)
-    {
-        Loaded += async (_, _) => await LoadSubjectsFromPud(subjectsFromPud);
-    }
-
     
     private async void OnSaveAndQuitClick(object sender, RoutedEventArgs e)
     {
@@ -124,17 +112,6 @@ public partial class GradesWin : BaseFullWin
         Config config = JsonFileHelper.GetConfig();
         config.IsSubjectsLoaded = true;
         JsonFileHelper.SaveConfig(config);
-    }
-    
-        
-    private async Task LoadSubjectsFromPud(List<Subject> subjectsFromPud)
-    {
-        foreach (Subject subject in subjectsFromPud)
-        {
-            _subjects.Add(subject);
-        }
-
-        await _subjectsService.AddLocals(subjectsFromPud);
     }
 
     private async Task UpdateRemoteUser()
@@ -251,9 +228,6 @@ public partial class GradesWin : BaseFullWin
     {
         InfoWin infoWin = new();
         infoWin.Show();
-        
-        AuthWin authWin = new(_userService); // TODO: Remove
-        authWin.Show();
     }
 
     private void SetNames()

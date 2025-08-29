@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using RateMe.Api.MainApi.Clients;
+using RateMe.Api.S3ServiceApi;
 using RateMe.Models.ClientModels;
+using RateMe.Services;
 
 namespace RateMe.View.Windows;
 
@@ -40,7 +42,7 @@ public partial class SubjectsWin : BaseFullWin
 
     private async void OnContinueClick(object sender, RoutedEventArgs e)
     {
-        List<Subject> selectedSubjs = [];
+        ObservableCollection<Subject> selectedSubjs = [];
 
         foreach (Subject subject in SubjectsObs)
         {
@@ -53,8 +55,17 @@ public partial class SubjectsWin : BaseFullWin
             
         BaseClient client = new();
         bool isRemoteAlive = await client.IsRemoteAlive();
+        
+        SubjectsService subjService = new(selectedSubjs, isRemoteAlive);
+        ElementsService elemService = new(selectedSubjs, isRemoteAlive);
+        
+        PictureClient picClient = new();
+        bool isS3ServiceAlive = await picClient.IsS3ServiceAlive();
+        PictureService picService = new(picClient, isS3ServiceAlive);
 
-        GradesWin gradesWin = new(_syllabus, selectedSubjs, isRemoteAlive);
+        UserService userService = new(subjService, elemService, picService, isRemoteAlive); 
+        
+        GradesWin gradesWin = new(selectedSubjs, subjService, elemService, userService, picService);
         gradesWin.Show();
         Close();
     }
