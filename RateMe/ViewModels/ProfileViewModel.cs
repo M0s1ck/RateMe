@@ -77,12 +77,12 @@ public class ProfileViewModel : INotifyPropertyChanged
             UpdateLocalPicture();
         }
         
-        if (_pictureChanged && _user.IsDefaultPicture)  // TODO: Add domain healthcheck for S3Service :(, with IsAlive 
+        if (_pictureChanged && _user.IsDefaultPicture && _pictureService.IsServiceAlive)
         {
             await UploadS3Picture();
         }
         
-        if (_pictureChanged && !_user.IsDefaultPicture) 
+        if (_pictureChanged && !_user.IsDefaultPicture && _pictureService.IsServiceAlive) 
         {
             await UpdateS3Picture();
         }

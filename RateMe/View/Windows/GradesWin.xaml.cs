@@ -6,7 +6,6 @@ using RateMe.Models.LocalDbModels;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using RateMe.Api.S3ServiceApi;
 using RateMe.Models.JsonFileModels;
 using RateMe.Services;
 using RateMe.Utils.LocalHelpers;
@@ -76,10 +75,6 @@ public partial class GradesWin : BaseFullWin
         {
             await UpdateRemote();
         }
-        else 
-        {
-            MessageBox.Show("No remote save for ya because u are not signed up");
-        }
     }
     
 
@@ -91,8 +86,7 @@ public partial class GradesWin : BaseFullWin
             await _elementsService.ElementsOverallRemoteUpdate();
             return;
         }
-    
-        MessageBox.Show("Похоже сервер не отвечает(");
+        
         await _subjectsService.MarkRemoteStates();
         await _elementsService.MarkRemoteStates();
     }
@@ -242,6 +236,12 @@ public partial class GradesWin : BaseFullWin
             NameBlock.Text = "Войти";
             SurnameBlock.Text = string.Empty;
         }
+    }
+    
+    private void OnInternetClick(object sender, RoutedEventArgs e)
+    {
+        ApisWin apisWin = new(_userService.IsRemoteAlive, _picService.IsServiceAlive);
+        apisWin.Show();
     }
 
     

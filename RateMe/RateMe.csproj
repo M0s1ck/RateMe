@@ -45,6 +45,7 @@
     <Resource Include="Assets\edit-pen4.svg" />
     <Resource Include="Assets\log-out-door.svg" />
     <Resource Include="Assets\default-profile-picture.jpg" />
+    <Resource Include="Assets\internet.svg" />
   </ItemGroup>
 
   <ItemGroup>

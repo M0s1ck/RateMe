@@ -69,7 +69,7 @@ public partial class App : Application
         return gradesWin;
     }
         
-    private static void SetProjectDirectory()
+    private static void SetProjectDirectory()  // TODO: test in real environment 
     {
         const string dataDirName = "Data";
         string defaultPath = Directory.GetCurrentDirectory();

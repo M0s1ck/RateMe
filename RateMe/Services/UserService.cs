@@ -106,9 +106,9 @@ public class UserService
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
 
-        if (User.PictureS3Id != null)  
+        if (User.PictureS3Id != null && _picService.IsServiceAlive)  
         {
-            await _picService.LoadPictureFromS3(User.PictureS3Id);   // TODO: what if s3-service is not alive
+            await _picService.LoadPictureFromS3(User.PictureS3Id);
             User.IsDefaultPicture = false;
             JsonFileHelper.SaveUser(User);
         }
