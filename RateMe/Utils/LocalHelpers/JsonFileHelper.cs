@@ -16,7 +16,9 @@ public static class JsonFileHelper
     private static readonly string ConfigJsonPath = Path.Combine(DataDir, "config.json");
     private static readonly string UserJsonPath = Path.Combine(DataDir, "user.json");
     private static readonly JsonSerializerOptions JsonOptions = new()
-    { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic), };
+    { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic) };
+    private const string ApiLocalHost = "http://localhost:8080";
+    private const string S3ServLocalHost = "http://localhost:8800";
     #endregion
 
     public static SyllabusModel GetSyllabus()
@@ -43,11 +45,6 @@ public static class JsonFileHelper
 
     public static Config GetConfig()
     {
-        if (!File.Exists(ConfigJsonPath))  // TODO: крч подумать че ставить, apiurl кста нало тоже обдумать 
-        {
-            return null;
-        }
-        
         string jsonContent = File.ReadAllText(ConfigJsonPath);
         Config? config = JsonSerializer.Deserialize<Config>(jsonContent);
 
@@ -57,6 +54,17 @@ public static class JsonFileHelper
         }
 
         return config;
+    }
+
+    public static void WriteDefaultConfig()
+    {
+        if (File.Exists(ConfigJsonPath)) 
+        {
+            return;
+        }
+        
+        Config defaultConf = new Config() { IsSubjectsLoaded = true, ApiUrl = ApiLocalHost, S3Url = S3ServLocalHost };
+        SaveConfig(defaultConf);
     }
 
 

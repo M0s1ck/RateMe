@@ -12,7 +12,7 @@ namespace RateMe.Models.InterfaceModels
             PropertyNameCaseInsensitive = true
         };
 
-        static readonly string _path = "Data\\Curriculums.json";
+        static readonly string _path = "Curriculums.json";
 
         public Curriculums()
         {
@@ -23,7 +23,7 @@ namespace RateMe.Models.InterfaceModels
 
             if (curriculumsModel == null)
             {
-                throw new IOException("Couldn't desserialize Data\\Curriculums.json");
+                throw new IOException("Couldn't deserialize Curriculums.json");
             }
 
             foreach (string op in curriculumsModel.Curriculums)

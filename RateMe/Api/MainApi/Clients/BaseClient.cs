@@ -1,13 +1,12 @@
 using System.Net.Http;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 using RateMe.Utils.LocalHelpers;
 
 namespace RateMe.Api.MainApi.Clients;
 
 public class BaseClient
 {
-    protected HttpClient TheHttpClient { get; init; } = new HttpClient() { Timeout = TimeSpan.FromSeconds(20) };  // TODO: decrease
+    protected HttpClient TheHttpClient { get; init; } = new HttpClient() { Timeout = TimeSpan.FromSeconds(20) };
 
     protected static readonly JsonSerializerOptions CaseInsensitiveOptions = new()
     {

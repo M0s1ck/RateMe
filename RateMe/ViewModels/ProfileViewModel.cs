@@ -55,7 +55,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         _imageSource = _user.IsDefaultPicture ? PictureHelper.LoadDefaultProfilePicture() : PictureHelper.LoadCurrentProfilePicture();
     }
     
-    public ProfileViewModel() {}
+    //public ProfileViewModel() {}
 
     
     public async void SaveChanges()

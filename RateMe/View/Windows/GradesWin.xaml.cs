@@ -218,7 +218,7 @@ public partial class GradesWin : BaseFullWin
         JsonFileHelper.SaveConfig(config);
     }
 
-    private async void OnInfoClick(object sender, RoutedEventArgs e)
+    private void OnInfoClick(object sender, RoutedEventArgs e)
     {
         InfoWin infoWin = new();
         infoWin.Show();

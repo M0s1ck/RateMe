@@ -4,7 +4,7 @@ namespace RateMe.Services.Interfaces;
 
 public interface IElemUpdater
 {
-    ElementsClient ElemClient { get; set; }
+    ElementsClient ElemClient { set; }
     Task ElementsOverallRemoteUpdate();
     Task MarkRemoteStates();
     void RetainElemsToUpdate();

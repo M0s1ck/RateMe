@@ -40,7 +40,7 @@ public partial class App : Application
     {
         if (config == null || !config.IsSubjectsLoaded)
         {
-            DataCollection dataCollectionWin = new DataCollection();
+            DataCollection dataCollectionWin = new();
             dataCollectionWin.Show();
             return;
         }
@@ -90,5 +90,6 @@ public partial class App : Application
         string newDataDir = defaultPath + Path.DirectorySeparatorChar + dataDirName;
         Directory.CreateDirectory(newDataDir);
         Directory.SetCurrentDirectory(newDataDir);
+        JsonFileHelper.WriteDefaultConfig();
     }
 }
