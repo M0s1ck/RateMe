@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using RateMe.Models.ClientModels;
@@ -46,10 +47,11 @@ public partial class GradesWin : BaseFullWin
         
         _subjects = subjs;
         GradesDataGrid.ItemsSource = _subjects;
+        Subject[] toAdd = subjs.Select(s => s).ToArray(); 
         
         Loaded += (_, _) => AddHeaderBar(WindowGrid);
-        Loaded += async (_, _) => await _subjectsService.AddLocals(subjs);
         Loaded += async (_, _) => await LoadSubjectsFromLocalDb();
+        Loaded += async (_, _) => await _subjectsService.AddLocals(toAdd);
         Loaded += async (_, _) => await UpdateRemoteUser();
         Loaded += (_, _) => _uiRows = GetUiRows();
         Loaded += (_, _) => SetNames();

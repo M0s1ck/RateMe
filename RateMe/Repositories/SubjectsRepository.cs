@@ -53,7 +53,15 @@ public class SubjectsRepository
     {
         await using SubjectsContext context = new();
         context.Subjects.Remove(subj);
-        await context.SaveChangesAsync();
+        
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            
+        }
     }
 
     
