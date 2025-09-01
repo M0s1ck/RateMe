@@ -18,7 +18,7 @@ namespace RateMe;
 /// </summary>
 public partial class App : Application
 {
-    protected override void OnStartup(StartupEventArgs e)
+    protected async override void OnStartup(StartupEventArgs e)
     {
         Console.WriteLine("RateMe App");
         base.OnStartup(e);
@@ -26,31 +26,17 @@ public partial class App : Application
         SetProjectDirectory();
         
         Console.WriteLine("Starting SQLite migrations");
-        
-        using SubjectsContext db = new();
-        db.Database.Migrate();
+
+        await using SubjectsContext db = new();
+        await db.Database.MigrateAsync();
         
         Console.WriteLine("Migrations were applied");
             
         Config config = JsonFileHelper.GetConfig();
-        OpenNextWin(config);
-    }
-        
-    private static async void OpenNextWin(Config? config)
-    {
-        if (config == null || !config.IsSubjectsLoaded)
-        {
-            DataCollection dataCollectionWin = new();
-            dataCollectionWin.Show();
-            return;
-        }
-
-        GradesWin gradesWin = await BuildGradesWin();
-        Console.WriteLine("Opening grades win");
-        gradesWin.Show();
+        await BuildNextWin(config);
     }
 
-    private static async Task<GradesWin> BuildGradesWin()
+    private static async Task BuildNextWin(Config? config)
     {
         BaseClient client = new();
         bool isRemoteAlive = await client.IsRemoteAlive();
@@ -63,13 +49,21 @@ public partial class App : Application
         bool isS3ServiceAlive = await picClient.IsS3ServiceAlive();
         PictureService picService = new(picClient, isS3ServiceAlive);
 
-        UserService userService = new(subjService, elemService, picService, isRemoteAlive); 
+        UserService userService = new(subjService, elemService, picService, isRemoteAlive);
         
-        GradesWin gradesWin = new(subjects, subjService, elemService, userService, picService);
-        return gradesWin;
+        if (config == null || !config.IsSubjectsLoaded)
+        {
+            DataCollection dataCollectionWin = new(isRemoteAlive, isS3ServiceAlive);
+            dataCollectionWin.Show();
+        }
+        else
+        {
+            GradesWin gradesWin = new(subjects, subjService, elemService, userService, picService);
+            gradesWin.Show();
+        }
     }
         
-    private static void SetProjectDirectory()  // TODO: test in real environment 
+    private static void SetProjectDirectory()
     {
         const string dataDirName = "Data";
         string defaultPath = Directory.GetCurrentDirectory();

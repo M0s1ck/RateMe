@@ -31,11 +31,16 @@ namespace RateMe.View.Windows
         private static readonly int BallRadius = 5;
         
         #endregion
-        
 
-        public DataCollection()
+        private bool _isApiAlive;
+        private bool _isS3ServiceAlive;
+        
+        public DataCollection(bool isApiAlive, bool isS3ServiceAlive)
         {
             InitializeComponent();
+
+            _isApiAlive = isApiAlive;
+            _isS3ServiceAlive = isS3ServiceAlive;
 
             Curriculums curriculums = new Curriculums();
             Loaded += (_, _) => SetItemSources(curriculums);
@@ -60,7 +65,7 @@ namespace RateMe.View.Windows
             await mainParser.GetSubjectsUrlsAltAsync();
             List<Subject> subjects = await mainParser.GetSubjectsDataAsync();
             
-            SubjectsWin subjectsWin = new(syllabus, subjects);
+            SubjectsWin subjectsWin = new(syllabus, subjects, _isApiAlive, _isS3ServiceAlive);
             subjectsWin.Show();
             Close();            
         }

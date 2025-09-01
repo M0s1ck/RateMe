@@ -20,8 +20,11 @@ public partial class SubjectsWin : BaseFullWin
 
     private readonly SyllabusModel _syllabus;
     private readonly List<Subject> _allSubjects;
+    
+    private bool _isApiAlive;
+    private bool _isS3ServiceAlive;
 
-    internal SubjectsWin(SyllabusModel syllabus, List<Subject> subjects)
+    internal SubjectsWin(SyllabusModel syllabus, List<Subject> subjects, bool isApiAlive, bool isS3ServAlive)
     {
         InitializeComponent();
             
@@ -33,6 +36,9 @@ public partial class SubjectsWin : BaseFullWin
         subjOptions.ItemsSource = SubjectsObs;
         _syllabus = syllabus;
         _allSubjects = subjects;
+        
+        _isApiAlive = isApiAlive;
+        _isS3ServiceAlive = isS3ServAlive;
 
         _selectedSubjCount = subjects.Count;
         selectedCountTextBlock.Text = $"Выбрано предметов: {_selectedSubjCount}";
@@ -40,7 +46,7 @@ public partial class SubjectsWin : BaseFullWin
         Loaded += (_, _) => AddHeaderBar(WindowGrid);
     }
 
-    private async void OnContinueClick(object sender, RoutedEventArgs e)
+    private void OnContinueClick(object sender, RoutedEventArgs e)
     {
         ObservableCollection<Subject> selectedSubjs = [];
 
@@ -52,18 +58,14 @@ public partial class SubjectsWin : BaseFullWin
                 selectedSubjs.Add(subject);
             }
         }
-            
-        BaseClient client = new();
-        bool isRemoteAlive = await client.IsRemoteAlive();
         
-        SubjectsService subjService = new(selectedSubjs, isRemoteAlive);
-        ElementsService elemService = new(selectedSubjs, isRemoteAlive);
+        SubjectsService subjService = new(selectedSubjs, _isApiAlive);
+        ElementsService elemService = new(selectedSubjs, _isApiAlive);
         
         PictureClient picClient = new();
-        bool isS3ServiceAlive = await picClient.IsS3ServiceAlive();
-        PictureService picService = new(picClient, isS3ServiceAlive);
+        PictureService picService = new(picClient, _isS3ServiceAlive);
 
-        UserService userService = new(subjService, elemService, picService, isRemoteAlive); 
+        UserService userService = new(subjService, elemService, picService, _isApiAlive); 
         
         GradesWin gradesWin = new(selectedSubjs, subjService, elemService, userService, picService);
         gradesWin.Show();

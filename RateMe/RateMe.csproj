@@ -48,6 +48,7 @@
     <Resource Include="Assets\default-profile-picture.jpg" />
     <Resource Include="Assets\internet.svg" />
     <Resource Include="Assets\logo.ico" />
+    <Resource Include="Assets\curriculums.json" />
   </ItemGroup>
 
   <ItemGroup>

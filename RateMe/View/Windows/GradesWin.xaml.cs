@@ -211,7 +211,7 @@ public partial class GradesWin : BaseFullWin
         
         Close();
         
-        DataCollection dataWin = new();
+        DataCollection dataWin = new(_userService.IsRemoteAlive, _picService.IsServiceAlive);
         dataWin.Show();
             
         // Log to config

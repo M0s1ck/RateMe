@@ -1,35 +1,67 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Resources;
 using RateMe.Models.JsonFileModels;
 
-namespace RateMe.Models.InterfaceModels
+namespace RateMe.Models.InterfaceModels;
+
+public class Curriculums : ObservableCollection<string>
 {
-    public class Curriculums : ObservableCollection<string>
+    static readonly JsonSerializerOptions Options = new()
     {
-        static readonly JsonSerializerOptions Options = new()
+        PropertyNameCaseInsensitive = true
+    };
+
+    private static readonly JsonSerializerOptions IndentOptions = new() { WriteIndented = true };
+
+    private const string BuildFilePath = "pack://application:,,,/Assets/curriculums.json";
+    private static readonly string RunTimePath = Path.Combine(Directory.GetCurrentDirectory(), "curriculums.json"); 
+
+    public Curriculums()
+    {
+        AddToCollectionBuildIn();
+            
+        if (!File.Exists(RunTimePath))
         {
-            PropertyNameCaseInsensitive = true
-        };
+            CurriculumsModel empty = new() { Curriculums = [] };
+            string emptyJson = JsonSerializer.Serialize(empty, IndentOptions);
+            File.WriteAllText(RunTimePath, emptyJson);
+        }
 
-        static readonly string _path = "Curriculums.json";
+        string runtimeJson = File.ReadAllText(RunTimePath);
+        AddToCollectionJsonContent(runtimeJson);
+    }
 
-        public Curriculums()
+    private void AddToCollectionBuildIn()
+    {
+        Uri resourceUri = new(BuildFilePath, UriKind.Absolute);
+        StreamResourceInfo? resourceInfo = Application.GetResourceStream(resourceUri);
+            
+        if (resourceInfo == null)
         {
-            string fullPath = Path.Combine(Directory.GetCurrentDirectory(), _path);
-            string jsonContent = File.ReadAllText(fullPath);
+            return;
+        }
+            
+        using StreamReader reader = new StreamReader(resourceInfo.Stream);
+        string jsonContent = reader.ReadToEnd();
+            
+        AddToCollectionJsonContent(jsonContent);
+    }
 
-            CurriculumsModel? curriculumsModel = JsonSerializer.Deserialize<CurriculumsModel>(jsonContent, Options);
+    private void AddToCollectionJsonContent(string jsonContent)
+    {
+        CurriculumsModel? buildInCursModel = JsonSerializer.Deserialize<CurriculumsModel>(jsonContent, Options);
 
-            if (curriculumsModel == null)
-            {
-                throw new IOException("Couldn't deserialize Curriculums.json");
-            }
-
-            foreach (string op in curriculumsModel.Curriculums)
-            {
-                Add(op);
-            }
+        if (buildInCursModel == null)
+        {
+            return;
+        } 
+            
+        foreach (string op in buildInCursModel.Curriculums)
+        {
+            Add(op);
         }
     }
 }
