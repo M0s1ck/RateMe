@@ -50,12 +50,9 @@ namespace RateMe.View.Windows
 
         private async void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            // Loading ("wait") starts
             WaitTextBlock.Visibility = Visibility.Visible;
             LaunchLoadingBalls();
             ContinueButton.IsEnabled = false;
-
-            // Collected data building up
             
             SyllabusModel syllabus = HandleSyllabus();
             

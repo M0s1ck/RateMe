@@ -39,14 +39,20 @@ public partial class App : Application
     private static async Task BuildNextWin(Config? config)
     {
         BaseClient client = new();
-        bool isRemoteAlive = await client.IsRemoteAlive();
+        PictureClient picClient = new();
+        
+        Task<bool> remoteAliveTask = client.IsRemoteAlive();
+        Task<bool> s3ServiceAliveTask = picClient.IsS3ServiceAlive();
+
+        await Task.WhenAll(remoteAliveTask, s3ServiceAliveTask);
+        
+        bool isRemoteAlive = await remoteAliveTask;
+        bool isS3ServiceAlive = await s3ServiceAliveTask;
         
         ObservableCollection<Subject> subjects = [];
         SubjectsService subjService = new(subjects, isRemoteAlive);
         ElementsService elemService = new(subjects, isRemoteAlive);
         
-        PictureClient picClient = new();
-        bool isS3ServiceAlive = await picClient.IsS3ServiceAlive();
         PictureService picService = new(picClient, isS3ServiceAlive);
 
         UserService userService = new(subjService, elemService, picService, isRemoteAlive);
