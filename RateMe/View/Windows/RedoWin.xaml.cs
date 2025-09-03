@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Input;
 using RateMe.View.UserControls;
 
 namespace RateMe.View.Windows;

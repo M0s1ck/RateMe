@@ -18,7 +18,9 @@ public class User
     public string Curriculum { get; set; } = string.Empty;
     public int Year { get; set; }
     [MaxLength(500)]
-    public string Quote { get; set; }= string.Empty;
+    public string Quote { get; set; } = string.Empty;
+
+    public Guid? S3PicId { get; set; }
 
     public List<Subject> Subjects { get; set; } = [];
 }

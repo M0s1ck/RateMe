@@ -16,5 +16,6 @@ syllabus.json
 user.json
 profile-picture.jpg
 
+RateMe/Data/curriculums.json
 RateMeApiServer/Controllers/WeatherForecastController.cs
 RateMeApiServer/WeatherForecast.cs

@@ -6,12 +6,11 @@ namespace RateMe.Utils.LocalHelpers;
 
 public static class PictureHelper
 {
-    public const string BuildDefaultProfilePicturePath = "pack://application:,,,/Assets/default-profile-picture.jpg";
+    private const string BuildDefaultProfilePicturePath = "pack://application:,,,/Assets/default-profile-picture.jpg";
     
-    private static readonly string DataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");         // Move Up the hierarchy for helpers
+    private static readonly string DataDir = Directory.GetCurrentDirectory();
     
     public static readonly string ProfilePicturePathJpg = Path.Combine(DataDir, "profile-picture.jpg");
-    
     
     public static void ChangeProfilePicture(BitmapImage image)
     {
@@ -46,6 +45,17 @@ public static class PictureHelper
         return image;
     }
 
+    public static async Task GenerateProfilePictureFromStream(MemoryStream stream)
+    {
+        await using FileStream fileStream = File.Create(ProfilePicturePathJpg);
+        await stream.CopyToAsync(fileStream);
+    } 
+
+    public static void RemoveProfilePicture()
+    {
+        File.Delete(ProfilePicturePathJpg);
+    }
+
     private static CroppedBitmap CropToSquare(BitmapImage source)
     {
         int width = source.PixelWidth;
@@ -59,5 +69,5 @@ public static class PictureHelper
         CroppedBitmap cropped = new CroppedBitmap(source, new Int32Rect(x, y, side, side));
 
         return cropped;
-    } 
+    }
 }

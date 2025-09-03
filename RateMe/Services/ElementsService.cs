@@ -8,7 +8,7 @@ using RateMeShared.Dto;
 
 namespace RateMe.Services;
 
-internal class ElementsService : ILocalElemService, IElemUpdater
+public class ElementsService : ILocalElemService, IElemUpdater
 {
     public ElementsClient? ElemClient { get; set; }
     public bool IsRemoteAlive { get; }

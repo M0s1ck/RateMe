@@ -23,20 +23,20 @@
 
         <Grid x:Name="MainGrid" Margin="0,60,0,0" HorizontalAlignment="Center">
             <StackPanel x:Name="LogInPanel" Orientation="Vertical">
-                <userControls:DataHintTextBox x:Name="LogInEmailForm" DataContext="{ Binding LogInEmailModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
-                <userControls:DataHintTextBox x:Name="LogInPassForm" DataContext="{ Binding LogInPassModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
+                <userControls:DataHintTextBox x:Name="LogInEmailForm" DataContext="{ Binding LogInEmailModel }" PreviewKeyDown="OnSignInKeyPressed" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
+                <userControls:DataHintTextBox x:Name="LogInPassForm" DataContext="{ Binding LogInPassModel }" PreviewKeyDown="OnSignInKeyPressed" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
                 <userControls:NormalButton x:Name="SignInButton" Back="#591e73" BackHover="#772899" TheContent="Войти" WhenClicked="OnSignInClick" TheMargin="0,30"/>
             </StackPanel>
 
             <StackPanel x:Name="SignUpPanel" Orientation="Vertical" Visibility="Collapsed">
-                <userControls:DataHintTextBox DataContext="{ Binding SignUpEmailModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
+                <userControls:DataHintTextBox x:Name="SignUpEmailForm" DataContext="{ Binding SignUpEmailModel }" PreviewKeyDown="OnSignUpKeyPressed" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
                 
                 <StackPanel Orientation="Horizontal">
-                    <userControls:DataHintTextBox DataContext="{ Binding NameModel }" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="120" TextBoxMaxWidth="120" TextBlockWidth="110" TextBlockFontSize="16" Margin="0,5,5,5"/>
-                    <userControls:DataHintTextBox DataContext="{ Binding SurnameModel }" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="120" TextBoxMaxWidth="120" TextBlockWidth="110" TextBlockFontSize="16" Margin="5,5,0,5"/>
+                    <userControls:DataHintTextBox x:Name="SignUpNameForm" DataContext="{ Binding NameModel }" PreviewKeyDown="OnSignUpKeyPressed" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="120" TextBoxMaxWidth="120" TextBlockWidth="110" TextBlockFontSize="16" Margin="0,5,5,5"/>
+                    <userControls:DataHintTextBox x:Name="SignUpSurnameForm" DataContext="{ Binding SurnameModel }" PreviewKeyDown="OnSignUpKeyPressed" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="120" TextBoxMaxWidth="120" TextBlockWidth="110" TextBlockFontSize="16" Margin="5,5,0,5"/>
                 </StackPanel>
                 
-                <userControls:DataHintTextBox DataContext="{ Binding SignUpPassModel }" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
+                <userControls:DataHintTextBox x:Name="SignUpPassForm" DataContext="{ Binding SignUpPassModel }" PreviewKeyDown="OnSignUpKeyPressed" VerticalAlignment="Top" TextBoxFontSize="19" TextBoxHeight="44" TextBoxMinWidth="250" TextBoxMaxWidth="250" TextBlockFontSize="16" Margin="0,5"/>
                 <userControls:NormalButton x:Name="SignUpButton" Back="#591e73" BackHover="#772899" TheContent="Sign up" WhenClicked="OnSignUpClick" TheMargin="0,30"/>
             </StackPanel>
 

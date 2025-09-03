@@ -65,6 +65,19 @@ const docTemplate = `{
                 }
             }
         },
+        "/health": {
+            "get": {
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Service healthcheck",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/presigned/upload": {
             "get": {
                 "description": "Gets a presigned url to upload a new photo to S3",

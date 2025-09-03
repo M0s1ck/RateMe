@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,7 +44,11 @@
     <Resource Include="Assets\repeat-svgrepo-com.svg" />
     <Resource Include="Assets\edit-pen3.svg" />
     <Resource Include="Assets\edit-pen4.svg" />
+    <Resource Include="Assets\log-out-door.svg" />
     <Resource Include="Assets\default-profile-picture.jpg" />
+    <Resource Include="Assets\internet.svg" />
+    <Resource Include="Assets\logo.ico" />
+    <Resource Include="Assets\curriculums.json" />
   </ItemGroup>
 
   <ItemGroup>

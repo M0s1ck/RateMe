@@ -11,7 +11,7 @@ namespace RateMe.Parser
     {
         internal List<Subject> Subjects { get; private set; } = [];
 
-        private readonly SyllabusModel Syllabus;
+        private readonly SyllabusModel _syllabus;
 
         private string _curriculumNameShortened = string.Empty;
         private List<string> _subjectsUrls = [];
@@ -42,7 +42,7 @@ namespace RateMe.Parser
 
         public MainParser(SyllabusModel syllabus)
         {
-            Syllabus = syllabus;
+            _syllabus = syllabus;
             string curriculumReHtmlTemp = string.Format(CurriculumHtmlTemplate, syllabus.Curriculum);
             _curriculumRegex = new(curriculumReHtmlTemp);
         }
@@ -56,7 +56,7 @@ namespace RateMe.Parser
 
             if (!currMatch.Success)
             {
-                MessageBox.Show($"Error: curriculum {Syllabus.Curriculum} was not found");
+                MessageBox.Show($"Error: curriculum {_syllabus.Curriculum} was not found");
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace RateMe.Parser
 
             do
             {
-                string curriculumCoursesPageUrl = string.Format(CurriculumCoursesPageUrlTemplate, _curriculumNameShortened, Syllabus.Course, pageNumber, CurrentStudyYear);
+                string curriculumCoursesPageUrl = string.Format(CurriculumCoursesPageUrlTemplate, _curriculumNameShortened, _syllabus.Course, pageNumber, CurrentStudyYear);
 
                 using HttpResponseMessage response = await _httpClient.GetAsync(curriculumCoursesPageUrl);
                 string pageContent = await response.Content.ReadAsStringAsync();
@@ -114,16 +114,16 @@ namespace RateMe.Parser
         {
             List<Subject> subjects = [];
 
-            foreach(string subjectUrl in _subjectsUrls)
+            await Parallel.ForEachAsync(_subjectsUrls, async (subjectUrl, token) =>
             {
-                using HttpResponseMessage response = await _httpClient.GetAsync(subjectUrl);
-                
-                if (response == null || !response.IsSuccessStatusCode)
+                using HttpResponseMessage response = await _httpClient.GetAsync(subjectUrl, token);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    break;
+                    return;
                 }
 
-                string pageContent = await response.Content.ReadAsStringAsync();
+                string pageContent = await response.Content.ReadAsStringAsync(token);
                 HtmlDocument subjDoc = new HtmlDocument();
                 subjDoc.LoadHtml(pageContent);
                 HtmlNode rootDocNode = subjDoc.DocumentNode;
@@ -141,7 +141,7 @@ namespace RateMe.Parser
 
                 Subject sub = new Subject(subjName, credits, modules, assesementFormulas);
                 subjects.Add(sub);
-            }
+            });
 
             Subjects = subjects;
 
@@ -235,8 +235,5 @@ namespace RateMe.Parser
             DateTime now = DateTime.Now;
             return now.Month >= 8 ? now.Year : now.Year - 1;
         }
-
-
-
     }
 }

@@ -42,6 +42,7 @@ func main() {
 	engine := gin.Default()
 
 	photoHandler.RegisterRoutes(engine)
+	engine.GET("/health", delivery.Health)
 
 	api.SwaggerInfo.BasePath = ""
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

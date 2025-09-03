@@ -1,6 +1,4 @@
 using RateMeShared.Dto;
-using System.Net.Http;
-using System.Net.Sockets;
 using System.Windows;
 using RateMe.Api.MainApi.Clients;
 using RateMe.Api.MainApi.Mappers;
@@ -19,14 +17,18 @@ public class UserService
     
     private ISubjectUpdater _subjectService;
     private IElemUpdater _elemService;
+    private PictureService _picService;
     
     private readonly UserClient _userClient;
     
+    public event Action? SignedOut;
     
-    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, bool isRemoteAlive)
+    
+    internal UserService(ISubjectUpdater subjService, IElemUpdater elemService, PictureService picService, bool isRemoteAlive)
     {
         _subjectService = subjService;
         _elemService = elemService;
+        _picService = picService;
         
         _userClient = new UserClient();
         User = JsonFileHelper.GetUserOrNull();
@@ -69,7 +71,7 @@ public class UserService
         UpdateOnUser();
 
         await _subjectService.SubjectsOverallRemoteUpdate();
-        MessageBox.Show($"You've been signed up! Your id: {id}");
+        MessageBox.Show($"You've been signed up!");
     }
     
 
@@ -101,9 +103,15 @@ public class UserService
 
         User = UserMapper.UserFromFullDto(userDto);
         UpdateOnUser();
-        MessageBox.Show($"Hello, {User.Name} {User.Surname}");
 
         await _subjectService.LoadUpdateAllUserSubjectsFromRemote();
+
+        if (User.PictureS3Id != null && _picService.IsServiceAlive)  
+        {
+            await _picService.LoadPictureFromS3(User.PictureS3Id);
+            User.IsDefaultPicture = false;
+            JsonFileHelper.SaveUser(User);
+        }
     }
 
     
@@ -119,6 +127,12 @@ public class UserService
         await _userClient.UpdateUser(fullDto);
         User!.IsRemoteUpdated = true;
     }
+
+    internal async Task UpdateS3PicId(string s3Id)
+    {
+        int userId = User!.Id;
+        await _userClient.UpdateS3PicId(userId, s3Id);
+    } 
     
     internal async Task SignOut()
     {
@@ -134,8 +148,11 @@ public class UserService
         
         JsonFileHelper.RemoveUser();
         User = null;
+        
+        PictureHelper.RemoveProfilePicture();
 
         await _subjectService.ClearLocal();
+        SignedOut?.Invoke();
     }
 
 
@@ -163,19 +180,12 @@ public class UserService
         string question = "You are not signed up! All local data will be lost. Continue?";
         YesNoWin win = new(question);
         
-        win.YesButton.Click += async (o, args) =>
+        win.YesButton.Click += async (_, _) =>
         {
             await _subjectService.ClearLocal();
             await SignIn(email, pass, safe: false); 
         };
         
         win.Show();
-    }
-    
-    private void HandleHttpException(HttpRequestException ex)
-    {
-        Type? exType = ex.InnerException?.GetType();
-        string msg = exType == typeof(SocketException) ? "Похоже сервер не отвечает(" : ex.ToString();
-        MessageBox.Show(msg); //TODO: make more appealing?
     }
 }

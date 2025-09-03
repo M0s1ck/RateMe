@@ -55,31 +55,56 @@ public class ProfileViewModel : INotifyPropertyChanged
         _imageSource = _user.IsDefaultPicture ? PictureHelper.LoadDefaultProfilePicture() : PictureHelper.LoadCurrentProfilePicture();
     }
     
-    public ProfileViewModel() {}
+    //public ProfileViewModel() {}
 
     
     public async void SaveChanges()
     {
-        UpdateLocal();   
+        bool hasUpd = HasDataChanged();
 
-        if (!_userService.IsRemoteAlive)
+        if (hasUpd)
         {
-            return;
+            UpdateLocal();
         }
-        
-        await _userService.UpdateRemoteUser();
+
+        if (_userService.IsRemoteAlive && hasUpd)
+        {
+            await _userService.UpdateRemoteUser();
+        }
         
         if (_pictureChanged)
         {
-            // await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg); not implemented to back yet
+            UpdateLocalPicture();
         }
+        
+        if (_pictureChanged && _user.IsDefaultPicture && _pictureService.IsServiceAlive)
+        {
+            await UploadS3Picture();
+        }
+        
+        if (_pictureChanged && !_user.IsDefaultPicture && _pictureService.IsServiceAlive) 
+        {
+            await UpdateS3Picture();
+        }
+
+        if (_pictureChanged)
+        {
+            _user.IsDefaultPicture = false;
+            JsonFileHelper.SaveUser(_user);
+            _pictureChanged = false;
+        }
+    }
+    
+    public async Task SignOut()
+    {
+        await _userService.SignOut();
     }
 
     private void UpdateLocal()
     {
-        _user.Name = NameModel.Data;   // TODO: profile picture + push in db + check for actual changes
+        _user.Name = NameModel.Data;
         _user.Surname = SurnameModel.Data;
-        _user.Email = EmailModel.Data;  // Rn just change, maybe after add validations
+        _user.Email = EmailModel.Data;
         _user.Curriculum = CurriculumModel.Data;
         _user.Quote = AboutModel.Data;
 
@@ -95,12 +120,37 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
 
         _userService.UpdateUser(_user);
-        
-        if (_pictureChanged)
+    }
+
+    private void UpdateLocalPicture()
+    {
+        BitmapImage newPicture = (BitmapImage)_imageSource;
+        PictureHelper.ChangeProfilePicture(newPicture);
+    }
+
+    private async Task UploadS3Picture()
+    {
+        string? picId = await _pictureService.UploadJpgPicture(PictureHelper.ProfilePicturePathJpg);
+
+        if (picId != null)
         {
-            BitmapImage newPicture = (BitmapImage)_imageSource;
-            PictureHelper.ChangeProfilePicture(newPicture);
+            _user.PictureS3Id = picId;
+            JsonFileHelper.SaveUser(_user);
+            
+            await _userService.UpdateS3PicId(picId);
         }
+    }
+
+    private async Task UpdateS3Picture()
+    {
+        string id = _user.PictureS3Id!;
+        await _pictureService.UpdateJpgPicture(id, PictureHelper.ProfilePicturePathJpg);
+    }
+
+    private bool HasDataChanged()
+    {
+        return _user.Name != NameModel.Data || _user.Surname != SurnameModel.Data || _user.Email != EmailModel.Data ||
+               _user.Curriculum != CurriculumModel.Data || _user.Quote != AboutModel.Data;
     }
 
     

@@ -1,10 +1,13 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using RateMe.Api.MainApi.Clients;
+using RateMe.Api.S3ServiceApi;
 using RateMe.Models.ClientModels;
 using RateMe.Models.JsonFileModels;
 using RateMe.Repositories;
+using RateMe.Services;
 using RateMe.Utils.LocalHelpers;
 using RateMe.View.Windows;
 
@@ -15,42 +18,78 @@ namespace RateMe;
 /// </summary>
 public partial class App : Application
 {
-    protected override void OnStartup(StartupEventArgs e)
+    protected async override void OnStartup(StartupEventArgs e)
     {
+        Console.WriteLine("RateMe App");
         base.OnStartup(e);
             
         SetProjectDirectory();
-            
-        using SubjectsContext db = new();
-        db.Database.Migrate();
+        
+        Console.WriteLine("Starting SQLite migrations");
+
+        await using SubjectsContext db = new();
+        await db.Database.MigrateAsync();
+        
+        Console.WriteLine("Migrations were applied");
             
         Config config = JsonFileHelper.GetConfig();
-        OpenNextWin(config);
+        await BuildNextWin(config);
     }
-        
-    private static async void OpenNextWin(Config? config)
+
+    private static async Task BuildNextWin(Config? config)
     {
+        BaseClient client = new();
+        PictureClient picClient = new();
+        
+        Task<bool> remoteAliveTask = client.IsRemoteAlive();
+        Task<bool> s3ServiceAliveTask = picClient.IsS3ServiceAlive();
+
+        await Task.WhenAll(remoteAliveTask, s3ServiceAliveTask);
+        
+        bool isRemoteAlive = await remoteAliveTask;
+        bool isS3ServiceAlive = await s3ServiceAliveTask;
+        
+        ObservableCollection<Subject> subjects = [];
+        SubjectsService subjService = new(subjects, isRemoteAlive);
+        ElementsService elemService = new(subjects, isRemoteAlive);
+        
+        PictureService picService = new(picClient, isS3ServiceAlive);
+
+        UserService userService = new(subjService, elemService, picService, isRemoteAlive);
+        
         if (config == null || !config.IsSubjectsLoaded)
         {
-            DataCollection dataCollectionWin = new DataCollection();
+            DataCollection dataCollectionWin = new(isRemoteAlive, isS3ServiceAlive);
             dataCollectionWin.Show();
-            return;
         }
-
-        SyllabusModel syllabus = JsonFileHelper.GetSyllabus();
-
-        BaseClient client = new();
-        bool isRemoteAlive = await client.IsRemoteAlive();
-        
-        GradesWin gradesWin = new(syllabus, isRemoteAlive);
-        gradesWin.Show();
+        else
+        {
+            GradesWin gradesWin = new(subjects, subjService, elemService, userService, picService);
+            gradesWin.Show();
+        }
     }
         
     private static void SetProjectDirectory()
     {
+        const string dataDirName = "Data";
         string defaultPath = Directory.GetCurrentDirectory();
-        string[] defaultPathArr = defaultPath.Split(Path.DirectorySeparatorChar);
-        string projectPath = string.Join(Path.DirectorySeparatorChar, defaultPathArr[..^3]);  // TODO: get via while() loop
-        Directory.SetCurrentDirectory(projectPath);
+        string[] dirsArr = defaultPath.Split(Path.DirectorySeparatorChar);
+
+        for (int i = dirsArr.Length - 1; i > 0; --i)
+        {
+            string dir = string.Join(Path.DirectorySeparatorChar, dirsArr[..(i + 1)]);
+            string dataPath = dir + Path.DirectorySeparatorChar + dataDirName;
+            
+            if (Directory.Exists(dataPath))
+            {
+                Directory.SetCurrentDirectory(dataPath);
+                return;
+            }
+        }
+        
+        string newDataDir = defaultPath + Path.DirectorySeparatorChar + dataDirName;
+        Directory.CreateDirectory(newDataDir);
+        Directory.SetCurrentDirectory(newDataDir);
+        JsonFileHelper.WriteDefaultConfig();
     }
 }

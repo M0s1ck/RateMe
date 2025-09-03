@@ -113,5 +113,24 @@ public class UsersController : ControllerBase
             case DbInteractionStatus.NotFound: return NotFound();
             default: return StatusCode(500);
         }
-    }    
+    }
+
+    
+    /// <summary>
+    /// Updates user's s3 pic id. 
+    /// </summary>
+    /// <response code="204">If updated.</response>
+    /// <response code="404">if such id doesn't exist</response>
+    [HttpPatch("{userId:int}/s3/{s3Id:guid}")]
+    public async Task<IActionResult> UpdateS3PicId(int userId, Guid s3Id)
+    {
+        DbInteractionStatus status = await _userService.UpdateS3PicId(userId, s3Id);
+        
+        switch (status)
+        {
+            case DbInteractionStatus.Success: return NoContent();
+            case DbInteractionStatus.NotFound: return NotFound();
+            default: return StatusCode(500);
+        } 
+    }
 }

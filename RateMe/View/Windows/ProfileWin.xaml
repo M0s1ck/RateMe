@@ -6,17 +6,12 @@
         mc:Ignorable="d"
         xmlns:userControls="clr-namespace:RateMe.View.UserControls"
         xmlns:windows="clr-namespace:RateMe.View.Windows"
-        xmlns:viewModels="clr-namespace:RateMe.ViewModels"
         Title="GradesWin" Height="760" Width="1000" WindowStartupLocation="CenterScreen"
         Background="#10151b" MouseDown="OnWindowClick">
     
     <WindowChrome.WindowChrome>
         <WindowChrome />
     </WindowChrome.WindowChrome>
-    
-    <Window.DataContext>
-        <viewModels:ProfileViewModel/>
-    </Window.DataContext>
     
     <windows:BaseFullWin.Resources>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
@@ -33,7 +28,8 @@
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="210" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="80" />
             </Grid.RowDefinitions>
             
             <Grid Grid.Row="0">
@@ -46,8 +42,8 @@
                 <Grid Grid.Column="0" Margin="60, 0,0,0">
                     <Border CornerRadius="20" Width="200" Height="200" VerticalAlignment="Top">  
                         <Border.Background>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding ImageSource, Mode=TwoWay}"/> <!--Temp E:\Projects\ActuallySomethingMine\RateMe\RateMe\Assets\dio.jpg-->
-                        </Border.Background> <!-- "" -->
+                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding ImageSource, Mode=TwoWay}"/>
+                        </Border.Background>
                     </Border>
                     <userControls:CoolSvgButton x:Name="EditPictureButton" WhenClicked="OnEditPictureClick" Visibility="Collapsed" Size="25" BiggerSize="30" Source="/Assets/edit-pen4.svg" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,11,0" Panel.ZIndex="1" />
                 </Grid>
@@ -56,8 +52,8 @@
                     <Grid x:Name="NormalInfo" Margin="15, 0,0,0">
                         <StackPanel Margin="0, 15,0,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" >
-                                <TextBlock Text="{Binding NameModel.Data}" Style="{StaticResource TextStyle}" Margin="0,0,15, 0"/> <!--{Binding UserService.User.Name}-->
-                                <TextBlock Text="{Binding SurnameModel.Data}" Style="{StaticResource TextStyle}"/> <!--{Binding UserService.User.Surname}-->
+                                <TextBlock Text="{Binding NameModel.Data}" Style="{StaticResource TextStyle}" Margin="0,0,15, 0"/>
+                                <TextBlock Text="{Binding SurnameModel.Data}" Style="{StaticResource TextStyle}"/>
                             </StackPanel>
                             
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10, 0,0">
@@ -65,7 +61,7 @@
                                 <TextBlock Text="{Binding YearModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left"/>
                             </StackPanel>
                             
-                            <TextBlock Text="{Binding EmailModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,15,0,0"/>  <!-- only your OWN pfp --> 
+                            <TextBlock Text="{Binding EmailModel.Data}" Style="{StaticResource TextStyle}" FontSize="21" HorizontalAlignment="Left" Margin="0,15,0,0"/> 
                         </StackPanel>
                         
                         <TextBlock Text="{Binding AboutModel.Data}" Foreground="White" FontSize="19" FontStyle="Italic" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,20"/>
@@ -96,16 +92,18 @@
                 </Grid>
                 
             </Grid>
+            
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
-                
-                <Grid Grid.Column="0" Margin="60, 0,0,0">
-                    <!--<userControls:CoolSvgButton x:Name="EditPictureButton" WhenClicked="OnEditPictureClick"  Size="25" BiggerSize="35" Source="/Assets/edit-pen4.svg" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,0" Panel.ZIndex="1" /> -->
-                </Grid>
+            </Grid>
+            
+            <Grid Grid.Row="2">
+                <userControls:NormalButton WhenClicked="OnOkClick" Back="#591e73" BackHover="#772899" TheContent="Ok" TheFontSize="17" />
+                <userControls:CoolSvgButton WhenClicked="OnLeaveClick" Size="40" BiggerSize="45" Source="/Assets/log-out-door.svg" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,30,0"/>
             </Grid>
         </Grid>
     </Grid>

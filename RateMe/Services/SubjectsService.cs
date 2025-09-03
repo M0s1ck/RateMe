@@ -36,7 +36,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
         
         if (subjectsToAdd.Length != 0)
         {
-            await PushSubjects(subjectsToAdd);   // TODO: refactor for not working server
+            await PushSubjects(subjectsToAdd);
         }
         
         if (_subjectsToUpdate.Count != 0)
@@ -78,7 +78,7 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     /// <summary>
     /// Requests update of subjects
     /// </summary>
-    private async Task UpdateSubjectsRemote(IEnumerable<SubjectLocal> subjects) // TODO: если remote не работал, то update'a не будет, можно локально добавить колонку 'saved'  
+    private async Task UpdateSubjectsRemote(IEnumerable<SubjectLocal> subjects)  
     {
         List<PlainSubject> subjsDto = [];
         
@@ -174,10 +174,24 @@ public class SubjectsService : ILocalSubjectsService, ISubjectUpdater
     }
 
 
-    public async Task AddLocals(IEnumerable<Subject> subjs)
+    public async Task AddLocals(Subject[] subjs)
     {
-        SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray();
-        await _rep.Add(locals);
+        foreach (Subject subject in subjs)
+        {
+            subject.UpdateLocalModel();
+
+            foreach (Element elem in subject.FormulaObj)
+            {
+                subject.LocalModel.Elements.Add(elem.LocalModel);
+            }
+        }
+        
+        SubjectLocal[] locals = subjs.Select(c => c.LocalModel).ToArray(); 
+
+        if (locals.Length != 0)
+        {
+            await _rep.Add(locals);
+        }
     }
 
 

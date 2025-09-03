@@ -13,11 +13,12 @@ public class User
     public int Year { get; set; }
     public string Quote { get; set; }= string.Empty;
     public bool IsDefaultPicture { get; set; } = true;
+    public string? PictureS3Id { get; set; }
     public bool IsRemoteUpdated { get; set; } = true;
     
     public User() {}
 
-    public User(UserDto dto) // TODO: update for cur and year
+    public User(UserDto dto)
     {
         Id = dto.Id;
         Email = dto.Email;

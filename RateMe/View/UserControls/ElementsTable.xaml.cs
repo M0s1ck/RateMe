@@ -55,7 +55,7 @@ public partial class ElementsTable : UserControl
         }
     }
 
-    private void OnWeightChanged(object sender, TextChangedEventArgs e) // TODO: add bounds? 
+    private void OnWeightChanged(object sender, TextChangedEventArgs e)
     {
         Element? element = ((FrameworkElement)sender).DataContext as Element;
         string w = ((TextBox)sender).Text;

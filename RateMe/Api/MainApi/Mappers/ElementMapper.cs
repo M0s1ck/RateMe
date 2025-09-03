@@ -33,7 +33,7 @@ internal static class ElementMapper
 
         foreach (ElementLocal elem in elems)
         {
-            if (!dto.ContainsKey(elem.Subject.RemoteId))
+            if (!dto.ContainsKey(elem.Subject!.RemoteId))
             {
                 dto[elem.Subject.RemoteId] = [];
             }

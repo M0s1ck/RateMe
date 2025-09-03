@@ -17,6 +17,7 @@ public static class UserMapper
             Curriculum = user.Curriculum,
             Year = user.Year,
             Quote = user.Quote,
+            S3PicId = string.IsNullOrEmpty(user.PictureS3Id) ? null : Guid.Parse(user.PictureS3Id)
         };
     }
     
@@ -31,7 +32,8 @@ public static class UserMapper
             Password = dto.Password,
             Curriculum = dto.Curriculum,
             Year = dto.Year,
-            Quote = dto.Quote
+            Quote = dto.Quote,
+            PictureS3Id = dto.S3PicId == null ? null : dto.S3PicId.ToString()
         };
     }
 }

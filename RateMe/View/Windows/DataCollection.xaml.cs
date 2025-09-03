@@ -31,11 +31,16 @@ namespace RateMe.View.Windows
         private static readonly int BallRadius = 5;
         
         #endregion
-        
 
-        public DataCollection()
+        private bool _isApiAlive;
+        private bool _isS3ServiceAlive;
+        
+        public DataCollection(bool isApiAlive, bool isS3ServiceAlive)
         {
             InitializeComponent();
+
+            _isApiAlive = isApiAlive;
+            _isS3ServiceAlive = isS3ServiceAlive;
 
             Curriculums curriculums = new Curriculums();
             Loaded += (_, _) => SetItemSources(curriculums);
@@ -45,12 +50,9 @@ namespace RateMe.View.Windows
 
         private async void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            // Loading ("wait") starts
             WaitTextBlock.Visibility = Visibility.Visible;
             LaunchLoadingBalls();
             ContinueButton.IsEnabled = false;
-
-            // Collected data building up
             
             SyllabusModel syllabus = HandleSyllabus();
             
@@ -59,30 +61,8 @@ namespace RateMe.View.Windows
             await mainParser.GetCurriculumAsync();
             await mainParser.GetSubjectsUrlsAltAsync();
             List<Subject> subjects = await mainParser.GetSubjectsDataAsync();
-
-            // Subject alg = new Subject("Алгебра1", 9, [1, 2, 3, 4], []);
-            // alg.FormulaObj = new Formula("0,21∙О_(Кр-3мод)+ 0,1∙О_(Сем-2)+0,08∙О_(ИДЗ-3 и 4 мод)+ 0,21∙О_(Коллоквиум-3 и 4мод)+0,5∙О_(Экз.раб.-2)");
-            //
-            // Subject disc = new Subject("Discra", 9, [1, 2, 3, 4], []);
-            // disc.FormulaObj = new Formula("0.09 * ДЗ 4 + 0.105 * КР 3 + 0.105 * КР 4 + 0.7 * Э 4");
-            //
-            // Subject hist = new Subject("History", 9, [1, 2, 3, 4], []);
-            // hist.FormulaObj = new Formula("0.2 * Проектная деятельность + 0.25 * Работа с СмартЛМС + 0.3 * Семинарские занятия + 0.25 * Экзамен");
-            //
-            // Subject eco = new Subject("Economics", 9, [1, 2, 3, 4], []);
-            // eco.FormulaObj = new Formula("0.13 * Выполнение тестов онлайн-курса + 0.29 * Контрольная работа №1 (микроэкономика) + 0.29 * Контрольная работа №2 (макроэкономика) + 0.29 * Оценка за работу на семинарах");
-
-            //List<Subject> subjects = [alg, disc, hist, eco]; // new Subject("Алгебра11", 9, [1, 2, 3, 4], []), new Subject("научно-исследовательский семинар Матан2", 9, [1, 2, 3, 4], []), new Subject("Экономика3", 3, [3, 4], []),
-                                  //new Subject("Алгебраnvsknksvnk4", 9, [1, 2, 3], []), new Subject("Матанsvmsmvlmslvmlsv5", 9, [3, 4], []), new Subject("Экономика6", 3, [3, 4], []),
-                                  //new Subject("Алгебра7", 9, [1, 2, 3, 4], []), new Subject("Матан8", 9, [1, 2, 3, 4], []), new Subject("Экономика9", 3, [3, 4], []),
-                                  //new Subject("Алгебра10", 9, [1, 2, 3, 4], []), new Subject("Матан,vs,v;s,;v,;s,v;,sv,s;v,sv;s,vvs;s,;,sv;s,v;s11", 9, [1, 2, 3], []), new Subject("Экономика12", 3, [3, 4], []),
-                                  //new Subject("Алгебра13", 9, [1, 2, 3, 4], []), new Subject("Матан14", 9, [4], []), new Subject("Экономика15", 3, [3, 4], []),
-                                  //new Subject("АлгебраNjnjnvnvjsnvjnsv vsjnvjsnvjsnv16", 9, [3, 4], []), new Subject("научно-исследовательский семинар Мааьаь", 9, [1, 2, 3, 4], []),
-                                  //new Subject("Алгебраscscscscscsccsc18", 9, [1, 2], []), new Subject("научно-исследовательский семинар облака", 9, [1, 2, 3, 4], [])];
-
-
-
-            SubjectsWin subjectsWin = new(syllabus, subjects);
+            
+            SubjectsWin subjectsWin = new(syllabus, subjects, _isApiAlive, _isS3ServiceAlive);
             subjectsWin.Show();
             Close();            
         }

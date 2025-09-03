@@ -10,4 +10,5 @@ public interface IUserService
     Task<DbInteractionResult<UserFullDto>> AuthUserAsync(AuthRequest authRequestDto);
     Task<DbInteractionStatus> UpdateAsync(UserFullDto userFullDto);
     Task<DbInteractionStatus> RemoveAsync(int id);
+    Task<DbInteractionStatus> UpdateS3PicId(int userId, Guid s3Id);
 }

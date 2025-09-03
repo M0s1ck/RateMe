@@ -62,6 +62,14 @@ paths:
       summary: Get a photo (file)
       tags:
       - Photos
+  /health:
+    get:
+      responses:
+        "200":
+          description: OK
+      summary: Service healthcheck
+      tags:
+      - Health
   /presigned/{id}:
     get:
       consumes:

@@ -17,7 +17,7 @@ namespace RateMe.Repositories
 
         public SubjectsContext()
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+            string path = Directory.GetCurrentDirectory();
             DbPath = Path.Combine(path, "subjects.db");
         }
 

@@ -11,7 +11,7 @@ public partial class YesNoWin : Window
     public YesNoWin(string question)
     {
         InitializeComponent();
-        WindowBarDockPanel bar = new(this);   // Add to abstract SmolWin (i e virtual AddHeader)
+        WindowBarDockPanel bar = new(this);
         WindowGrid.Children.Add(bar);
         bar.expandButton.Visibility = Visibility.Collapsed;
         bar.wrapButton.Visibility = Visibility.Collapsed;

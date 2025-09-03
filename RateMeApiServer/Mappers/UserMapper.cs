@@ -39,7 +39,8 @@ public static class UserMapper
             Surname = dto.Surname,
             Curriculum = dto.Curriculum,
             Year = dto.Year,
-            Quote = dto.Quote
+            Quote = dto.Quote,
+            S3PicId = dto.S3PicId
         };
     }
     
@@ -54,7 +55,8 @@ public static class UserMapper
             Surname = user.Surname,
             Curriculum = user.Curriculum,
             Year = user.Year,
-            Quote = user.Quote
+            Quote = user.Quote,
+            S3PicId = user.S3PicId
         };
     }
 }
