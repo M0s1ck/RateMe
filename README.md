@@ -60,7 +60,7 @@ docker-compose up --build
 **4️⃣ Done 🎉**
 
 Asp.net api swagger will be available at <br>
-http://localhost:8080/api/v1/swagger-ui/index.html <br>
+http://localhost:8080/swagger/index.html <br>
 <br>
 S3 service api swagger will be available at <br> 
-http://localhost:8800/api/v1/swagger-ui/index.html
+http://localhost:8800/swagger/index.html
